@@ -1,3 +1,5 @@
+import {default as URI} from 'urijs';
+
 export class LinkData {
     /**
      * This constructor throws a {@link ValidationError} unless a valid URL is passed.
@@ -37,82 +39,66 @@ export class LinkData {
         this._description = '';
         
         // store the URL
-        this.url(url);
+        this.url = url;
         
         // set the text
-        this.text(text || this.url());
+        this.text = text || this.url;
         
         // set the description
-        this.description(description || this.text());
+        this.description = description || this._text;
+    }
+
+    /**
+     * @returns {string} a URL string 
+     */
+    get url(){
+        return this._uri.toString();
     }
     
     /**
      * Get or set the URL.
      *
-     * @param {URL} [url] - A new URL as a string.
-     * @returns {(string|module:@bartificer/linkify.LinkData)} When in *get*
-     * mode (passed no parameters), returns a URL string, when in *set* mode
-     * (passed a URL string as the first parameter), returns a reference to 
-     * self to facilitate function chaining. 
+     * @param {string} url - A new URL as a string.
      */
-    url(){
-        // deal with set mode
-        if(arguments.length){
-            this._uri = URI(String(arguments[0])).normalize();
-            return this;
-        }
-        
-        // deal with get mode
-        return this._uri.toString();
+    set url(url){
+        this._uri = URI(String(url)).normalize();
     }
     
     /**
      * Get the URL as a URI.js object.
      * 
-     * @returns {URIObject}
+     * @returns {Object}
      */
-    uri(){
+    get uri(){
         return this._uri.clone();
     }
-    
+
     /**
-     * Get or set the link text.
-     * 
-     * @param {string} [text] - New link text.
-     * @returns {(string|module:@bartificer/linkify.LinkData)} When in *get*
-     * mode (passed no parameters), returns the link text, when in *set* mode
-     * (passed a string as the first parameter), returns a reference to self to
-     * facilitate function chaining.
+     * @returns {string}
      */
-    text(){
-        // deal with set mode
-        if(arguments.length){
-            this._text = String(arguments[0]);
-            return this;
-        }
-        
-        // deal with get mode
+    get text(){
         return this._text;
     }
     
     /**
-     * Get or set the link description.
-     * 
-     * @param {string} [description]
-     * @returns {(string|module:@bartificer/linkify.LinkData)} When in *get* 
-     * mode (passed no parameters), returns the link description, when in *set*
-     * mode (passed a string as the first parameter), returns a reference to 
-     * self to facilitate function chaining.
+     * @param {string} [text] - New link text. The value will be coerced to a string and trimmed.
      */
-    description(){
-        // deal with set mode
-        if(arguments.length){
-            this._description = String(arguments[0]);
-            return this;
-        }
-        
-        // deal with get mode
+    set text(text){
+        this._text = String(text).trim();
+    }
+    
+    /**
+     * @returns {string} 
+     */
+    get description(){
         return this._description;
+    }
+
+    /**
+     * @param {string} description
+     */
+    set description(description){
+        this._description = String(description);
     }
     
     /**
@@ -138,13 +124,12 @@ export class LinkData {
      */
     asPlainObject(){
         let ans = {
-            url: this.url(),
-            text: this.text(),
-            description: this.description(),
+            url: this.url,
+            text: this.text,
+            description: this.description,
             uri: URI.parse(this._uri.toString())
         };
         ans.uri.hasPath = ans.uri.path !== '/';
-        //console.log(ans);
         return ans;
     }
 };

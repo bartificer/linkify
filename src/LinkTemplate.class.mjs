@@ -1,18 +1,13 @@
 export class LinkTemplate{
     /**
-     * This constructor throws a {@link ValidationError} unless a template
-     * string is passed.
-     *
-     * @param {templateString} templateString - A Moustache template string.
+     * @param {string} templateString - A Moustache template string.
      * @param {Array} [filters=[]] - An optional array of filter functions.
      * Each element in the array should itself be an array where the first
      * element is a string specifying which fields the filter should be applied
      * to (one of `'all'`, `'url'`, `'text'`, or `'description'`), and the 
      * second the filter function itself which should be a function that takes
      * a single string as an argument and returns a filtered version of that
-     * string
-     * @throws {ValidationError} A validation error is thrown unless a template
-     * string is passed.
+     * string.
      */
     constructor(templateString, filters){
         // TO DO - add validation
@@ -24,7 +19,7 @@ export class LinkTemplate{
          * @type {templateString}
          */
         this._templateString = '';
-        this.templateString(templateString);
+        this.templateString = templateString;
         
         /**
          * The filter functions to be applied to the various fields as a plain
@@ -53,24 +48,22 @@ export class LinkTemplate{
     }
     
     /**
-     * Get or set the template string.
+     * Get the template string.
      *
-     * @param {templateString} [templateString] - A new Moustache template
-     * string.
-     * @returns {(string|module:@bartificer/linkify.LinkTemplate)} When in
-     * *get* mode (passed no parameters), returns the template string, when in
-     * *set* mode (passed a string as the first parameter), returns a reference
-     * to self to facilitate function chaining.
+     * @returns {string}
      */
-    templateString(){
-        // deal with set mode
-        if(arguments.length){
-            this._templateString = String(arguments[0]);
-            return this;
-        }
-        
-        // deal with get mode
+    get templateString(){
         return this._templateString;
+    }
+
+    /**
+     * Set the template string. Should be in Mustache format. All values passed
+     * will be coerced to strings.
+     * 
+     * @param {string} templateString
+     */
+    set templateString(templateString){
+        this._templateString = String(templateString);
     }
     
     /**
@@ -81,9 +74,8 @@ export class LinkTemplate{
      *
      * @param {string} fieldName - One of `'all'`, `'url'`, `'text'`, or
      * `'description'`.
-     * @param {filterFunction} filterFn - the filter function.
-     * @returns {module:@bartificer/linkify.LinkTemplate} Returns a reference
-     * to self to facilitate function chaining.
+     * @param {function} filterFn - the filter function.
+     * @returns {LinkTemplate} Returns a reference to self to facilitate function chaining.
      */
     addFilter(fieldName, filterFn){
         // make sure that args are at least plausibly valid
@@ -111,7 +103,7 @@ export class LinkTemplate{
      * 
      * @param {string} fieldName - one of `'url'`, `'text'`, or
      * `'description'`.
-     * @returns {filterFunction[]} returns an array of callbacks, which may be
+     * @returns {function[]} returns an array of callbacks, which may be
      * empty. An empty array is returned if an invalid field name is passed.
      */
     filtersFor(fieldName){
