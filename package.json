@@ -1,11 +1,17 @@
 {
   "name": "@bartificer/linkify",
-  "version": "1.0.0",
-  "description": "An API and CLI for turning URLs into pretty links.",
-  "main": "lib.js",
+  "version": "2.0.0",
+  "description": "An module for converting URLs into pretty links in any format.",
+  "type": "module",
+  "main": "dist/index.js",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "files": [
+    "src"
+  ],
   "scripts": {
-    "generate-docs": "node_modules/.bin/jsdoc --configure jsdoc.conf.json",
-    "generate-docs-dev": "node_modules/.bin/jsdoc --configure jsdoc.conf.json --private --destination ./docs-dev"
+    "build": "webpack"
   },
   "repository": {
     "type": "git",
@@ -26,8 +32,6 @@
     "urijs": "^1.19.10"
   },
   "devDependencies": {
-    "@bbusschots/minami-bartificer": "^1.2.4-bartificer.2",
-    "jsdoc": "^4.0.4",
     "webpack": "^5.105.4",
     "webpack-cli": "^7.0.2"
   }

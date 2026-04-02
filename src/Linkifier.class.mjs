@@ -1,4 +1,4 @@
-export class Linkify {
+export class Linkifier {
     constructor(){
         /**
          * A mapping of domain names to data transformation functions.
