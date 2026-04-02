@@ -27,6 +27,8 @@
   },
   "devDependencies": {
     "@bbusschots/minami-bartificer": "^1.2.4-bartificer.2",
-    "jsdoc": "^4.0.4"
+    "jsdoc": "^4.0.4",
+    "webpack": "^5.105.4",
+    "webpack-cli": "^7.0.2"
   }
 }
