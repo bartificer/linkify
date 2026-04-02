@@ -1,3 +1,11 @@
+import { PageData } from './PageData.class.mjs';
+import { LinkData } from './LinkData.class.mjs';
+import { LinkTemplate } from './LinkTemplate.class.mjs';
+
+import fetch from 'node-fetch';
+import * as cheerio from 'cheerio';
+import Mustache from 'mustache';
+
 export class Linkifier {
     constructor(){
         /**
@@ -8,11 +16,11 @@ export class Linkifier {
          */
         this._pageDataToLinkDataTransmformers = {
             '.' : function(pData){
-                let text = pData.title();
-                if(pData.h1s().length === 1){
-                    text = pData.mainHeading();
+                let text = pData.title;
+                if(pData.h1s.length === 1){
+                    text = pData.mainHeading;
                 }
-                return new module.exports.LinkData(pData.url(), text.trim());
+                return new LinkData(pData.url, text);
             }
         };
 
@@ -23,6 +31,23 @@ export class Linkifier {
          * @type {Object.<templateName, module:@bartificer/linkify.LinkTemplate>}
          */
         this._linkTemplates = {};
+
+        //
+        // === Create and register the default templates ===
+        //
+        // TO DO — migrate these to a separate file
+        this.registerTemplate(
+            'html',
+            new LinkTemplate('<a href="{{{url}}}" title="{{description}}">{{text}}</a>')
+        );
+        this.registerTemplate(
+            'htmlNewTab',
+            new LinkTemplate('<a href="{{{url}}}" title="{{description}}" target="_blank" rel="noopener">{{text}}</a>')
+        );
+        this.registerTemplate(
+            'markdown',
+            new LinkTemplate('[{{{text}}}]({{{url}}})')
+        );
     }
 
     /**
@@ -34,15 +59,14 @@ export class Linkifier {
      * @throws {ValidationError} A validation error is thrown if either parameter
      * is missing or invalid.
      */
-    registerTransformer = function(domain, transformerFn){
+    registerTransformer(domain, transformerFn){
         // TO DO - add validation
     
         let fqdn = String(domain);
         if(!fqdn.match(/[.]$/)){
             fqdn += '.';
         }
-        pageDataToLinkDataTransmformers[fqdn] = transformerFn;
-    
+        this._pageDataToLinkDataTransmformers[fqdn] = transformerFn;
     }
 
     /**
@@ -70,15 +94,15 @@ export class Linkifier {
     
         // return the most exact match
         while(fqdn.match(/[.][^.]+[.]$/)){
-            if(pageDataToLinkDataTransmformers[fqdn]){
+            if(this._pageDataToLinkDataTransmformers[fqdn]){
                 //console.log(`returning transformer for '${fqdn}'`);
-                return pageDataToLinkDataTransmformers[fqdn];
+                return this._pageDataToLinkDataTransmformers[fqdn];
             }
             //console.log(`no transformer found for '${fqdn}'`);
             fqdn = fqdn.replace(/^[^.]+[.]/, '');
         }
         //console.log('returning default transformer');
-        return pageDataToLinkDataTransmformers['.'];
+        return this._pageDataToLinkDataTransmformers['.'];
     }
 
     /**
@@ -92,7 +116,7 @@ export class Linkifier {
     registerTemplate(name, template){
         // TO DO - add validation
     
-        linkTemplates[name] = template;
+        this._linkTemplates[name] = template;
     }
 
     /**
@@ -100,20 +124,20 @@ export class Linkifier {
      *
      * @async
      * @param {URL} url
-     * @returns {module:@bartificer/linkify.PageData}
+     * @returns {PageData}
      * @throws {ValidationError} A validation error is thrown unless a valid URL is
      * passed.
      */
     async fetchPageData(url){
         // TO DO - add validation
         
-        let ans = new this.PageData(url);
+        let ans = new PageData(url);
         
         // then try load the contents form the web
         let webDownloadResponse = await fetch(url);
         webDownloadResponseBody = await webDownloadResponse.text();
         let $ = cheerio.load(webDownloadResponseBody);
-        ans.title($('title').text().trim());
+        ans.title = $('title').text().trim();
         $('h1').each(function(){
             ans.h1($(this).text().trim());
         });
@@ -144,9 +168,9 @@ export class Linkifier {
         let pData = await this.fetchPageData(url);
         
         // transform the page data to link data
-        let lData = module.exports.getTransformerForDomain(pData.uri().hostname())(pData);
+        let lData = this.getTransformerForDomain(pData.uri().hostname())(pData);
         
         // render the link
-        return Mustache.render(linkTemplates[tplName].templateString(), lData.asPlainObject());
+        return Mustache.render(this._linkTemplates[tplName].templateString(), lData.asPlainObject());
     }
 };
