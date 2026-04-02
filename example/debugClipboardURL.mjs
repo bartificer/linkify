@@ -1,5 +1,5 @@
-const clipboardy = require('clipboardy');
-const linkify = require('../lib.js');
+import clipboardy from 'clipboardy';
+import linkify from '../src/index.js';
 
 let testURL = clipboardy.readSync();
 linkify.fetchPageData(testURL).then(function(d){

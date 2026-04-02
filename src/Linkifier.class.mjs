@@ -135,7 +135,10 @@ export class Linkifier {
         
         // then try load the contents form the web
         let webDownloadResponse = await fetch(url);
-        webDownloadResponseBody = await webDownloadResponse.text();
+        if(!webDownloadResponse.ok){
+            throw new Error(`Unable to fetch page data for URL '${url}': ${webDownloadResponse.status} ${webDownloadResponse.statusText}`);
+        }
+        let webDownloadResponseBody = await webDownloadResponse.text();
         let $ = cheerio.load(webDownloadResponseBody);
         ans.title = $('title').text().trim();
         $('h1').each(function(){
