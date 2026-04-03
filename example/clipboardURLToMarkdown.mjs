@@ -1,12 +1,20 @@
 // import Linkify Lib
-import { linkify, LinkTemplate, LinkData } from '../src/index.js';
+import { linkify, LinkTemplate, LinkData } from '../dist/index.js';
 
 // import 3rd-party library for interacting with the clipboard
 import clipboardy from 'clipboardy';
 
-// define a custom Markdown link template and register it
-const mdTitleTpl = new LinkTemplate('[{{{text}}} — {{{uri.hostname}}}{{#uri.hasPath}}/…{{/uri.hasPath}}]({{{url}}})');
-linkify.registerTemplate('md-title', mdTitleTpl);
+// register a custom Markdown link template and make it the default
+linkify.registerTemplate('md-bartificer', new LinkTemplate(
+    '[{{{text}}} — {{{uri.hostname}}}{{#uri.hasPath}}/…{{/uri.hasPath}}]({{{url}}})'
+));
+linkify.defaultTemplateName = 'md-bartificer';
+
+// register a special Markdown template for Apple presss releases and make it the default for Apple's domain
+linkify.registerTemplate('md-apr', new LinkTemplate(
+    '[{{{text}}} — 📣 Apple PR]({{{url}}})'
+));
+linkify.registerDefaultTemplateMapping('apple.com', 'md-apr');
 
 // define & register custom transformers for domains that need them
 linkify.registerTransformer('9to5mac.com', function(pData){
@@ -53,6 +61,6 @@ linkify.registerTransformer('wired.com', function(pData){
 let testURL = clipboardy.readSync();
 
 // try generate the formatted link from the URL
-linkify.generateLink(testURL, 'md-title').then(function(d){
+linkify.generateLink(testURL).then(function(d){
     console.log(d);
 });
