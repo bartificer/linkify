@@ -49,17 +49,6 @@ linkify.registerTransformer('wired.com', function(pData){
     return new linkify.LinkData(pData.url, pData.mainHeading);
 });
 
-// DISABLED — return 403s when using Cheerio to fetch page data 🙁
-// linkify.registerTransformer('appleinsider.com', function(pData){
-//     return new LinkData(linkify.util.stripUTMParameters(pData.url), pData.mainHeading);
-// });
-// linkify.registerTransformer('bloomberg.com', function(pData){
-//     return new LinkData(pData.url, pData.title.replace(' - Bloomberg', ''));
-// });
-// linkify.registerTransformer('macobserver.com', function(pData){
-//     return new LinkData(linkify.util.stripQueryString(pData.url), pData.mainHeading);
-// });
-
 // read the URL from the clipboard
 let testURL = clipboardy.readSync();
 
