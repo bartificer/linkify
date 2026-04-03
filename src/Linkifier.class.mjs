@@ -27,6 +27,16 @@ export class Linkifier {
         };
 
         /**
+         * A mapping of domains names to default template names.
+         * 
+         * @private
+         * @type {Object.<FQDN, templateName>}
+         */
+        this._pageDataToLinkTemplateName = {
+            '.' : 'html' // default to the 'html' template for all domains unless otherwise specified
+        };
+
+        /**
          * The registered link templates.
          *
          * @private
@@ -48,13 +58,6 @@ export class Linkifier {
         for (const [name, template] of Object.entries(defaults.linkTemplates)) {
             this.registerTemplate(name, template);
         }
-    }
-
-    /**
-     * @type {string[]} A list of the names of the registered link templates.
-     */
-    get templateNames() {
-        return Object.keys(this._linkTemplates);
     }
 
     /**
@@ -127,6 +130,39 @@ export class Linkifier {
     }
 
     /**
+     * @type {string[]} A list of the names of the registered link templates.
+     */
+    get templateNames() {
+        return Object.keys(this._linkTemplates);
+    }
+
+    /**
+     * @returns {string} The name of the default template.
+     */
+    get defaultTemplateName(){
+        return this._pageDataToLinkTemplateName['.'];
+    }
+
+    /**
+     * @param {string} templateName - The name of the default template to use.
+     * @throws {ValidationError} A validation error is thrown if the template name is missing, invalid, or doesn't correspond to a registered template.
+     */
+    set defaultTemplateName(templateName){
+        const tplName = String(templateName);
+        if(!this._linkTemplates[tplName]){
+            throw new ValidationError(`No template named '${tplName}' is registered`);
+        }
+        this._pageDataToLinkTemplateName['.'] = tplName;
+    }
+    
+    /**
+     * @type {LinkTemplate} The default link template.
+     */
+    get defaultTemplate(){
+        return this._linkTemplates[this._pageDataToLinkTemplateName['.']];
+    }
+
+    /**
      * Register a link template.
      *
      * @param {templateName} name
@@ -136,8 +172,88 @@ export class Linkifier {
      */
     registerTemplate(name, template){
         // TO DO - add validation
+        const tplName = String(name);
     
-        this._linkTemplates[name] = template;
+        this._linkTemplates[tplName] = template;
+    }
+
+    /**
+     * Get a registered link template by name.
+     *
+     * @param {string} templateName
+     * @returns {LinkTemplate}
+     * @throws {ValidationError} A validation error is thrown unless a valid name is passed and corresponds to a registered template.
+     */
+    getTemplate(templateName){
+        const tplName = String(templateName);
+
+        if(!this._linkTemplates[tplName]){
+            throw new ValidationError(`No template named '${tplName}' is registered`);
+        }
+        return this._linkTemplates[tplName];
+    }
+
+    /**
+     * Register a default template for use with a given domain. This template will
+     * override the overall default for this domain and all its subdomains.
+     *
+     * @param {domainName} domain - The domain for which this template should be used by default.
+     * @param {templateName} templateName - The name of the template to use.
+     * @throws {ValidationError} A validation error is thrown if either parameter
+     * is missing or invalid.
+     */
+    registerDefaultTemplateMapping(domain, templateName){
+        // TO DO - add validation
+    
+        let fqdn = String(domain);
+        if(!fqdn.match(/[.]$/)){
+            fqdn += '.';
+        }
+        this._pageDataToLinkTemplateName[fqdn] = templateName;
+    }
+
+    /**
+     * Get the data transformer function for a given domain.
+     *
+     * Note that domains are searched from the subdomain up. For example, if passed
+     * the domain `www.bartificer.net` the function will first look for a
+     * transformer for the domain `www.bartificer.net`, if there's no transformer
+     * registered for that domain it will look for a transformer for the domain
+     * `bartificer.net`, if there's no transformer for that domain either it will
+     * return the default transformer.
+     *
+     * @param {domainName} domain - The domain to get the data transformer for.
+     * @returns {dataTransformer}
+     * @throws {ValidationError} A validation error is thrown unless a valid domain
+     * name is passed.
+     */
+    getTemplateNameForDomain(domain){
+        // TO DO - add validation
+    
+        let fqdn = String(domain);
+        if(!fqdn.match(/[.]$/)){
+            fqdn += '.';
+        }
+    
+        // return the most exact match
+        while(fqdn.match(/[.][^.]+[.]$/)){
+            if(this._pageDataToLinkTemplateName[fqdn]){
+                let tplName = this._pageDataToLinkTemplateName[fqdn];
+
+                // make sure the template exists
+                if(!this._linkTemplates[tplName]){
+                    console.warn(`No template named '${tplName}' is registered, falling back to global default '${this._pageDataToLinkTemplateName['.']}'`);
+                    return this._pageDataToLinkTemplateName['.'];
+                }
+
+                //console.log(`returning template name for '${fqdn}'`);
+                return this._pageDataToLinkTemplateName[fqdn];
+            }
+            //console.log(`no template name found for '${fqdn}'`);
+            fqdn = fqdn.replace(/^[^.]+[.]/, '');
+        }
+        //console.log('returning default template name');
+        return this._pageDataToLinkTemplateName['.'];
     }
 
     /**
@@ -183,7 +299,9 @@ export class Linkifier {
     }
 
     /**
-     * Generate a link given a URL.
+     * Generate a link given a URL. By default the registered template for the
+     * URL's domain will be used, or, if none is registered, the overall
+     * default will be used (`html`).
      *
      * @async
      * @param {URL} url
@@ -194,8 +312,25 @@ export class Linkifier {
      */
     async generateLink(url, templateName){
         // TO DO - add validation
-        
-        let tplName = templateName && typeof templateName === 'string' ? templateName : 'html';
+
+        //
+        // -- resolve the template name to use for this URL --
+        //
+        let tplName = '';
+
+        // if a template name is passed, try use it
+        if(templateName && typeof templateName === 'string'){
+            tplName = templateName;
+
+            // make sure the template exists
+            if(!this._linkTemplates[tplName]){
+                console.warn(`No template named '${tplName}' is registered, falling back to global default '${this._pageDataToLinkTemplateName['.']}'`);
+                tplName = this._pageDataToLinkTemplateName['.'];
+            }
+        } else {
+            // if no template name is passed, resolve the default for this URL's domain
+            tplName = this.getTemplateNameForDomain((new URL(url)).hostname);
+        }
         
         // get the page data        
         let pData = await this.fetchPageData(url);
