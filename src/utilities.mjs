@@ -1,3 +1,6 @@
+import URI from 'urijs';
+import * as urlSlug from 'url-slug';
+
 /**
  * Strip the query string from a URL.
  *
@@ -17,4 +20,40 @@ export function stripQueryString(url){
  */
 export function stripUTMParameters(url){
     return URI(url).removeQuery(['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content']).toString();
+};
+
+/**
+ * Extract the slug from a URL and convert it to a title-case string.
+ * 
+ * @param {string} url
+ * @return {string}
+ */
+export function extractSlug(url){
+    // example URLs to try support:
+    // ----------------------------
+    // https://www.macobserver.com/news/apple-q2-2026-earnings-call-date-confirmed-heres-what-to-expect/
+    // https://appleinsider.com/articles/26/04/01/studio-display-xdr-without-tilt-adjustable-stand-now-costs-less
+    // https://www.bloomberg.com/news/articles/2026-04-03/ireland-tests-digital-id-to-verify-age-of-social-media-users?srnd=phx-technology&embedded-checkout=true
+    // 
+    // Based on those examples, implement the following algorithm:
+    // 1. Parse the URL and extract the path (be sure not to capture the query string or fragment).
+    // 2. Trim leading and trailing slashes
+    // 3. Split the path on / into segments and take the last segment.
+    // 4. Remove any file extension.
+    // 5. Call slug reversing function with Title Case option.
+
+    // extract the path from the URL and clean up both ends
+    const uri = URI(url);
+    let path = uri.path();
+    console.debug('utilities.extractSlug - raw path is: ', path);
+    path = path.replace(/^\/|\/$/g, ''); // trim leading and trailing slashes
+    let slug = path.split('/').pop() || ''; // get last segment of the path
+    console.debug('utilities.extractSlug - raw slug is: ', slug);
+    slug = slug.replace(/\.[^/.]+$/, ''); // trim any file extension that might be present
+    console.debug('utilities.extractSlug - final slug for reversing is: ', slug);
+    
+    // reverse the slug into a title-case string
+    let ans = urlSlug.revert(slug, { transformer: urlSlug.TITLECASE_TRANSFORMER });
+    console.debug('utilities.extractSlug - decoded title: ', ans);
+    return ans; // TEMP
 };
