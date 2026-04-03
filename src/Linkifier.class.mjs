@@ -318,7 +318,8 @@ export class Linkifier {
         //
         let tplName = '';
 
-        // if a template name is passed, try use it
+        // resolve the template — if a template name is passed, try use it,
+        // otherwise resolve the default for this URL's domain
         if(templateName && typeof templateName === 'string'){
             tplName = templateName;
 
@@ -328,17 +329,35 @@ export class Linkifier {
                 tplName = this._pageDataToLinkTemplateName['.'];
             }
         } else {
-            // if no template name is passed, resolve the default for this URL's domain
             tplName = this.getTemplateNameForDomain((new URL(url)).hostname);
         }
+        const template = this._linkTemplates[tplName];
         
         // get the page data        
-        let pData = await this.fetchPageData(url);
+        const pageData = await this.fetchPageData(url);
         
         // transform the page data to link data
-        let lData = this.getTransformerForDomain(pData.uri.hostname())(pData);
+        const linkData = this.getTransformerForDomain(pageData.uri.hostname())(pageData);
+
+        // apply field-specific filters to the link data
+        const fieldNames = ['url', 'text', 'description'];
+        const templateData = linkData.asPlainObject();
+        for(let fieldName of fieldNames){
+            let fieldFilters = template.filtersFor(fieldName);
+            for(let filterFn of fieldFilters){
+                templateData[fieldName] = filterFn(templateData[fieldName]);
+            }
+        }
+
+        // apply the universal filters to all the link data fields
+        let globalFilters = template.filtersFor('all');
+        for(let filterFn of globalFilters){
+            for(let fieldName of fieldNames){
+                templateData[fieldName] = filterFn(templateData[fieldName]);
+            }
+        }
         
         // render the link
-        return Mustache.render(this._linkTemplates[tplName].templateString, lData.asPlainObject());
+        return Mustache.render(this._linkTemplates[tplName].templateString, templateData);
     }
 };

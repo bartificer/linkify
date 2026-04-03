@@ -2,6 +2,16 @@ import URI from 'urijs';
 import * as urlSlug from 'url-slug';
 
 /**
+ * Regularise white space by replacing all sequences of whitespace characters with a single space and trimming leading and trailing whitespace.
+ *
+ * @param {string} text
+ * @return {string}
+ */
+export function regulariseWhitespace(text){
+    return String(text).replace(/[\s\n]+/g, ' ').trim();
+};
+
+/**
  * Strip the query string from a URL.
  *
  * @param {string} url

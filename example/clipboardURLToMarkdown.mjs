@@ -6,13 +6,21 @@ import clipboardy from 'clipboardy';
 
 // register a custom Markdown link template and make it the default
 linkify.registerTemplate('md-bartificer', new LinkTemplate(
-    '[{{{text}}} — {{{uri.hostname}}}{{#uri.hasPath}}/…{{/uri.hasPath}}]({{{url}}})'
+    '[{{{text}}} — {{{uri.hostname}}}{{#uri.hasPath}}/…{{/uri.hasPath}}]({{{url}}})',
+    [
+        ['url', linkify.util.stripUTMParameters],
+        ['text', linkify.util.regulariseWhitespace]
+    ]
 ));
 linkify.defaultTemplateName = 'md-bartificer';
 
 // register a special Markdown template for Apple presss releases and make it the default for Apple's domain
 linkify.registerTemplate('md-apr', new LinkTemplate(
-    '[{{{text}}} — 📣 Apple PR]({{{url}}})'
+    '[{{{text}}} — 📣 Apple PR]({{{url}}})',
+    [
+        ['url', linkify.util.stripUTMParameters],
+        ['text', linkify.util.regulariseWhitespace]
+    ]
 ));
 linkify.registerDefaultTemplateMapping('apple.com', 'md-apr');
 
