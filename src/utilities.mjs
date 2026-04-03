@@ -45,15 +45,10 @@ export function extractSlug(url){
     // extract the path from the URL and clean up both ends
     const uri = URI(url);
     let path = uri.path();
-    console.debug('utilities.extractSlug - raw path is: ', path);
     path = path.replace(/^\/|\/$/g, ''); // trim leading and trailing slashes
     let slug = path.split('/').pop() || ''; // get last segment of the path
-    console.debug('utilities.extractSlug - raw slug is: ', slug);
     slug = slug.replace(/\.[^/.]+$/, ''); // trim any file extension that might be present
-    console.debug('utilities.extractSlug - final slug for reversing is: ', slug);
     
     // reverse the slug into a title-case string
-    let ans = urlSlug.revert(slug, { transformer: urlSlug.TITLECASE_TRANSFORMER });
-    console.debug('utilities.extractSlug - decoded title: ', ans);
-    return ans; // TEMP
+    return urlSlug.revert(slug, { transformer: urlSlug.TITLECASE_TRANSFORMER });
 };

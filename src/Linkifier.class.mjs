@@ -157,11 +157,20 @@ export class Linkifier {
         let ans = new PageData(url);
         
         // then try load the contents form the web
-        let webDownloadResponse = await fetch(url);
-        if(!webDownloadResponse.ok){
-            throw new Error(`Unable to fetch page data for URL '${url}': ${webDownloadResponse.status} ${webDownloadResponse.statusText}`);
+        let webDownloadResponseBody = '';
+        try {
+            let webDownloadResponse = await fetch(url);
+            if(!webDownloadResponse.ok){
+                throw new Error(`HTTP ${webDownloadResponse.status}: ${webDownloadResponse.statusText}`);
+            }
+            webDownloadResponseBody = await webDownloadResponse.text();
+        } catch (err) {
+            // fall back to extracting the title from the URL slug
+            console.warn(`Failed to fetch page data for '${url}': ${err.message}`);
+            console.warn('Falling back to reversing the URL slug for the title');
+            ans.title = this.utilities.extractSlug(url) || 'Untitled';
+            return ans;
         }
-        let webDownloadResponseBody = await webDownloadResponse.text();
         let $ = cheerio.load(webDownloadResponseBody);
         ans.title = $('title').text().trim();
         $('h1').each(function(){
@@ -190,7 +199,7 @@ export class Linkifier {
         
         let tplName = templateName && typeof templateName === 'string' ? templateName : 'html';
         
-        // get the page data
+        // get the page data        
         let pData = await this.fetchPageData(url);
         
         // transform the page data to link data
