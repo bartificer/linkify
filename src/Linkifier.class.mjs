@@ -1,6 +1,7 @@
 import { PageData } from './PageData.class.mjs';
 import { LinkData } from './LinkData.class.mjs';
 import { LinkTemplate } from './LinkTemplate.class.mjs';
+import * as utilities from "./utilities.mjs";
 
 import fetch from 'node-fetch';
 import * as cheerio from 'cheerio';
@@ -32,6 +33,14 @@ export class Linkifier {
          */
         this._linkTemplates = {};
 
+        /**
+         * A collection of utility functions.
+         *
+         * @private
+         * @type {Object.<string, Function>}
+         */
+        this._utilities = utilities;
+
         //
         // === Create and register the default templates ===
         //
@@ -48,6 +57,20 @@ export class Linkifier {
             'markdown',
             new LinkTemplate('[{{{text}}}]({{{url}}})')
         );
+    }
+
+    /**
+     * @type {Object.<string, Function>}
+     */
+    get utilities() {
+        return this._utilities;
+    }
+
+    /**
+     * @see Linfifier.utilities
+     */
+    get util(){
+        return this._utilities;
     }
 
     /**
@@ -171,9 +194,9 @@ export class Linkifier {
         let pData = await this.fetchPageData(url);
         
         // transform the page data to link data
-        let lData = this.getTransformerForDomain(pData.uri().hostname())(pData);
+        let lData = this.getTransformerForDomain(pData.uri.hostname())(pData);
         
         // render the link
-        return Mustache.render(this._linkTemplates[tplName].templateString(), lData.asPlainObject());
+        return Mustache.render(this._linkTemplates[tplName].templateString, lData.asPlainObject());
     }
 };
