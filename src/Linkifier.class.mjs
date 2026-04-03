@@ -2,6 +2,7 @@ import { PageData } from './PageData.class.mjs';
 import { LinkData } from './LinkData.class.mjs';
 import { LinkTemplate } from './LinkTemplate.class.mjs';
 import * as utilities from "./utilities.mjs";
+import * as defaults from "./defaults.mjs";
 
 import fetch from 'node-fetch';
 import * as cheerio from 'cheerio';
@@ -42,21 +43,18 @@ export class Linkifier {
         this._utilities = utilities;
 
         //
-        // === Create and register the default templates ===
+        // -- Create and register the default templates --
         //
-        // TO DO — migrate these to a separate file
-        this.registerTemplate(
-            'html',
-            new LinkTemplate('<a href="{{{url}}}" title="{{description}}">{{text}}</a>')
-        );
-        this.registerTemplate(
-            'htmlNewTab',
-            new LinkTemplate('<a href="{{{url}}}" title="{{description}}" target="_blank" rel="noopener">{{text}}</a>')
-        );
-        this.registerTemplate(
-            'markdown',
-            new LinkTemplate('[{{{text}}}]({{{url}}})')
-        );
+        for (const [name, template] of Object.entries(defaults.linkTemplates)) {
+            this.registerTemplate(name, template);
+        }
+    }
+
+    /**
+     * @type {string[]} A list of the names of the registered link templates.
+     */
+    get templateNames() {
+        return Object.keys(this._linkTemplates);
     }
 
     /**

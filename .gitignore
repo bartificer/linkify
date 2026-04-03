@@ -69,3 +69,5 @@ docs-dev/
 temp.mjs
 
 dist/
+
+demo.mjs
