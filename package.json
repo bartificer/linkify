@@ -15,7 +15,7 @@
   ],
   "scripts": {
     "build": "webpack",
-    "publish": "npm run build && npm publish"
+    "release": "npm run build && npm publish"
   },
   "repository": {
     "type": "git",
