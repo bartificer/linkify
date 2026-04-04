@@ -2,7 +2,8 @@ import { LinkTemplate } from './LinkTemplate.class.mjs';
 import * as utilities from "./utilities.mjs";
 
 /**
- * @type {Object.<string, LinkTemplate>} A collection of named link templates.
+ * The collection of named link templates loaded by the Linkifier constructor.
+ * @type {Object.<string, LinkTemplate>}
  */
 export const linkTemplates = {
     html: new LinkTemplate(
@@ -29,3 +30,23 @@ export const linkTemplates = {
         ]
     )
 };
+
+/**
+ * The default list of words with special capitalisations.
+ * @type {string[]}
+ */
+export const speciallyCapitalisedWords = [
+    'FBI',
+    'CIA',
+    'USA',
+    'UK',
+    'EU',
+    'NASA',
+    'NSA',
+    'OS',
+    'iOS',
+    'macOS',
+    'iPad',
+    'LinkedIn',
+    'XProtect'
+];

@@ -45,6 +45,15 @@ export class Linkifier {
         this._linkTemplates = {};
 
         /**
+         * The loaded list of words with customised capitalisations.
+         * 
+         * @private
+         * @type {string[]}
+         */
+        this._speciallyCapitalisedWords = [];
+        defaults.speciallyCapitalisedWords.map(word => this._speciallyCapitalisedWords.push(word));
+
+        /**
          * A collection of utility functions.
          *
          * @private
@@ -72,6 +81,24 @@ export class Linkifier {
      */
     get util(){
         return this._utilities;
+    }
+
+    /**
+     * @returns {string[]} The current list of known words with special capitalisations.
+     */
+    get speciallyCapitalisedWords(){
+        const ans = [];
+        this._speciallyCapitalisedWords.map(word => ans.push(word));
+        return ans;
+    }
+
+    /**
+     * @param {string[]} words - a list of words with special capitalisations
+     */
+    set speciallyCapitalisedWords(words){
+        // TO DO - add validation
+
+        this._speciallyCapitalisedWords = words;
     }
 
     /**
@@ -282,7 +309,7 @@ export class Linkifier {
             // fall back to extracting the title from the URL slug
             console.warn(`Failed to fetch page data for '${url}': ${err.message}`);
             console.warn('Falling back to reversing the URL slug for the title');
-            ans.title = this.utilities.extractSlug(url) || 'Untitled';
+            ans.title = this.utilities.extractSlug(url, this._speciallyCapitalisedWords) || 'Untitled';
             return ans;
         }
         let $ = cheerio.load(webDownloadResponseBody);
