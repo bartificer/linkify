@@ -36,6 +36,7 @@ export const linkTemplates = {
  * @type {string[]}
  */
 export const speciallyCapitalisedWords = [
+    // generic acronyms
     'FBI',
     'CIA',
     'USA',
@@ -44,9 +45,32 @@ export const speciallyCapitalisedWords = [
     'NASA',
     'NSA',
     'OS',
+    'OSes',
+    'ID',
+    'IDs',
+    'MLB',
+    'NFL',
+    'NASCAR',
+    'TV',
+    'VR',
+    'BAFTA',
+    'BBC',
+    'AI',
+    'VP',
+
+    // tech jargon
     'iOS',
     'macOS',
     'iPad',
+    'iPod',
+    'iPadOS',
+    'watchOS',
+    'tvOS',
+    'CarPlay',
+    'AirPods',
+    'MacBook',
+    'iTunes',
+    'XProtect',
     'LinkedIn',
-    'XProtect'
+    'ChatGPT'
 ];

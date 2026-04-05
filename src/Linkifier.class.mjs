@@ -307,8 +307,7 @@ export class Linkifier {
             webDownloadResponseBody = await webDownloadResponse.text();
         } catch (err) {
             // fall back to extracting the title from the URL slug
-            console.warn(`Failed to fetch page data for '${url}': ${err.message}`);
-            console.warn('Falling back to reversing the URL slug for the title');
+            console.warn(`Falling back to de-slugifying URL (${err.message})`);
             ans.title = this.utilities.extractSlug(url, this._speciallyCapitalisedWords) || 'Untitled';
             return ans;
         }
