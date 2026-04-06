@@ -1,6 +1,6 @@
 import URI from 'urijs';
 import * as urlSlug from 'url-slug';
-import { titleCase } from "title-case";
+import * as titleCase from "title-case";
 import * as defaults from './defaults.mjs';
 
 /**
@@ -125,7 +125,8 @@ export function extractSlug(url, words){
     });
 
     // convert the title to title case
-    title = titleCase(title);
+    titleCase.SMALL_WORDS.add('is');
+    title = titleCase.titleCase(title);
 
     // fix any words with unusual customisations
     title = batchFixCustomWordCases(title, words);
