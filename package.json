@@ -1,6 +1,6 @@
 {
   "name": "@bartificer/linkify",
-  "version": "2.3.2",
+  "version": "2.3.3",
   "description": "An module for converting URLs into pretty links in any format.",
   "publishConfig": {
     "access": "public"
@@ -15,7 +15,8 @@
   ],
   "scripts": {
     "build": "webpack",
-    "release": "npm run build && npm publish"
+    "docs": "npx jsdoc -c ./jsdoc.conf.json --destination ./docs",
+    "release": "npm run build && npm login && npm publish"
   },
   "repository": {
     "type": "git",
@@ -37,6 +38,8 @@
     "url-slug": "^5.0.0"
   },
   "devDependencies": {
+    "docdash": "^2.0.2",
+    "jsdoc": "^4.0.5",
     "webpack": "^5.105.4",
     "webpack-cli": "^7.0.2"
   }
