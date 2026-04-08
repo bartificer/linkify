@@ -175,7 +175,8 @@ export class Linkifier {
     }
 
     /**
-     * @type {string[]} A list of the names of the registered link templates.
+     * A list of the names of the registered link templates.
+     * @type {string[]}
      */
     get templateNames() {
         return Object.keys(this._linkTemplates);
@@ -201,7 +202,8 @@ export class Linkifier {
     }
     
     /**
-     * @type {LinkTemplate} The default link template.
+     * The default link template.
+     * @type {LinkTemplate}
      */
     get defaultTemplate(){
         return this._linkTemplates[this._pageDataToLinkTemplateName['.']];

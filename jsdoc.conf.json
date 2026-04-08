@@ -13,11 +13,7 @@
         }
     },
     "source": {
-        "include": [
-            "./src/index.js",
-            "./src/Linkifier.class.mjs",
-            "./src/externals.jsdoc"
-        ],
+        "include": ["./src/"],
         "includePattern": ".+\\.(js|mjs|jsdoc)$"
     }, 
     "plugins": [

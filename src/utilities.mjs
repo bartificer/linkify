@@ -1,7 +1,20 @@
+/**
+ * @file A collection of useful utility functions.
+ * @author Bart Busschots <opensource@bartificer.ie>
+ */
+
+/**
+ * This module provides utility functions which are both used by the core code, and, available for use by users when defining link data transformers and link templates.
+ * @module utilities
+ * @requires module:defaults
+ * @requires module:urijs
+ * @requires module:url-slug
+ * @requires module:title-case
+ */
+import * as defaults from './defaults.mjs';
 import URI from 'urijs';
 import * as urlSlug from 'url-slug';
-import * as titleCase from "title-case";
-import * as defaults from './defaults.mjs';
+import * as titleCase from 'title-case';
 
 /**
  * Regularise white space by replacing all sequences of whitespace characters with a single space and trimming leading and trailing whitespace.
@@ -28,7 +41,7 @@ export function stripQueryString(url){
  * 
  * @param {string} url
  * @return {string}
- * @see https://en.wikipedia.org/wiki/UTM_parameters
+ * @see {@link https://en.wikipedia.org/wiki/UTM_parameters}
  */
 export function stripUTMParameters(url){
     return URI(url).removeQuery(['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content']).toString();
@@ -37,10 +50,11 @@ export function stripUTMParameters(url){
 /**
  * Escape a string for use in regular expressions.
  * 
+ * _**Note:** this is not a standard Javascript feature as of April 2026, though it is coming in future versions of Javascript._
+ * 
  * @param {string} str - the string to escape.
  * @returns {string}
- * @note much to my surprise, not a standard Javascript feature!
- * @see https://stackoverflow.com/a/3561711/174985
+ * @see {@link https://stackoverflow.com/a/3561711/174985}
  */
 export function escapeRegex(str) {
     return String(str).replace(/[/\-\\^$*+?.()|[\]{}]/g, '\\$&');
@@ -50,7 +64,7 @@ export function escapeRegex(str) {
  * Batch-customise word casings in a string. E.g. force `fbi` to `FBI`, `ios` to `iOS`, etc..
  * 
  * @param {string} str - the string to apply the replacemnts to.
- * @param {[string[]]} words - an array of words in their desired capitalisations. Defaults to the default list of custom capitalisations.
+ * @param {string[]} [words] - an array of words in their desired capitalisations. Defaults to the default list of custom capitalisations.
  * @returns {string}
  */
 export function batchFixCustomWordCases(str, words){
@@ -86,7 +100,7 @@ export function batchFixCustomWordCases(str, words){
  * Extract the slug from a URL and convert it to a title-case string.
  * 
  * @param {string} url
- * @param {[string[]]} words - a list of words with custom capitalisations to correct after title-casing.
+ * @param {string[]} [words] - a list of words with custom capitalisations to correct after title-casing.
  * @return {string}
  */
 export function extractSlug(url, words){

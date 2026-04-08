@@ -1,3 +1,14 @@
+/**
+ * @file The default values used throughout the linkifier classes.
+ * @author Bart Busschots <opensource@bartificer.ie>
+ */
+
+/**
+ * This module provides default values for use by the various linkifier functions and classes. These separated out for clarity, helping users decide which values to override or augment.
+ * @module defaults
+ * @requires module:LinkTemplate
+ * @requires module:utilities
+ */
 import { LinkTemplate } from './LinkTemplate.class.mjs';
 import * as utilities from "./utilities.mjs";
 

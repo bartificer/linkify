@@ -1,5 +1,18 @@
+/**
+ * @file The definition of the class representing a web page.
+ * @author Bart Busschots <opensource@bartificer.ie>
+ */
+
+/**
+ * This module provides as class for representing the information extracted from web pages which can be used to generate the link data avaiable for rendering links.
+ * @module PageData
+ * @requires module:urijs
+ */
 import {default as URI} from 'urijs';
 
+/**
+ * A class representing the data extracted from web pages that can be transformed into link data for use when rendering links.
+ */
 export class PageData {
     /**
      * This constructor throws a {@link ValidationError} unless a valid URL is passed.

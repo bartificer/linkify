@@ -1,3 +1,17 @@
+/**
+ * @file The definition of the class representing a link generation template.
+ * @author Bart Busschots <opensource@bartificer.ie>
+ */
+
+/**
+ * This module provides as class for representing a template used for generating links.
+ * @module LinkTemplate
+ * @requires module:urijs
+ */
+
+/**
+ * A class representing the a template that can be used to render links.
+ */
 export class LinkTemplate{
     /**
      * @param {string} templateString - A Moustache template string.

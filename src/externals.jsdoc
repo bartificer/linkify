@@ -15,3 +15,21 @@
  * @external module:mustache
  * @see {@link https://github.com/janl/mustache.js}
  */
+
+/**
+ * The URI (URL) parser used to parse and process link targets.
+ * @external module:urijs
+ * @see {@link https://www.npmjs.com/package/urijs}
+ */
+
+/**
+ * The module used to reverse URL slugs back to approximate page titles.
+ * @external module:url-slug
+ * @see {@link https://www.npmjs.com/package/url-slug}
+ */
+
+/**
+ * The module used for intelligent conversions to newspaper-style title-case.
+ * @external module:title-case
+ * @see {@link https://www.npmjs.com/package/title-case}
+ */

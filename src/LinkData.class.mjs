@@ -1,5 +1,18 @@
+/**
+ * @file The definition of the class representing a link.
+ * @author Bart Busschots <opensource@bartificer.ie>
+ */
+
+/**
+ * This module provides as class for representing the information that can be used when rendering a link.
+ * @module LinkData
+ * @requires module:urijs
+ */
 import {default as URI} from 'urijs';
 
+/**
+ * A class for representing the information about a link, in the abstract.
+ */
 export class LinkData {
     /**
      * This constructor throws a {@link ValidationError} unless a valid URL is passed.
