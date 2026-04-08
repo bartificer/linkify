@@ -1,3 +1,18 @@
+/**
+ * @file The definition of the main Linkifier class which provides the link rendering functionality with the help of the other classes and modules.
+ * @author Bart Busschots <opensource@bartificer.ie>
+ */
+
+/**
+ * Linkifier's core link rendering functionality.
+ * @module Linkifier
+ * @requires LinkData
+ * @requires LinkTemplate
+ * @requires PageData
+ * @requires module:node-fetch
+ * @requires module:cheerio
+ * @requires module:mustache
+ */
 import { PageData } from './PageData.class.mjs';
 import { LinkData } from './LinkData.class.mjs';
 import { LinkTemplate } from './LinkTemplate.class.mjs';
@@ -8,6 +23,9 @@ import fetch from 'node-fetch';
 import * as cheerio from 'cheerio';
 import Mustache from 'mustache';
 
+/**
+ * The class providing the link rendering functionality. Instances of this class capture the settings for generating links, and, generate links using these settings.
+ */
 export class Linkifier {
     constructor(){
         /**

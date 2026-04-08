@@ -15,7 +15,7 @@
   ],
   "scripts": {
     "build": "webpack",
-    "docs": "npx jsdoc -c ./jsdoc.conf.json --destination ./docs",
+    "docs": "rm -rf ./docs/* && npx jsdoc -c ./jsdoc.conf.json --destination ./docs",
     "release": "npm run build && npm login && npm publish"
   },
   "repository": {
@@ -38,7 +38,7 @@
     "url-slug": "^5.0.0"
   },
   "devDependencies": {
-    "docdash": "^2.0.2",
+    "clean-jsdoc-theme": "^4.3.0",
     "jsdoc": "^4.0.5",
     "webpack": "^5.105.4",
     "webpack-cli": "^7.0.2"

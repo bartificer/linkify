@@ -1,24 +1,32 @@
 {
-    "docdash": {
-        "collapse": true,
-        "search": true,
-        "sectionOrder": ["Modules", "Classes"],
-        "static": true,
-        "typedefs": true
-    },
     "opts": {
         "encoding": "utf8",
         "pedantic": true,
         "readme": "./README.md",
-        "template": "node_modules/docdash"
+        "template": "./node_modules/clean-jsdoc-theme",
+        "theme_opts": {
+            "default_theme": "fallback-light",
+            "homepageTitle": "Linkifier from Bartificer Creations",
+            "title": "Bartificer Linkifier",
+            "includeFilesListInHomepage": true,
+            "sections": ["Modules", "Classes", "Externals"]
+        }
     },
     "source": {
-        "include": ["./src/"],
-        "includePattern": ".+\\.(mjs|jsdoc)$"
+        "include": [
+            "./src/index.js",
+            "./src/Linkifier.class.mjs",
+            "./src/externals.jsdoc"
+        ],
+        "includePattern": ".+\\.(js|mjs|jsdoc)$"
     }, 
     "plugins": [
         "plugins/markdown"
     ],
+    "markdown": {
+        "hardwrap": false,
+        "idInHeadings": true
+    },
     "tags": {
         "allowUnknownTags": false,
         "dictionaries": ["jsdoc","closure"]
