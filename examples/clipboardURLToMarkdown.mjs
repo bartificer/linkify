@@ -59,10 +59,10 @@ linkify.registerTransformer('sixcolors.com', function(pData){
     return new LinkData(pData.url, pData.mainHeading);
 });
 linkify.registerTransformer('theverge.com', function(pData){
-    return new linkify.LinkData(pData.url, pData.title.replace(/[ ][-][ ]The[ ]Verge.*$/, ''));
+    return new LinkData(pData.url, pData.mainHeading);
 });
 linkify.registerTransformer('wired.com', function(pData){
-    return new linkify.LinkData(pData.url, pData.mainHeading);
+    return new LinkData(pData.url, pData.mainHeading);
 });
 
 // read the URL from the clipboard
