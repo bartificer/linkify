@@ -1,8 +1,12 @@
 // import Linkify Lib
+import URI from 'urijs';
 import { linkify, LinkTemplate, LinkData } from '../dist/index.js';
 
 // import 3rd-party library for interacting with the clipboard
 import clipboardy from 'clipboardy';
+
+// import URI processing libray
+
 
 // register a custom Markdown link template and make it the default
 linkify.registerTemplate('md-bartificer', new LinkTemplate(
@@ -44,6 +48,34 @@ const transformers = {
     titleMinusPostscript: function(pData, postscript){
         const regex = new RegExp(`${linkify.util.escapeRegex(postscript)}$`);
         return new LinkData(pData.url, pData.title.replace(regex, '').trim());
+    },
+    mastodonServer: function(pData){
+        const mastodonServer = pData.uri.hostname();
+
+        // see if the link points to a user-related page on the server
+        const mastodonPathMatch = pData.uri.path().match(/^\/@(?<handle>[^\/]+)(?:\/(?<postId>\d+))?/);
+        if (mastodonPathMatch && mastodonPathMatch.groups){
+            // if so, return the handle as the link text and the post ID as the description (if there is one)
+            const handle = mastodonPathMatch.groups.handle;
+            const postId = mastodonPathMatch.groups.postId;
+
+            // see if we're a post or some kind of profile page
+            if(postId){
+                // this is a post, so use the handle and the post snippet as the text
+
+                // extract the post snippet from the title
+                let snippet = pData.title.replace(/^[^"]+"/, '').replace(/"[^"]+$/, '').trim();
+
+                return new LinkData(pData.url, `@${handle}@${mastodonServer} on Mastodon: "${snippet}"`);
+            }else{
+                // some kind of profile page, so just return the handle with some text to indicate this is a Mastodon server
+                return new LinkData(pData.url, `@${handle}@${mastodonServer} on Mastodon`);
+            }
+            return new LinkData(pData.url, pData.title, mastodonServer);
+        } else {
+            // we're on a generic page, so return the title with with a note that this is a Mastodon server
+            return new LinkData(pData.url, `${pData.title} (Mastodon)`);
+        }
     }
 };
 
@@ -62,6 +94,7 @@ linkify.registerTransformer('apod.nasa.gov', (pData) => {
         return new LinkData(pData.url, pData.title);
     }
 });
+linkify.registerTransformer('social.bartificer.ie', transformers.mastodonServer);
 linkify.registerTransformer('cultofmac.com', transformers.mainHeading);
 linkify.registerTransformer('daringfireball.net', (pData) => transformers.titleMinusPrefix(pData, 'Daring Fireball: '));
 linkify.registerTransformer('intego.com', (pData) => transformers.titleMinusPostscript(pData, ' | Intego'));
@@ -89,6 +122,16 @@ linkify.registerTransformer('xkcd.com', (pData) => {
 
 // read the URL from the clipboard
 let testURL = clipboardy.readSync();
+
+// check for a specified one-off transformer name
+if(process.argv.length > 2){
+    const transformerName = String(process.argv[2]);
+    if (transformers[transformerName]){
+        linkify.registerTransformer(URI(testURL).hostname(), transformers[transformerName]);
+    } else {
+        console.warn(`No transformer found with the name "${transformerName}". Proceeding without a one-off transformer.`);
+    }
+}
 
 // try generate the formatted link from the URL
 linkify.generateLink(testURL).then(function(d){
