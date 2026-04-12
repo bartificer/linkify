@@ -5,8 +5,13 @@ import { linkify, LinkTemplate, LinkData } from '../dist/index.js';
 // import 3rd-party library for interacting with the clipboard
 import clipboardy from 'clipboardy';
 
-// import URI processing libray
+// NOTE: this example supports one optional argument, a special-case name, if passed:
+// 1. if there is a custom transformer defined with that name, it will be used as a one-off transformer
+// 2. if there is a template defined with that name, it will be used as a one-off template
 
+//
+// === Register custom templates, transformers, etc... ===
+//
 
 // register a custom Markdown link template and make it the default
 linkify.registerTemplate('md-bartificer', new LinkTemplate(
@@ -36,7 +41,22 @@ linkify.registerTemplate('md-xkcd', new LinkTemplate(
 ));
 linkify.registerDefaultTemplateMapping('xkcd.com', 'md-xkcd');
 
+// register a special Markdown template that just contains the link title, and nothing more
+linkify.registerTemplate('md-title-only', new LinkTemplate(
+    '[{{{text}}}]({{{url}}})',
+    [
+        ['url', linkify.util.stripUTMParameters],
+        ['text', linkify.util.regulariseWhitespace]
+    ]
+));
+
+// capture any templates that should be made available for special cases
+const templates = {
+    mastodonServer: 'md-title-only'
+}
+
 // Cache commonly needed transforer functions to reduce code repetition
+// NOTE: these are the transformers that are available as special cases
 const transformers = {
     mainHeading: function(pData){
         return new LinkData(pData.url, pData.mainHeading);
@@ -120,20 +140,36 @@ linkify.registerTransformer('xkcd.com', (pData) => {
     return new LinkData(pData.url, comicTitle, comicNumber);
 });
 
+//
+// === Genereate the Link ===
+//
+
 // read the URL from the clipboard
 let testURL = clipboardy.readSync();
 
-// check for a specified one-off transformer name
+// check if a specicla-case was passed
+let specialCaseName = '';
+let templateName = null;
 if(process.argv.length > 2){
-    const transformerName = String(process.argv[2]);
-    if (transformers[transformerName]){
-        linkify.registerTransformer(URI(testURL).hostname(), transformers[transformerName]);
+    specialCaseName = String(process.argv[2]);
+}
+if(specialCaseName){
+    // check for a special-case transformer
+    if (transformers[specialCaseName]){
+        linkify.registerTransformer(URI(testURL).hostname(), transformers[specialCaseName]);
     } else {
-        console.warn(`No transformer found with the name "${transformerName}". Proceeding without a one-off transformer.`);
+        console.warn(`No transformer found with the name "${specialCaseName}". Proceeding without a one-off transformer.`);
+    }
+
+    // check for a special-case template
+    if(templates[specialCaseName]){
+        templateName = templates[specialCaseName];
+    } else {
+        console.warn(`No template found for special case "${specialCaseName}". Proceeding without a one-off template.`);
     }
 }
 
 // try generate the formatted link from the URL
-linkify.generateLink(testURL).then(function(d){
+linkify.generateLink(testURL, templateName).then(function(d){
     console.log(d);
 });
