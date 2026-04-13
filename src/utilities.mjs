@@ -67,6 +67,7 @@ export function escapeRegex(str) {
  * @param {string} str - the string to apply the replacemnts to.
  * @param {string[]} [words] - an array of words in their desired capitalisations. Defaults to the default list of custom capitalisations.
  * @returns {string}
+ * @see {@link module:defaults.speciallyCapitalisedWords} for the default list of custom capitalisations.
  */
 export function batchFixCustomWordCases(str, words){
     // coerce the first argument to a string
@@ -94,6 +95,36 @@ export function batchFixCustomWordCases(str, words){
     // replace all the matches at once using an anonymous function as the replacement
     ans = str.replace(wordRE, match => lowerToCustomMap[match.toLowerCase()]);
 
+    return ans;
+}
+
+/**
+ * Convert a string to title case, with some custom capitalisations.
+ * 
+ * @param {string} str - the string to convert to title case.
+ * @param {string[]} [words] - a list of words with custom capitalisations to correct after title-casing. Defaults to the default list of custom capitalisations.
+ * @return {string}
+ * @see {@link module:defaults.speciallyCapitalisedWords} for the default list of custom capitalisations.
+ * @see {@link module:title-case} for the Title Case module who's titleCase function is used to convert to title case, and which has its own default list of small words that are preserved in lower case.
+ * @see {@link module:defaults.smallWords} for the additional list of small words that are preserved in lower case by the title-casing function.
+ */
+export function toTitleCase(str, words){
+    // coerce the first argument to a string
+    let ans = String(str);
+
+    // add the additional small words
+    for (const smallWord of defaults.smallWords){
+        console.log(`adding smallWord: ${smallWord}`);
+        titleCase.SMALL_WORDS.add(smallWord);
+    }
+
+    // convert to title case
+    ans = titleCase.titleCase(ans);
+
+    // fix any words with unusual customisations
+    ans = batchFixCustomWordCases(ans, words);
+
+    // return the result
     return ans;
 }
 
@@ -144,7 +175,7 @@ export function extractSlug(url, words){
     title = titleCase.titleCase(title);
 
     // fix any words with unusual customisations
-    title = batchFixCustomWordCases(title, words);
+    title = toTitleCase(title, words);
 
     return title;
 };
