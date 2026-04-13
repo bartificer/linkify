@@ -1,16 +1,10 @@
 {
+    "sourceType": "module",
     "opts": {
         "encoding": "utf8",
         "pedantic": true,
         "readme": "./README.md",
-        "template": "./node_modules/clean-jsdoc-theme",
-        "theme_opts": {
-            "default_theme": "fallback-light",
-            "homepageTitle": "Linkifier from Bartificer Creations",
-            "title": "Bartificer Linkifier",
-            "includeFilesListInHomepage": true,
-            "sections": ["Modules", "Classes", "Externals"]
-        }
+        "template": "./node_modules/docdash"
     },
     "source": {
         "include": ["./src/"],
@@ -26,5 +20,22 @@
     "tags": {
         "allowUnknownTags": false,
         "dictionaries": ["jsdoc","closure"]
+    },
+    "docdash": {
+        "collapse": true,
+        "menu": {
+            "On GitHub": {
+                "href":"https://github.com/bartificer/linkify",
+                "target": "_blank"
+            },
+            "Bartificer Creations": {
+                "href":"https://bartificer.net/",
+                "target": "_blank"
+            }
+        },
+        "search": true,
+        "sectionOrder": ["Modules", "Classes", "Externals"],
+        "static": true,
+        "typedefs": true
     }
 }

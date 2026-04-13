@@ -5,7 +5,7 @@
 
 /**
  * This module provides as class for representing a template used for generating links.
- * @module LinkTemplate
+ * @module link-template
  * @requires module:urijs
  */
 

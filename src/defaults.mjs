@@ -6,7 +6,7 @@
 /**
  * This module provides default values for use by the various linkifier functions and classes. These separated out for clarity, helping users decide which values to override or augment.
  * @module defaults
- * @requires module:LinkTemplate
+ * @requires link-template
  * @requires module:utilities
  */
 import { LinkTemplate } from './LinkTemplate.class.mjs';
@@ -14,7 +14,7 @@ import * as utilities from "./utilities.mjs";
 
 /**
  * The collection of named link templates loaded by the Linkifier constructor.
- * @type {Object.<string, LinkTemplate>}
+ * @type {Object.<string, module:link-template.LinkTemplate>}
  */
 export const linkTemplates = {
     html: new LinkTemplate(

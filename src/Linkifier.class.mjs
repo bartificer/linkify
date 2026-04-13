@@ -5,10 +5,10 @@
 
 /**
  * Linkifier's core link rendering functionality.
- * @module Linkifier
- * @requires LinkData
- * @requires LinkTemplate
- * @requires PageData
+ * @module linkifier
+ * @requires link-data
+ * @requires link-template
+ * @requires page-data
  * @requires module:node-fetch
  * @requires module:cheerio
  * @requires module:mustache
@@ -203,7 +203,7 @@ export class Linkifier {
     
     /**
      * The default link template.
-     * @type {LinkTemplate}
+     * @type {module:LinkTemplate.class.LinkTemplate}
      */
     get defaultTemplate(){
         return this._linkTemplates[this._pageDataToLinkTemplateName['.']];
@@ -212,8 +212,8 @@ export class Linkifier {
     /**
      * Register a link template.
      *
-     * @param {templateName} name
-     * @param {module:@bartificer/linkify.LinkTemplate} template
+     * @param {string} name
+     * @param {LinkTemplate} template
      * @throws {ValidationError} A validation error is thrown unless both a valid
      * name and template object are passed.
      */

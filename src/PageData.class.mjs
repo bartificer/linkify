@@ -5,7 +5,7 @@
 
 /**
  * This module provides as class for representing the information extracted from web pages which can be used to generate the link data avaiable for rendering links.
- * @module PageData
+ * @module page-data
  * @requires module:urijs
  */
 import {default as URI} from 'urijs';

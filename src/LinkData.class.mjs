@@ -5,7 +5,7 @@
 
 /**
  * This module provides as class for representing the information that can be used when rendering a link.
- * @module LinkData
+ * @module link-data
  * @requires module:urijs
  */
 import {default as URI} from 'urijs';
