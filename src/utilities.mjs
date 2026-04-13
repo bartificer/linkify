@@ -5,12 +5,16 @@
  */
 
 /**
- * This module provides utility functions which are both used by the core code, and, available for use by users when defining link data transformers and link templates.
+ * Utility functions, intended both for use within the core link generation code, and, by users defining their own custom templates, transformer functions, and filter functions.
+ * 
+ * This module is exposed to end-users as {@link module:linkifier.Linkifier#utilities} and {@link module:linkifier.Linkifier#util}.
  * @module utilities
- * @requires module:defaults
+ * @requires defaults
  * @requires module:urijs
  * @requires module:url-slug
  * @requires module:title-case
+ * @see {@link module:linkifier.Linkifier#utilities} for the short-cut to this module exposed on the Linkifier class.
+ * @see {@link module:linkifier.Linkifier#util} for the short-cut to this module exposed on the Linkifier class.
  */
 import * as defaults from './defaults.mjs';
 import URI from 'urijs';
@@ -21,27 +25,27 @@ import * as titleCase from 'title-case';
  * Regularise white space by replacing all sequences of whitespace characters with a single space and trimming leading and trailing whitespace.
  *
  * @param {string} text
- * @return {string}
+ * @returns {string}
  */
 export function regulariseWhitespace(text){
     return String(text).replace(/[\s\n]+/g, ' ').trim();
 };
 
 /**
- * Strip the query string from a URL.
+ * Strip the query string from a URL, if present.
  *
- * @param {string} url
- * @return {string}
+ * @param {string} url - a URL with our without a query string.
+ * @returns {string} the original URL with the query string removed, if it was present.
  */
 export function stripQueryString(url){
     return URI(url).query('').toString();
 };
 
 /**
- * Remove UTM parameters from the query string in a URL.
+ * Remove UTM parameters from the query string in a URL, if present.
  * 
- * @param {string} url
- * @return {string}
+ * @param {string} url - a URL with or without UTM parameters in the query string.
+ * @returns {string} the original URL with the UTM parameters removed, if they were present, but with any other query parameters preserved.
  * @see {@link https://en.wikipedia.org/wiki/UTM_parameters}
  */
 export function stripUTMParameters(url){
@@ -54,7 +58,7 @@ export function stripUTMParameters(url){
  * _**Note:** this is not a standard Javascript feature as of April 2026, though it is coming in future versions of Javascript._
  * 
  * @param {string} str - the string to escape.
- * @returns {string}
+ * @returns {string} the escaped string, ready for use in a regular expression.
  * @see {@link https://stackoverflow.com/a/3561711/174985}
  */
 export function escapeRegex(str) {
@@ -62,11 +66,11 @@ export function escapeRegex(str) {
 }
 
 /**
- * Batch-customise word casings in a string. E.g. force `fbi` to `FBI`, `ios` to `iOS`, etc..
+ * Batch-fix words with special capitalisations in a string. E.g. force `fbi` to `FBI`, `ios` to `iOS`, etc..
  * 
- * @param {string} str - the string to apply the replacemnts to.
- * @param {string[]} [words] - an array of words in their desired capitalisations. Defaults to the default list of custom capitalisations.
- * @returns {string}
+ * @param {string} str - the string to apply the capitalisation corrections to.
+ * @param {string[]} [words] - the list of words with special capitalisations. Defaults to the default list {@link module:defaults.speciallyCapitalisedWords}.
+ * @returns {string} the original string with all occurrences of the words in the list capitalised as per the word list. All other capitatlisations will be left un-changed.
  * @see {@link module:defaults.speciallyCapitalisedWords} for the default list of custom capitalisations.
  */
 export function batchFixCustomWordCases(str, words){
@@ -101,12 +105,15 @@ export function batchFixCustomWordCases(str, words){
 /**
  * Convert a string to title case, with some custom capitalisations.
  * 
+ * This functions uses the {@link module:title-case} to perform the initial title-caseing, and then applies the custom capitalisations to fix any words with unusual capitalisation requirements.
+ * All words this mododule defies as being so-called *small words* (e.g., "the", "a" & "an") are preserved in lower case, as well as the additional words defined in {@link module:defaults.smallWords}.
+ * 
  * @param {string} str - the string to convert to title case.
- * @param {string[]} [words] - a list of words with custom capitalisations to correct after title-casing. Defaults to the default list of custom capitalisations.
- * @return {string}
+ * @param {string[]} [words] - a list of words with custom capitalisations to correct after title-casing. Defaults to {@link module:defaults.speciallyCapitalisedWords}.
+ * @returns {string} the original string converted to title case, with the custom capitalisations applied.
  * @see {@link module:defaults.speciallyCapitalisedWords} for the default list of custom capitalisations.
- * @see {@link module:title-case} for the Title Case module who's titleCase function is used to convert to title case, and which has its own default list of small words that are preserved in lower case.
- * @see {@link module:defaults.smallWords} for the additional list of small words that are preserved in lower case by the title-casing function.
+ * @see {@link module:title-case} for the Title Case module who's `titleCase()` function is used to convert to title case, and which has its own default list of small words that are preserved in lower case.
+ * @see {@link module:defaults.smallWords} for the additional list of small words that are preserved in lower case.
  */
 export function toTitleCase(str, words){
     // coerce the first argument to a string
@@ -131,9 +138,11 @@ export function toTitleCase(str, words){
 /**
  * Extract the slug from a URL and convert it to a title-case string.
  * 
- * @param {string} url
- * @param {string[]} [words] - a list of words with custom capitalisations to correct after title-casing.
- * @return {string}
+ * @param {string} url - the URL to extract the slug from. The slug is taken to be the last segment of the path, with any file extension removed, and with the query string and fragment ignored.
+ * @param {string[]} [words] - a list of words with custom capitalisations to correct after title-casing. Defaults to {@link module:defaults.speciallyCapitalisedWords}.
+ * @returns {string} the slug extracted from the URL, converted to title case, with the custom capitalisations applied.
+ * @see {@link module:defaults.speciallyCapitalisedWords} for the default list of custom capitalisations.
+ * @see {@link toTitleCase} for the function used for the title-casing.
  */
 export function extractSlug(url, words){
     // TO DO - add validation

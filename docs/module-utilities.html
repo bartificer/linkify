@@ -72,7 +72,8 @@
         <div class="container-overview">
         
             
-                <div class="description usertext"><p>This module provides utility functions which are both used by the core code, and, available for use by users when defining link data transformers and link templates.</p></div>
+                <div class="description usertext"><p>Utility functions, intended both for use within the core link generation code, and, by users defining their own custom templates, transformer functions, and filter functions.</p>
+<p>This module is exposed to end-users as <a href="module-linkifier.Linkifier.html#utilities">module:linkifier.Linkifier#utilities</a> and <a href="module-linkifier.Linkifier.html#util">module:linkifier.Linkifier#util</a>.</p></div>
             
 
             
@@ -84,7 +85,8 @@
 <dl class="details">
     
     <dt class="tag-description">Description:</dt>
-    <dd class="tag-description"><ul class="dummy"><li><p>This module provides utility functions which are both used by the core code, and, available for use by users when defining link data transformers and link templates.</p></li></ul></dd>
+    <dd class="tag-description"><ul class="dummy"><li><p>Utility functions, intended both for use within the core link generation code, and, by users defining their own custom templates, transformer functions, and filter functions.</p>
+<p>This module is exposed to end-users as <a href="module-linkifier.Linkifier.html#utilities">module:linkifier.Linkifier#utilities</a> and <a href="module-linkifier.Linkifier.html#util">module:linkifier.Linkifier#util</a>.</p></li></ul></dd>
     
 
     
@@ -120,6 +122,15 @@
 
     
 
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="module-linkifier.Linkifier.html#utilities">module:linkifier.Linkifier#utilities</a> for the short-cut to this module exposed on the Linkifier class.</li>
+        
+            <li><a href="module-linkifier.Linkifier.html#util">module:linkifier.Linkifier#util</a> for the short-cut to this module exposed on the Linkifier class.</li>
+        </ul>
+    </dd>
     
 
     
@@ -203,13 +214,13 @@
 <dl class="details">
     
     <dt class="tag-description">Description:</dt>
-    <dd class="tag-description"><ul class="dummy"><li><p>Batch-customise word casings in a string. E.g. force <code>fbi</code> to <code>FBI</code>, <code>ios</code> to <code>iOS</code>, etc..</p></li></ul></dd>
+    <dd class="tag-description"><ul class="dummy"><li><p>Batch-fix words with special capitalisations in a string. E.g. force <code>fbi</code> to <code>FBI</code>, <code>ios</code> to <code>iOS</code>, etc..</p></li></ul></dd>
     
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="utilities.mjs.html">utilities.mjs</a>, <a href="utilities.mjs.html#line72">line 72</a>
+        <a href="utilities.mjs.html">utilities.mjs</a>, <a href="utilities.mjs.html#line76">line 76</a>
     </li></ul></dd>
     
 
@@ -315,7 +326,7 @@
 
             
 
-            <td class="description last"><p>the string to apply the replacemnts to.</p></td>
+            <td class="description last"><p>the string to apply the capitalisation corrections to.</p></td>
         </tr>
 
     
@@ -349,7 +360,7 @@
 
             
 
-            <td class="description last"><p>an array of words in their desired capitalisations. Defaults to the default list of custom capitalisations.</p></td>
+            <td class="description last"><p>the list of words with special capitalisations. Defaults to the default list <a href="module-defaults.html#.speciallyCapitalisedWords">module:defaults.speciallyCapitalisedWords</a>.</p></td>
         </tr>
 
     
@@ -374,6 +385,10 @@
 <h5 class="h5-returns">Returns:</h5>
 
         
+<div class="param-desc">
+    <p>the original string with all occurrences of the words in the list capitalised as per the word list. All other capitatlisations will be left un-changed.</p>
+</div>
+
 
 
 <dl class="param-type">
@@ -415,7 +430,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="utilities.mjs.html">utilities.mjs</a>, <a href="utilities.mjs.html#line60">line 60</a>
+        <a href="utilities.mjs.html">utilities.mjs</a>, <a href="utilities.mjs.html#line64">line 64</a>
     </li></ul></dd>
     
 
@@ -536,6 +551,10 @@
 <h5 class="h5-returns">Returns:</h5>
 
         
+<div class="param-desc">
+    <p>the escaped string, ready for use in a regular expression.</p>
+</div>
+
 
 
 <dl class="param-type">
@@ -576,7 +595,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="utilities.mjs.html">utilities.mjs</a>, <a href="utilities.mjs.html#line138">line 138</a>
+        <a href="utilities.mjs.html">utilities.mjs</a>, <a href="utilities.mjs.html#line147">line 147</a>
     </li></ul></dd>
     
 
@@ -606,6 +625,15 @@
 
     
 
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="module-defaults.html#.speciallyCapitalisedWords">module:defaults.speciallyCapitalisedWords</a> for the default list of custom capitalisations.</li>
+        
+            <li>toTitleCase for the function used for the title-casing.</li>
+        </ul>
+    </dd>
     
 
     
@@ -675,7 +703,7 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last"><p>the URL to extract the slug from. The slug is taken to be the last segment of the path, with any file extension removed, and with the query string and fragment ignored.</p></td>
         </tr>
 
     
@@ -709,7 +737,7 @@
 
             
 
-            <td class="description last"><p>a list of words with custom capitalisations to correct after title-casing.</p></td>
+            <td class="description last"><p>a list of words with custom capitalisations to correct after title-casing. Defaults to <a href="module-defaults.html#.speciallyCapitalisedWords">module:defaults.speciallyCapitalisedWords</a>.</p></td>
         </tr>
 
     
@@ -734,6 +762,10 @@
 <h5 class="h5-returns">Returns:</h5>
 
         
+<div class="param-desc">
+    <p>the slug extracted from the URL, converted to title case, with the custom capitalisations applied.</p>
+</div>
+
 
 
 <dl class="param-type">
@@ -774,7 +806,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="utilities.mjs.html">utilities.mjs</a>, <a href="utilities.mjs.html#line26">line 26</a>
+        <a href="utilities.mjs.html">utilities.mjs</a>, <a href="utilities.mjs.html#line30">line 30</a>
     </li></ul></dd>
     
 
@@ -922,13 +954,13 @@
 <dl class="details">
     
     <dt class="tag-description">Description:</dt>
-    <dd class="tag-description"><ul class="dummy"><li><p>Strip the query string from a URL.</p></li></ul></dd>
+    <dd class="tag-description"><ul class="dummy"><li><p>Strip the query string from a URL, if present.</p></li></ul></dd>
     
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="utilities.mjs.html">utilities.mjs</a>, <a href="utilities.mjs.html#line36">line 36</a>
+        <a href="utilities.mjs.html">utilities.mjs</a>, <a href="utilities.mjs.html#line40">line 40</a>
     </li></ul></dd>
     
 
@@ -1017,7 +1049,7 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last"><p>a URL with our without a query string.</p></td>
         </tr>
 
     
@@ -1042,6 +1074,10 @@
 <h5 class="h5-returns">Returns:</h5>
 
         
+<div class="param-desc">
+    <p>the original URL with the query string removed, if it was present.</p>
+</div>
+
 
 
 <dl class="param-type">
@@ -1076,13 +1112,13 @@
 <dl class="details">
     
     <dt class="tag-description">Description:</dt>
-    <dd class="tag-description"><ul class="dummy"><li><p>Remove UTM parameters from the query string in a URL.</p></li></ul></dd>
+    <dd class="tag-description"><ul class="dummy"><li><p>Remove UTM parameters from the query string in a URL, if present.</p></li></ul></dd>
     
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="utilities.mjs.html">utilities.mjs</a>, <a href="utilities.mjs.html#line47">line 47</a>
+        <a href="utilities.mjs.html">utilities.mjs</a>, <a href="utilities.mjs.html#line51">line 51</a>
     </li></ul></dd>
     
 
@@ -1178,7 +1214,7 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last"><p>a URL with or without UTM parameters in the query string.</p></td>
         </tr>
 
     
@@ -1203,6 +1239,10 @@
 <h5 class="h5-returns">Returns:</h5>
 
         
+<div class="param-desc">
+    <p>the original URL with the UTM parameters removed, if they were present, but with any other query parameters preserved.</p>
+</div>
+
 
 
 <dl class="param-type">
@@ -1237,13 +1277,15 @@
 <dl class="details">
     
     <dt class="tag-description">Description:</dt>
-    <dd class="tag-description"><ul class="dummy"><li><p>Convert a string to title case, with some custom capitalisations.</p></li></ul></dd>
+    <dd class="tag-description"><ul class="dummy"><li><p>Convert a string to title case, with some custom capitalisations.</p>
+<p>This functions uses the <a href="module-title-case.html">module:title-case</a> to perform the initial title-caseing, and then applies the custom capitalisations to fix any words with unusual capitalisation requirements.
+All words this mododule defies as being so-called <em>small words</em> (e.g., &quot;the&quot;, &quot;a&quot; &amp; &quot;an&quot;) are preserved in lower case, as well as the additional words defined in <a href="module-defaults.html#.smallWords">module:defaults.smallWords</a>.</p></li></ul></dd>
     
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="utilities.mjs.html">utilities.mjs</a>, <a href="utilities.mjs.html#line111">line 111</a>
+        <a href="utilities.mjs.html">utilities.mjs</a>, <a href="utilities.mjs.html#line118">line 118</a>
     </li></ul></dd>
     
 
@@ -1279,9 +1321,9 @@
         <ul>
             <li><a href="module-defaults.html#.speciallyCapitalisedWords">module:defaults.speciallyCapitalisedWords</a> for the default list of custom capitalisations.</li>
         
-            <li><a href="module-title-case.html">module:title-case</a> for the Title Case module who's titleCase function is used to convert to title case, and which has its own default list of small words that are preserved in lower case.</li>
+            <li><a href="module-title-case.html">module:title-case</a> for the Title Case module who's `titleCase()` function is used to convert to title case, and which has its own default list of small words that are preserved in lower case.</li>
         
-            <li><a href="module-defaults.html#.smallWords">module:defaults.smallWords</a> for the additional list of small words that are preserved in lower case by the title-casing function.</li>
+            <li><a href="module-defaults.html#.smallWords">module:defaults.smallWords</a> for the additional list of small words that are preserved in lower case.</li>
         </ul>
     </dd>
     
@@ -1387,7 +1429,7 @@
 
             
 
-            <td class="description last"><p>a list of words with custom capitalisations to correct after title-casing. Defaults to the default list of custom capitalisations.</p></td>
+            <td class="description last"><p>a list of words with custom capitalisations to correct after title-casing. Defaults to <a href="module-defaults.html#.speciallyCapitalisedWords">module:defaults.speciallyCapitalisedWords</a>.</p></td>
         </tr>
 
     
@@ -1412,6 +1454,10 @@
 <h5 class="h5-returns">Returns:</h5>
 
         
+<div class="param-desc">
+    <p>the original string converted to title case, with the custom capitalisations applied.</p>
+</div>
+
 
 
 <dl class="param-type">
@@ -1451,7 +1497,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Mon Apr 13 2026 16:45:07 GMT+0100 (Irish Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Tue Apr 14 2026 00:28:40 GMT+0100 (Irish Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>

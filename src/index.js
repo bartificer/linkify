@@ -14,7 +14,7 @@
  * @requires link-data
  * @requires link-template
  * @requires page-data
- * @see {@link module:linkifier.Linkifier}
+ * @see {@link module:linkifier.Linkifier} for the entry point into the link generation functionality.
  * @example <caption>Basic Usage</caption>
  * import { linkify } from '@bartificer/linkify';
  * 
