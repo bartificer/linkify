@@ -1,6 +1,7 @@
 /**
  * @file A collection of useful utility functions.
  * @author Bart Busschots <opensource@bartificer.ie>
+ * @license MIT
  */
 
 /**

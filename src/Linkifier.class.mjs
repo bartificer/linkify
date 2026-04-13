@@ -1,6 +1,7 @@
 /**
  * @file The definition of the main Linkifier class which provides the link rendering functionality with the help of the other classes and modules.
  * @author Bart Busschots <opensource@bartificer.ie>
+ * @license MIT
  */
 
 /**

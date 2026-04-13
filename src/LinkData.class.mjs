@@ -1,6 +1,7 @@
 /**
  * @file The definition of the class representing a link.
  * @author Bart Busschots <opensource@bartificer.ie>
+ * @license MIT
  */
 
 /**

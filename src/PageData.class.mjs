@@ -1,6 +1,7 @@
 /**
  * @file The definition of the class representing a web page.
  * @author Bart Busschots <opensource@bartificer.ie>
+ * @license MIT
  */
 
 /**

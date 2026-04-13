@@ -17,7 +17,7 @@
   ],
   "scripts": {
     "build": "webpack",
-    "docs": "rm -rf ./docs/* && npx jsdoc -c ./jsdoc.conf.json --destination ./docs",
+    "docs": "rm -rf ./docs/* && npx jsdoc -c ./jsdoc.conf.json",
     "release": "npm run build && npm run docs && npm login && npm publish"
   },
   "repository": {

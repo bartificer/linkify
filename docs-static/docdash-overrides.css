@@ -1,0 +1,5 @@
+/* Hide the duplicative descriptions in the data lists */
+dl.details dt.tag-description,
+dl.details dd.tag-description {
+    display: none;
+}

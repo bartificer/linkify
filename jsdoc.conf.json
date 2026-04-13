@@ -4,7 +4,10 @@
         "encoding": "utf8",
         "pedantic": true,
         "readme": "./README.md",
-        "template": "./node_modules/docdash"
+        "template": "./node_modules/docdash",
+        "destination": "docs/",
+        "recurse": true,
+        "verbose": true
     },
     "source": {
         "include": ["./src/"],
@@ -21,8 +24,39 @@
         "allowUnknownTags": false,
         "dictionaries": ["jsdoc","closure"]
     },
+    "templates": {
+        "cleverLinks": false,
+        "monospaceLinks": false,
+        "default": {
+            "staticFiles": {
+                "include": ["./docs-static"]
+            }
+        }
+    },
     "docdash": {
-        "collapse": true,
+        "static": true,
+        "sort": true,
+        "sectionOrder": ["Modules", "Classes", "Externals"],
+        "openGraph": {
+            "title": "@bartificer/linkify",
+            "type": "website",
+            "image": "",
+            "site_name": "@bartificer/linkify Documentation",
+            "url": "https://bartificer.github.io/linkify/"
+        },
+        "meta": {
+            "title": "@bartificer/linkify Documentation",
+            "description": "Documentation for the @bartificer/linkify package",
+            "keyword": "documentation, linkify, link, template, javascript, generator, npm, module, package"
+        },
+        "search": true,
+        "collapse": false,
+        "wrap": true,
+        "typedefs": true,
+        "navLevel": 1,
+        "private": true,
+        "removeQuotes": "trim",
+        "scripts": ["./docdash-overrides.css"],
         "menu": {
             "On GitHub": {
                 "href":"https://github.com/bartificer/linkify",
@@ -33,9 +67,8 @@
                 "target": "_blank"
             }
         },
-        "search": true,
-        "sectionOrder": ["Modules", "Classes", "Externals"],
-        "static": true,
-        "typedefs": true
+        "scopeInOutputPath": true,
+        "nameInOutputPath": true,
+        "versionInOutputPath": true
     }
 }
