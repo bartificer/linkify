@@ -36,7 +36,7 @@
     "docdash": {
         "static": true,
         "sort": true,
-        "sectionOrder": ["Modules", "Classes", "Externals"],
+        "sectionOrder": ["Modules", "Classes", "Global", "Externals"],
         "openGraph": {
             "title": "@bartificer/linkify",
             "type": "website",

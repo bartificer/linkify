@@ -1,5 +1,4 @@
-/* Hide the duplicative descriptions in the data lists */
-dl.details dt.tag-description,
-dl.details dd.tag-description {
+/* Hide the duplicative descriptions */
+article .description.usertext {
     display: none;
 }

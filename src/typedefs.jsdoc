@@ -1,0 +1,6 @@
+/**
+ * Functions for converting information extracted from a web page into the information used to render links.
+ * @callback dataTransformer
+ * @param {module:page-data.PageData} pData - The web page data to be transrormed to link data.
+ * @returns {module:link-data.LinkData} The link information derived from the page data.
+ */

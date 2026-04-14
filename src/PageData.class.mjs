@@ -5,7 +5,8 @@
  */
 
 /**
- * This module provides as class for representing the information extracted from web pages which can be used to generate the link data avaiable for rendering links.
+ * The information extracted from web pages for conversion to link information by data transformers.
+ * @see {@link dataTransformer} for details of how instances of this class are used in the link generation process.
  * @module page-data
  * @requires module:urijs
  */
