@@ -1,7 +1,7 @@
 {
   "name": "@bartificer/linkify",
-  "version": "2.4.0",
-  "description": "An module for converting URLs into pretty links in any format.",
+  "version": "2.4.1",
+  "description": "A module for converting URLs into pretty links in any format.",
   "publishConfig": {
     "access": "public"
   },

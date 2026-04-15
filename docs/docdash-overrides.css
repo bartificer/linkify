@@ -2,3 +2,10 @@
 article .description.usertext {
     display: none;
 }
+
+/* style the mermaid diagrams genereated by mermaid-init.js */
+div .mermaid {
+    background-color: #f0f0f0;
+    border: 1px solid black;
+    padding: 10px;
+}
