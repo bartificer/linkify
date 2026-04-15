@@ -16,6 +16,22 @@ import { LinkTemplate } from './LinkTemplate.class.mjs';
 import * as utilities from "./utilities.mjs";
 
 /**
+ * The default link transformer. The Linkifier constructor assigns this data transformer to the root DNS name `.`, ensuring it acts as the fallback when no other domains are matched.
+ * 
+ * If the page has exactly one top-level heading, this heading is used as a the link text, otherwise the page title is used.
+ * 
+ * The description field is not explicitly set, so will default to the link text.
+ * @type {dataTransformer}
+ */
+export function dataTransformer(pData){
+    let text = pData.title;
+    if(pData.h1s.length === 1){
+        text = pData.mainHeading;
+    }
+    return new LinkData(pData.url, text);
+}
+
+/**
  * The collection of named link templates loaded by the Linkifier constructor. All templates strip UTM parameters from the URL, and regularise white space in the text and descriptions.
  * @type {Object.<string, module:link-template.LinkTemplate>}
  * @property {module:link-template.LinkTemplate} html - The default HTML link template. Uses the link title as a the text and description as the hover-text.

@@ -28,28 +28,26 @@ import Mustache from 'mustache';
  * The class providing the link rendering functionality. Instances of this class capture the settings for generating links, and, generate links using these settings.
  */
 export class Linkifier {
+    /**
+     * Builds a Linkifier instance ready for use rendering links using the default configration.
+     * @see {@link module:defaults} for the default configuration settings.
+     */
     constructor(){
         /**
-         * A mapping of domain names to data transformation functions.
+         * A mapping of fully qualified domain names to data transformation functions.
          *
          * @private
-         * @type {Object.<FQDN, dataTransformer>}
+         * @type {Object.<string, dataTransformer>}
          */
         this._pageDataToLinkDataTransmformers = {
-            '.' : function(pData){
-                let text = pData.title;
-                if(pData.h1s.length === 1){
-                    text = pData.mainHeading;
-                }
-                return new LinkData(pData.url, text);
-            }
+            '.' : defaults.dataTransformer
         };
 
         /**
-         * A mapping of domains names to default template names.
+         * A mapping of fully qualified domain names to default template names.
          * 
          * @private
-         * @type {Object.<FQDN, templateName>}
+         * @type {Object.<string, string>}
          */
         this._pageDataToLinkTemplateName = {
             '.' : 'html' // default to the 'html' template for all domains unless otherwise specified
@@ -59,7 +57,7 @@ export class Linkifier {
          * The registered link templates.
          *
          * @private
-         * @type {Object.<templateName, module:@bartificer/linkify.LinkTemplate>}
+         * @type {Object.<string, module:link-template.LinkTemplate>}
          */
         this._linkTemplates = {};
 
@@ -90,30 +88,30 @@ export class Linkifier {
 
     /**
      * @type {Object.<string, Function>}
+     * @readonly
+     * @see {@link module:utilities} for the utility functions available in this collection.
      */
     get utilities() {
         return this._utilities;
     }
 
     /**
-     * @see Linfifier.utilities
+     * Shorthand property for `.utilities`.
+     * @see {@link module:linkifier.Linkifier#utilities}
      */
     get util(){
         return this._utilities;
     }
 
     /**
-     * @returns {string[]} The current list of known words with special capitalisations.
+     * The list of known words with special capitalisations. The words should be capitalised in the descired manner.
+     * @type {string[]}
      */
     get speciallyCapitalisedWords(){
         const ans = [];
         this._speciallyCapitalisedWords.map(word => ans.push(word));
         return ans;
     }
-
-    /**
-     * @param {string[]} words - a list of words with special capitalisations
-     */
     set speciallyCapitalisedWords(words){
         // TO DO - add validation
 
@@ -121,13 +119,11 @@ export class Linkifier {
     }
 
     /**
-     * Register a data transformer function for a given domain.
+     * Register a data transformer function to a domain name.
      *
-     * @param {domainName} domain - The domain for which this transformer should be
+     * @param {string} domain - The fully qualified domain for which this transformer should be
      * used.
      * @param {dataTransformer} transformerFn - The data transformer callback.
-     * @throws {ValidationError} A validation error is thrown if either parameter
-     * is missing or invalid.
      */
     registerTransformer(domain, transformerFn){
         // TO DO - add validation
@@ -143,16 +139,14 @@ export class Linkifier {
      * Get the data transformer function for a given domain.
      *
      * Note that domains are searched from the subdomain up. For example, if passed
-     * the domain `www.bartificer.net` the function will first look for a
-     * transformer for the domain `www.bartificer.net`, if there's no transformer
+     * the domain `www.bartificer.ie` the function will first look for a
+     * transformer for the domain `www.bartificer.ie`, if there's no transformer
      * registered for that domain it will look for a transformer for the domain
-     * `bartificer.net`, if there's no transformer for that domain either it will
+     * `bartificer.ie`, if there's no transformer for that domain either it will
      * return the default transformer.
      *
-     * @param {domainName} domain - The domain to get the data transformer for.
+     * @param {string} domain - The fully qualified domain for which to get the data transformer.
      * @returns {dataTransformer}
-     * @throws {ValidationError} A validation error is thrown unless a valid domain
-     * name is passed.
      */
     getTransformerForDomain(domain){
         // TO DO - add validation
@@ -178,22 +172,20 @@ export class Linkifier {
     /**
      * A list of the names of the registered link templates.
      * @type {string[]}
+     * @readonly
      */
     get templateNames() {
         return Object.keys(this._linkTemplates);
     }
 
     /**
-     * @returns {string} The name of the default template.
+     * The name of the default template used when rendering links.
+     * @type {string}
+     * @throws {ValidationError} A validation error is thrown if the template name is missing, invalid, or doesn't correspond to a registered template.
      */
     get defaultTemplateName(){
         return this._pageDataToLinkTemplateName['.'];
     }
-
-    /**
-     * @param {string} templateName - The name of the default template to use.
-     * @throws {ValidationError} A validation error is thrown if the template name is missing, invalid, or doesn't correspond to a registered template.
-     */
     set defaultTemplateName(templateName){
         const tplName = String(templateName);
         if(!this._linkTemplates[tplName]){
@@ -204,7 +196,8 @@ export class Linkifier {
     
     /**
      * The default link template.
-     * @type {module:LinkTemplate.class.LinkTemplate}
+     * @type {module:link-template.LinkTemplate}
+     * @readonly
      */
     get defaultTemplate(){
         return this._linkTemplates[this._pageDataToLinkTemplateName['.']];
@@ -214,9 +207,7 @@ export class Linkifier {
      * Register a link template.
      *
      * @param {string} name
-     * @param {LinkTemplate} template
-     * @throws {ValidationError} A validation error is thrown unless both a valid
-     * name and template object are passed.
+     * @param {module:link-template.LinkTemplate} template
      */
     registerTemplate(name, template){
         // TO DO - add validation
@@ -229,7 +220,7 @@ export class Linkifier {
      * Get a registered link template by name.
      *
      * @param {string} templateName
-     * @returns {LinkTemplate}
+     * @returns {module:link-template.LinkTemplate}
      * @throws {ValidationError} A validation error is thrown unless a valid name is passed and corresponds to a registered template.
      */
     getTemplate(templateName){
@@ -245,10 +236,8 @@ export class Linkifier {
      * Register a default template for use with a given domain. This template will
      * override the overall default for this domain and all its subdomains.
      *
-     * @param {domainName} domain - The domain for which this template should be used by default.
-     * @param {templateName} templateName - The name of the template to use.
-     * @throws {ValidationError} A validation error is thrown if either parameter
-     * is missing or invalid.
+     * @param {string} domain - The fully qualified domain name for which this template should be used by default.
+     * @param {string} templateName - The name of the template to use.
      */
     registerDefaultTemplateMapping(domain, templateName){
         // TO DO - add validation
@@ -264,16 +253,14 @@ export class Linkifier {
      * Get the data transformer function for a given domain.
      *
      * Note that domains are searched from the subdomain up. For example, if passed
-     * the domain `www.bartificer.net` the function will first look for a
-     * transformer for the domain `www.bartificer.net`, if there's no transformer
+     * the domain `www.bartificer.ie` the function will first look for a
+     * transformer for the domain `www.bartificer.ie`, if there's no transformer
      * registered for that domain it will look for a transformer for the domain
-     * `bartificer.net`, if there's no transformer for that domain either it will
+     * `bartificer.ie`, if there's no transformer for that domain either it will
      * return the default transformer.
      *
-     * @param {domainName} domain - The domain to get the data transformer for.
+     * @param {string} domain - The fully qualified domain name to get the data transformer for.
      * @returns {dataTransformer}
-     * @throws {ValidationError} A validation error is thrown unless a valid domain
-     * name is passed.
      */
     getTemplateNameForDomain(domain){
         // TO DO - add validation
@@ -308,10 +295,8 @@ export class Linkifier {
      * Fetch the page data for a given URL.
      *
      * @async
-     * @param {URL} url
-     * @returns {PageData}
-     * @throws {ValidationError} A validation error is thrown unless a valid URL is
-     * passed.
+     * @param {string} url
+     * @returns {module:page-data.PageData}
      */
     async fetchPageData(url){
         // TO DO - add validation
@@ -351,11 +336,9 @@ export class Linkifier {
      * default will be used (`html`).
      *
      * @async
-     * @param {URL} url
-     * @param {templateName} [templateName='html']
+     * @param {string} url
+     * @param {string} [templateName='html']
      * @returns {string}
-     * @throws {ValidationError} A validation error is thrown unless a valid URL is
-     * passed.
      */
     async generateLink(url, templateName){
         // TO DO - add validation

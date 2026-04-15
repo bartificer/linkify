@@ -1,5 +1,5 @@
 /**
- * @file Data model for web page information.
+ * @file Data model for link information.
  * @author Bart Busschots <opensource@bartificer.ie>
  * @license MIT
  */
@@ -14,7 +14,7 @@ import {default as URI} from 'urijs';
 /**
  * The information that can be used to render a link.
  * 
- * Instances of this class are created from the infomration extracted from web pages by data transformers.
+ * Instances of this class are created from the information extracted from web pages by data transformers.
  * @see {@link dataTransformer} for details of how instances of this class are created.
  */
 export class LinkData {
@@ -104,25 +104,8 @@ export class LinkData {
     }
     
     /**
-     * Get the link data as a plain object of the form:
-     * ```
-     * {
-     *     url: 'http://www.bartificer.net/',
-     *     text: 'the link text',
-     *     description: 'the link description',
-     *     uri: {
-     *         hostname: 'www.bartificer.net',
-     *         path: '/',
-     *         hasPath: false
-     *     }
-     * }
-     * ```
-     *
-     * Note that the `uri` could contain more fields - it's initialised with
-     * output from the `URI.parse()` function from the `URI` module.
-     * 
-     * @returns {Object} A plain object containing the link data.
-     * @see {@link https://medialize.github.io/URI.js/docs.html#static-parse} for details of the fields included under the `uri` key.
+     * The link data as a plain object for use in Mustache templates and the like.
+     * @returns {plainLinkInformationObject} A plain object containing the link data.
      */
     asPlainObject(){
         let ans = {

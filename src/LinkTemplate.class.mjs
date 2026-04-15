@@ -1,28 +1,31 @@
 /**
- * @file The definition of the class representing a link generation template.
+ * @file Link generation templates.
  * @author Bart Busschots <opensource@bartificer.ie>
  * @license MIT
  */
 
 /**
- * This module provides as class for representing a template used for generating links.
+ * This module provides as class for representing the templates used to generate links from link data objects.
  * @module link-template
  * @requires module:urijs
  */
 
 /**
- * A class representing the a template that can be used to render links.
+ * A class representing the templates used to render link data objects as actual links.
+ * @see {@link module:link-data.LinkData} for the data objects that are rendered with these templates.
  */
 export class LinkTemplate{
     /**
      * @param {string} templateString - A Moustache template string.
-     * @param {Array} [filters=[]] - An optional array of filter functions.
-     * Each element in the array should itself be an array where the first
-     * element is a string specifying which fields the filter should be applied
-     * to (one of `'all'`, `'url'`, `'text'`, or `'description'`), and the 
-     * second the filter function itself which should be a function that takes
-     * a single string as an argument and returns a filtered version of that
-     * string.
+     * @param {templateFieldFilterTuple[]} [filters=[]] - an optional set of filter functions to apply to some or all template fields.
+     * @example <caption>Example of defining a template with filters</caption>
+     * let template = new LinkTemplate(
+     *     '<a href="{{{url}}}">{{{text}}}</a>',
+     *     [
+     *         ['url', linkify.util.stripUTMParameters],
+     *         ['text', linkify.util.regulariseWhitespace]
+     *     ]
+     * );
      */
     constructor(templateString, filters){
         // TO DO - add validation
@@ -45,7 +48,7 @@ export class LinkTemplate{
          * * `description` - filters to be applied just the link description.
          *
          * @private
-         * @type {Object.<string, filterFunction>}
+         * @type {Object.<"all"|"url"|"text"|"description", templateFieldFilterFunction>}
          */
         this._filters = {
             all: [],
@@ -63,20 +66,12 @@ export class LinkTemplate{
     }
     
     /**
-     * Get the template string.
-     *
-     * @returns {string}
+     * The Mustache template string. Will be coerced to a string with `String(templateString)`.
+     * @type {string}
      */
     get templateString(){
         return this._templateString;
     }
-
-    /**
-     * Set the template string. Should be in Mustache format. All values passed
-     * will be coerced to strings.
-     * 
-     * @param {string} templateString
-     */
     set templateString(templateString){
         this._templateString = String(templateString);
     }
@@ -87,10 +82,9 @@ export class LinkTemplate{
      * If an invalid args are passed, the function does not save the filter or
      * throw an error, but it does log a warning.
      *
-     * @param {string} fieldName - One of `'all'`, `'url'`, `'text'`, or
-     * `'description'`.
-     * @param {function} filterFn - the filter function.
-     * @returns {LinkTemplate} Returns a reference to self to facilitate function chaining.
+     * @param {"all"|"url"|"text"|"description"} fieldName
+     * @param {templateFieldFilterFunction} filterFn - the filter function.
+     * @returns {module:link-template.LinkTemplate} Returns a reference to self to facilitate function chaining.
      */
     addFilter(fieldName, filterFn){
         // make sure that args are at least plausibly valid
@@ -113,13 +107,11 @@ export class LinkTemplate{
     }
     
     /**
-     * A function get the filter functions that should be applied to any given
-     * field.
+     * Get the filter functions that should be applied to any given field.
      * 
-     * @param {string} fieldName - one of `'url'`, `'text'`, or
-     * `'description'`.
-     * @returns {function[]} returns an array of callbacks, which may be
-     * empty. An empty array is returned if an invalid field name is passed.
+     * @param {"all"|"url"|"text"|"description"} fieldName
+     * @returns {templateFieldFilterFunction[]} returns an array of callbacks, which may be
+     * empty. An empty array is also returned if an invalid field name is passed.
      */
     filtersFor(fieldName){
         fieldName = String(fieldName);

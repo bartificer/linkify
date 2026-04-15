@@ -1,27 +1,25 @@
 /**
- * @file The definition of the class representing a web page.
+ * @file Data model for web page information.
  * @author Bart Busschots <opensource@bartificer.ie>
  * @license MIT
  */
 
 /**
- * The information extracted from web pages for conversion to link information by data transformers.
- * @see {@link dataTransformer} for details of how instances of this class are used in the link generation process.
+ * This module provides the class for representing the information that is extracted from web pages.
  * @module page-data
  * @requires module:urijs
  */
 import {default as URI} from 'urijs';
 
 /**
- * A class representing the data extracted from web pages that can be transformed into link data for use when rendering links.
+ * The information extracted from web pages that can be used to render a link.
+ * 
+ * Instances of this class are created from the information extracted from web pages and converted to link information by data transformers before being rendered to links via templates.
+ * @see {@link dataTransformer} for details of how instances of this class are used in the link generation process.
  */
 export class PageData {
     /**
-     * This constructor throws a {@link ValidationError} unless a valid URL is passed.
-     *
-     * @param {URL} url - The page's full URL.
-     * @throws {ValidationError} A validation error is thrown if an invalid URL
-     * is passed.
+     * @param {string} url - The page's full URL.
      */
     constructor(url){
         // TO DO - add validation
@@ -30,7 +28,7 @@ export class PageData {
          * The page's URL as a URI object.
          *
          * @private
-         * @type {URIObject}
+         * @type {module:urijs}
          */
         this._uri = URI();
         
@@ -47,74 +45,73 @@ export class PageData {
          * `h1` and `h2`.
          * 
          * @private
-         * @type {plainObject}
+         * @type {Object}
+         * @property {string[]} h1 - The page's top-level headings (`h1` tags).
+         * @property {string[]} h2 - The page's secondary headings (`h2` tags).
          */
         this._headings = {
             h1: [],
             h2: []
         };
         
-        // store the URL
+        // store the URL using the public setter to ensure it's stored as a URI object
         this.url = url;
     }
     
     /**
-     * @returns {string}
+     * @type {string}
+     * @throws {TypeError} on invalid URLs.
      */
     get url(){
         return this._uri.toString();
     }
-
-    /**
-     * @param {string} url - A URL as a string.
-     * @throws {ValidationError} A validation error is thrown if an argument
-     * is passed that's not a valid URL string.
-     */
     set url(url){
         this._uri = URI(url).normalize();
     }
     
     /**
-     * @returns {Object} A URI.js object.
+     * @type {module:urijs}
+     * @readonly
      */
     get uri(){
         return this._uri.clone();
     }
     
     /**
-     * Get the domain-part of the URL as a string.
-     * 
-     * @returns {string} The domain-part of the URL.
+     * The domain-part of the URL.
+     * @type {string}
+     * @readonly
      */
     get domain(){
         return this._uri.hostname();
     }
     
     /**
-     * @returns {string} The path-part of the URL.
+     * The path-part of the URL.
+     * @type {string}
+     * @readonly
      */
     get path(){
         return this._uri.path();
     }
     
     /**
-     * @returns {string}
+     * The page's title. Values are coerced to strings with `String(title)`.
+     * @type {string}
      */
     get title(){
         return this._title;
     }
-
-    /**
-     * @param {string} title - the page's title as a string. Values passed will be coerced to strings.
-     */
     set title(title){
         this._title = String(title);
     }
     
     /**
-     * Get the page's section headings.
-     * 
-     * @returns {Object} A plain object containing arrays of strings indexed by `h1` and `h2`.
+     * The page's primary and secondary headings.
+     * @type {Object}
+     * @property {string[]} h1 - The page's top-level headings (`h1` tags).
+     * @property {string[]} h2 - The page's secondary headings (`h2` tags).
+     * @readonly
      */
     get headings(){
         let ans = {
@@ -132,8 +129,8 @@ export class PageData {
     
     /**
      * The page's top-level headings (`h1` tags).
-     *
-     * @returns {string[]}
+     * @type {string[]}
+     * @readonly
      */
     get topLevelHeadings(){
         var ans = [];
@@ -145,7 +142,8 @@ export class PageData {
 
     /**
      * An alias for `.topLevelHeadings`.
-     * @see PageData#topLevelHeadings
+     * @readonly
+     * @see {@link module:page-data.PageData#topLevelHeadings}
      */
     get h1s(){
         return this.topLevelHeadings;
@@ -153,8 +151,8 @@ export class PageData {
 
     /**
      * The page's secondary headings (`h2` tags).
-     *
-     * @returns {string[]}
+     * @type {string[]}
+     * @readonly
      */
     get secondaryHeadings(){
         var ans = [];
@@ -166,8 +164,9 @@ export class PageData {
 
     /**
      * An alias for `.secondaryHeadings`.
-     * @see PageData#secondaryHeadings
-    */
+     * @readonly
+     * @see {@link module:page-data.PageData#secondaryHeadings}
+     */
     get h2s(){
         return this.secondaryHeadings;
     }
@@ -177,8 +176,8 @@ export class PageData {
      * has `h1` tags, the first one will be used, if not, the first `h2` tag
      * will be used, and if there's none of those either, an empty string will
      * be returned.
-     * 
-     * @returns {string} Heading text as a string, or an empty string.
+     * @type {string}
+     * @readonly
      */
     get mainHeading(){
         if(this._headings.h1.length > 0){
@@ -194,7 +193,7 @@ export class PageData {
      * Add a top-level heading.
      *
      * @param {string} h1Text
-     * @returns {PageData} A reference to self to 
+     * @returns {module:page-data.PageData} A reference to self to 
      * facilitate function chaning.
      */
     addTopLevelHeading(h1Text){
@@ -207,7 +206,7 @@ export class PageData {
      * Add a seconary heading.
      *
      * @param {string} h2Text
-     * @returns {PageData} A reference to self to 
+     * @returns {module:page-data.PageData} A reference to self to 
      * facilitate function chaning.
      */
     addSecondaryHeading(h2Text){
@@ -217,27 +216,8 @@ export class PageData {
     }
 
     /**
-     * Get the page data as a plain object of the form:
-     * ```
-     * {
-     *     url: 'http://www.bartificer.net/',
-     *     title: 'the page title',
-     *     topLevelHeadings: [ 'first h1', 'second h1' ],
-     *     secondaryHeadings: [ 'first h2', 'second h2' ],
-     *     mainHeading: 'first h1',
-     *     uri: {
-     *         hostname: 'www.bartificer.net',
-     *         path: '/',
-     *         hasPath: false
-     *     }
-     * }
-     * ```
-     *
-     * Note that the `uri` could contain more fields - it's initialised with
-     * output from the `URI.parse()` function from the `URI` module.
-     * 
-     * @returns {Object} A plain object containing the page data.
-     * @see {@link https://medialize.github.io/URI.js/docs.html#static-parse}
+     * Get the page data as a plain object.
+     * @returns {plainPageInformationObject}
      */
     asPlainObject(){
         let ans = {
@@ -255,18 +235,18 @@ export class PageData {
 
 /**
  * A shortcut for `.addTopLevelHeading()`.
- *
+ * @name module:page-data.PageData#h1
  * @function
- * @see PageData#addTopLevelHeading
+ * @see {@link module:page-data.PageData#addTopLevelHeading}
  * 
  */
 PageData.prototype.h1 = PageData.prototype.addTopLevelHeading;
 
 /**
  * A shortcut for `.addSecondaryHeading()`.
- *
+ * @name module:page-data.PageData#h2
  * @function
- * @see PageData#addSecondaryHeading
+ * @see {@link module:page-data.PageData#addSecondaryHeading}
  * 
  */
 PageData.prototype.h2 = PageData.prototype.addSecondaryHeading;
