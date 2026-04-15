@@ -14,6 +14,61 @@ Given this reality, **do not use this repository for anything mission-critical!*
 npm install '@bartificer/linkifier';
 ```
 
+## The Link Generation Process
+
+```mermaid
+flowchart TD
+    classDef inputNode fill:#090,color:#fff;
+    URL([fa:fa-circle-down URL]):::inputNode
+    TPLNAME([fa:fa-circle-down Template Name — Optional]):::inputNode
+
+    TPLMAP[(Domain → Default Template Mappings)]
+    TPLS[(Registered Tempaltes)]
+    TRANSMAP[(Domain → Transformer Mappings)]
+
+    FETCH{Try Fetch Page}
+    HAVETPLNAME{Template Name Specified?}
+    
+    PARSE[fa:fa-gears Parse]
+    REVSLUG[fa:fa-gears Reverse Slug]
+    RSLVTPLNAME[fa:fa-gears Resolve Template Name]
+    RSLVTPL[fa:fa-gears Resolve Template]
+    RSLVTRANS[fa:fa-gears Resolve Transformer]
+    TRANS[fa:fa-gears Transform]
+    RENDER[fa:fa-gears Render]
+
+    PDATA{{fa:fa-table-cells PageData Object}}
+    LDATA{{fa:fa-table-cells LinkData Object}}
+    TPLNAMESTR{{fa:fa-quote-left Template Name}}
+    TPLOBJ{{fa:fa-table-cells Template Object}}
+    TRANSFN{{fa:fa-code Transformer Function}}
+    
+    classDef outputNode fill:#090,color:#fff;
+    LINK([fa:fa-quote-left Link]):::outputNode
+
+    URL --> FETCH
+    TPLNAME --> HAVETPLNAME
+    FETCH -->|Success| PARSE
+    FETCH -->|Fail| REVSLUG
+    PARSE --> PDATA
+    REVSLUG --> PDATA
+    HAVETPLNAME -->|Yes| TPLNAMESTR
+    HAVETPLNAME -->|No| RSLVTPLNAME
+    TPLMAP --> RSLVTPLNAME
+    RSLVTPLNAME --> TPLNAMESTR
+    TPLNAMESTR --> RSLVTPL
+    RSLVTPL --> TPLOBJ
+    TPLS --> RSLVTPL
+    TRANSMAP --> RSLVTRANS
+    RSLVTRANS --> TRANSFN
+    PDATA --> TRANS
+    TRANSFN --> TRANS
+    TRANS --> LDATA
+    LDATA --> RENDER
+    TPLOBJ --> RENDER
+    RENDER --> LINK
+```
+
 ## Examples
 
 This is an ES6 module, so when used with NPM, your scripts must have the `.mjs` file extension (to force ES module mode).
