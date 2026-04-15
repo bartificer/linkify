@@ -18,7 +18,8 @@
     ],
     "markdown": {
         "hardwrap": false,
-        "idInHeadings": true
+        "idInHeadings": true,
+        "parser": "marked"
     },
     "tags": {
         "allowUnknownTags": false,
@@ -56,7 +57,11 @@
         "navLevel": 1,
         "private": true,
         "removeQuotes": "trim",
-        "scripts": ["./docdash-overrides.css"],
+        "scripts": [
+            "./docdash-overrides.css",
+            "https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js",
+            "./mermaid-init.js"
+        ],
         "menu": {
             "On GitHub": {
                 "href":"https://github.com/bartificer/linkify",

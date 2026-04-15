@@ -43,6 +43,7 @@
     "clean-jsdoc-theme": "^4.3.0",
     "docdash": "^2.0.2",
     "jsdoc": "^4.0.5",
+    "marked": "^18.0.0",
     "webpack": "^5.105.4",
     "webpack-cli": "^7.0.2"
   }
