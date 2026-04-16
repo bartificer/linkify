@@ -76,15 +76,16 @@ Based on the URL's domain, a `LinkTemplate` will be resolved, and that template 
 
 ```mermaid
 flowchart TD
-    classDef inputNode fill:#090,color:#fff;
+    classDef inputNode fill:#cfc,color:#090,stroke:#000,stroke-width:2px;
     URL([fa:fa-circle-down URL]):::inputNode
     TPLNAME([fa:fa-circle-down Template Name — Optional]):::inputNode
 
-    TPLMAP[(Domain → Default Template Mappings)]
-    TPLS[(Registered Tempaltes)]
-    TRANSMAP[(Domain → Transformer Mappings)]
-    CUSTCAPLIST[(Custom Capitalisations)]
-    SMWORDLIST[(Small Words)]
+    classDef datastoreNode fill:#ccf,color:#009,stroke:#000;
+    TPLMAP[(Domain → Default Template Mappings)]:::datastoreNode
+    TPLS[(Registered Tempaltes)]:::datastoreNode
+    TRANSMAP[(Domain → Transformer Mappings)]:::datastoreNode
+    CUSTCAPLIST[(Custom Capitalisations)]:::datastoreNode
+    SMWORDLIST[(Small Words)]:::datastoreNode
 
     FETCH{Try Fetch Page}
     HAVETPLNAME{Template Name Specified?}
@@ -97,13 +98,14 @@ flowchart TD
     TRANS[fa:fa-gears Transform]
     RENDER[fa:fa-gears Render]
 
-    PDATA{{fa:fa-table-cells PageData Object}}
-    LDATA{{fa:fa-table-cells LinkData Object}}
-    TPLNAMESTR{{fa:fa-quote-left Template Name}}
-    TPLOBJ{{fa:fa-table-cells Template Object}}
-    TRANSFN{{fa:fa-code Transformer Function}}
+    classDef objectNode fill:#009,color:#fff,stroke:#000;
+    PDATA{{fa:fa-table-cells PageData Object}}:::objectNode
+    LDATA{{fa:fa-table-cells LinkData Object}}:::objectNode
+    TPLNAMESTR{{fa:fa-quote-left Template Name}}:::objectNode
+    TPLOBJ{{fa:fa-table-cells Template Object}}:::objectNode
+    TRANSFN{{fa:fa-code Transformer Function}}:::objectNode
     
-    classDef outputNode fill:#090,color:#fff;
+    classDef outputNode fill:#090,color:#fff,stroke:#000,stroke-width:2px;
     LINK([fa:fa-quote-left Link]):::outputNode
 
     URL --> FETCH
