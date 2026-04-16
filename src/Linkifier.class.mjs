@@ -321,10 +321,13 @@ export class Linkifier {
      * Fetch the page data for a given URL.
      *
      * @async
-     * @param {string} url
+     * @param {string} url - The URL to fetch the page data for.
+     * @param {extraFieldsExtractorFunction} [extraFieldsExtractor] - An optional function to extract additional fields from the web page DOM object.
      * @returns {module:page-data.PageData}
+     * @throws {TypeError} A TypeError is thrown if the URL is missing or invalid, or if the extraFieldsExtractor is provided but is not a function.
+     * @throws {Error} An Error is thrown if the page source cannot be fetched and an extraFieldsExtractor is provided (can't fall back to reversing the URL slug). Any errors thrown by the field extractor, if present, are also re-thrown.
      */
-    async fetchPageData(url){
+    async fetchPageData(url, extraFieldsExtractor){
         // TO DO - add validation
         
         let ans = new PageData(url);
@@ -338,6 +341,13 @@ export class Linkifier {
             }
             webDownloadResponseBody = await webDownloadResponse.text();
         } catch (err) {
+            // if we have an extra field extractor, we can't fall back, so re-throw the error.
+            if(typeof extraFieldsExtractor === 'function') {
+                const msg = "Failed to fetch page source when extra field extraction is needed, cannot fall back to reversing the URL slug";
+                console.error(`${msg}: ${err.message}`);
+                throw new Error(msg, { cause: err });
+            }
+
             // fall back to extracting the title from the URL slug
             console.warn(`Falling back to de-slugifying URL (${err.message})`);
             ans.title = this.utilities.extractSlug(url, this.speciallyCapitalisedWords, this.smallWords) || 'Untitled';
@@ -351,7 +361,18 @@ export class Linkifier {
         $('h2').each(function(){
             ans.h2($(this).text().trim());
         });
-        
+
+        // if an extra fields extractor is provided, use it to extract the extra fields and add them to the page data object
+        if(typeof extraFieldsExtractor === 'function'){
+            try {
+                ans.extraFields = extraFieldsExtractor($);
+            } catch (err) {
+                const msg = "An error occurred while extracting extra fields from the page DOM";
+                console.error(`${msg}: ${err.message}`);
+                throw new Error(msg, { cause: err });
+            }
+        }
+
         // return the answer
         return ans;
     }
@@ -363,8 +384,11 @@ export class Linkifier {
      *
      * @async
      * @param {string} url
-     * @param {string} [templateName='html']
-     * @returns {string}
+     * @param {string} [templateName] - An optional template name to override the normal template resolution process. The value passed must correspond to a registered template name, and will be coerced to a string with `String(templateName)`.
+     * @returns {string} The generated link.
+     * @throws {TypeError} A TypeError is thrown if the URL is missing or invalid.
+     * @throws {ValidationError} A ValidationError is thrown if a template name is passed but is invalid or doesn't correspond to a registered template.
+     * @throws {Error} An error is thrown if the resolved template supports extra fields but the page source cannot be fetched, or, if the templates's extra field extractor function throws an error, or, if the link data transformation fails.
      */
     async generateLink(url, templateName){
         // TO DO - add validation
@@ -372,48 +396,73 @@ export class Linkifier {
         //
         // -- resolve the template name to use for this URL --
         //
-        let tplName = '';
 
-        // resolve the template — if a template name is passed, try use it,
-        // otherwise resolve the default for this URL's domain
-        if(templateName && typeof templateName === 'string'){
-            tplName = templateName;
+        // default to any passed template name, otherwise resolve the default for this URL's domain
+        let tplName = templateName ? String(templateName) : '';
 
-            // make sure the template exists
-            if(!this._linkTemplates[tplName]){
-                console.warn(`No template named '${tplName}' is registered, falling back to global default '${this._pageDataToLinkTemplateName['.']}'`);
-                tplName = this._pageDataToLinkTemplateName['.'];
-            }
-        } else {
+        // if no template name was passed, resolve the default for the URL's domain
+        if(!tplName){
             tplName = this.getTemplateNameForDomain((new URL(url)).hostname);
+        }
+
+        // make sure the template exists before storing the resolved template
+        if(!this._linkTemplates[tplName]){
+            const msg = `No template named '${tplName}' is registered`;
+            console.error(msg);
+            throw new ValidationError(msg);
         }
         const template = this._linkTemplates[tplName];
         
-        // get the page data        
-        const pageData = await this.fetchPageData(url);
+        // get the page data
+        const pageData = await this.fetchPageData(url, template.hasExtraFields ? template.fieldExtractor : null); // throws errors — allow them to pass through
         
-        // transform the page data to link data
-        const linkData = this.getTransformerForDomain(pageData.uri.hostname())(pageData);
-
-        // apply field-specific filters to the link data
-        const fieldNames = ['url', 'text', 'description'];
-        const templateData = linkData.asPlainObject();
-        for(let fieldName of fieldNames){
-            let fieldFilters = template.filtersFor(fieldName);
-            for(let filterFn of fieldFilters){
-                templateData[fieldName] = filterFn(templateData[fieldName]);
+        // try transform the page data to link data
+        let linkData = null;
+        try {
+            linkData = this.getTransformerForDomain(pageData.uri.hostname())(pageData);
+            if(template.hasExtraFields){
+                linkData.extraFields = pageData.extraFields;
             }
+        } catch (err) {
+            const msg = "An error occurred while transforming the page data to link data";
+            console.error(`${msg}: ${err.message}`);
+            throw new Error(msg, { cause: err });
         }
 
-        // apply the universal filters to all the link data fields
-        let globalFilters = template.filtersFor('all');
-        for(let filterFn of globalFilters){
+        // try apply the template field filters to the link data
+        const fieldNames = LinkData.standardFieldNames;
+        let templateData = {};
+        try {
+            // apply the field-specific filters to the appropriate standard link data fields
+            templateData = linkData.asPlainObject();
             for(let fieldName of fieldNames){
-                templateData[fieldName] = filterFn(templateData[fieldName]);
+                let fieldFilters = template.filtersFor(fieldName);
+                for(let filterFn of fieldFilters){
+                    templateData[fieldName] = filterFn(templateData[fieldName]);
+                }
             }
+
+            // apply the universal filters to all the standard link data fields
+            let globalFilters = template.filtersFor('all');
+            for(let filterFn of globalFilters){
+                for(let fieldName of fieldNames){
+                    templateData[fieldName] = filterFn(templateData[fieldName]);
+                }
+            }
+        } catch (err) {
+            const msg = "An error occurred while applying the template's field filters to the standard link data fields";
+            console.error(`${msg}: ${err.message}`);
+            throw new Error(msg, { cause: err });
         }
         
-        // render the link
-        return Mustache.render(this._linkTemplates[tplName].templateString, templateData);
+        // try render the link
+        try {
+            return Mustache.render(this._linkTemplates[tplName].templateString, templateData);
+        } catch (err) {
+            const msg = "An error occurred while rendering the template";
+            console.error(`${msg}: ${err.message}`);
+            throw new Error(msg, { cause: err });
+        }
+        
     }
 };

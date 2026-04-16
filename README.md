@@ -173,9 +173,43 @@ Before rendering links, you should do the following:
    linkfiy.registerDefaultTemplateMapping('your.home.domain', 'md-home');
    ```
 
-# Real-World Examples
+## Advanced Usage — Tempalte with Extra Field Extractor
 
-_**Note:** these examples are written to work on a development clone of the module, to use them outside of that, change the import statements to import from `'@bartificer/linkify'` rather than `'../dist.index.js'`. Alternatively, fork, download and build the module (`npm ci && npm run build`)._
+Very very rarely a template needs to acces information that is not extracted from the page source by default. This is possible with the use of an extra field extractor function. From the point of view of a module user, the functionality is entirely exposed via the link template constrctor.
+
+To create a template that uses extra fields you must:
+
+1. Pass a custom field extractor function as the optional third argument to the `new LinkTemplate()` constructor.
+   * This function will be passed just one argument, a [Cheerio object](https://cheerio.js.org/docs/api/classes/cheerio/) representing the webpage's parsed DOM.
+   * This function **must** return a plain object mapping field names to string values.
+2. In the template string, reference the fields extracted by the extractor function as keys on the object `extraFields`. For example, if your extractor function returned fields named `permalink` and `volume`, theose two fields would be referenced in the template as `extraFields.permalink` & `extraFields.volume`.
+
+As a practical example, here is a custom template to render XKCD comics as Markdown links followed markdown images, with the comic number, comic title, comic permalink, and comic image URL extracte as extra fields and referenced in the template string:
+
+```javascript
+// register a special Markdown template for XKCD cartoons and make it the default for XKCD's domain
+linkify.registerTemplate('md-xkcd', new LinkTemplate(
+    '[XKCD {{{extraFields.comicNumber}}}: {{{extraFields.title}}}]({{{extraFields.permalink}}})\n![ADD A DESCRIPTION FOR THE VISUALLY IMPAIRED HERE]({{{extraFields.imageLink}}} "{{{extraFields.hoverText}}}")',
+    null, // no field filters
+    ($) => { // a custom field extractor function
+        const $img = $('div#comic img').first(); // the cheerio selector to find the comic image
+        const $comicLinks = $('div#middleContainer > a'); // the cheerio selector to find the two permalinks
+        const permalink = $comicLinks.first().attr('href'); // the first permalink of the two is the one for the page
+        const imageLink = $comicLinks.last().attr('href'); // second permalink of the two is the one for the image
+        const comicNumber = permalink.match(/(?<comicNum>\d+)\/?$/).groups.comicNum;
+        return {
+            title: $('div#ctitle').text(), // capture the comic's title
+            hoverText: $img.attr('title').replaceAll('"', '\\"'), // capture the all important hover text!
+            imageLink,
+            permalink,
+            comicNumber
+        };
+    }
+));
+linkify.registerDefaultTemplateMapping('xkcd.com', 'md-xkcd');
+```
+
+# Real-World Examples
 
 Two real-world scripts Bart users to build shownotes are included in [the `/example` folder in the GitHub repostitory](https://github.com/bartificer/linkify/tree/master/example):
 

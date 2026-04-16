@@ -1,6 +1,7 @@
 // import Linkify Lib
 import URI from 'urijs';
-import { linkify, LinkTemplate, LinkData } from '../dist/index.js';
+import { linkify, LinkTemplate, LinkData } from '../src/index.js'; // for using the source module
+//import { linkify, LinkTemplate, LinkData } from '@bartificer/linkify'; // for using the built module
 
 // import 3rd-party library for interacting with the clipboard
 import clipboardy from 'clipboardy';
@@ -33,11 +34,24 @@ linkify.registerTemplate('md-apr', new LinkTemplate(
 ));
 linkify.registerDefaultTemplateMapping('apple.com', 'md-apr');
 
-// register a special Markdown template for XKCD cartoons presss releases and make it the default for XKCD's domain
-// TO DO — figure out the right way to add support for extra fields like the sequence number, image permalink & alt text
+// register a special Markdown template for XKCD cartoons and make it the default for XKCD's domain
 linkify.registerTemplate('md-xkcd', new LinkTemplate(
-    // the description should the the comic's sequence number, at least for now
-    '[XKCD {{{description}}}: {{{text}}}]({{{url}}})\n![ADD DESCRIPTION](IMAGE_PERMALINK.png "ALT TEXT")'
+    '[XKCD {{{extraFields.comicNumber}}}: {{{extraFields.title}}}]({{{extraFields.permalink}}})\n![ADD A DESCRIPTION FOR THE VISUALLY IMPAIRED HERE]({{{extraFields.imageLink}}} "{{{extraFields.hoverText}}}")',
+    null, // no field filters
+    ($) => { // a custom field extractor function
+        const $img = $('div#comic img').first(); // the cheerio selector to find the comic image
+        const $comicLinks = $('div#middleContainer > a'); // the cheerio selector to find the two permalinks
+        const permalink = $comicLinks.first().attr('href'); // the first permalink of the two is the one for the page
+        const imageLink = $comicLinks.last().attr('href'); // second permalink of the two is the one for the image
+        const comicNumber = permalink.match(/(?<comicNum>\d+)\/?$/).groups.comicNum;
+        return {
+            title: $('div#ctitle').text(), // capture the comic's title
+            hoverText: $img.attr('title').replaceAll('"', '\\"'), // capture the all important hover text!
+            imageLink,
+            permalink,
+            comicNumber
+        };
+    }
 ));
 linkify.registerDefaultTemplateMapping('xkcd.com', 'md-xkcd');
 
@@ -133,12 +147,6 @@ linkify.registerTransformer('overcast.fm', function(pData){
 linkify.registerTransformer('sixcolors.com', transformers.mainHeading);
 linkify.registerTransformer('theverge.com', transformers.mainHeading);
 linkify.registerTransformer('wired.com', transformers.mainHeading);
-linkify.registerTransformer('xkcd.com', (pData) => {
-    // extract the sequence number from the URL and add it to the description field
-    const comicNumber = pData.uri.path().replaceAll('/', '');
-    const comicTitle = pData.title.replace(/^xkcd[:][ ]/, '');
-    return new LinkData(pData.url, comicTitle, comicNumber);
-});
 
 //
 // === Genereate the Link ===

@@ -13,6 +13,13 @@
  */
 
 /**
+ * A function that can optionally be added to a template to facilitate the extraction of exta data fields from web pages that can then be utilised by the template to render the link.
+ * @callback extraFieldExtractorFunction
+ * @param {module:cheerio} pageDOM - the parsed webpage content
+ * @returns {Object.<string, string>}
+ */
+
+/**
  * A tupple (array of length exactly two) for assigning a field filter to a template.
  * @typedef {Array} templateFieldFilterTuple
  * @property {"all"|"url"|"text"|"description"} 0 - the property the filter should be applied to.
@@ -27,10 +34,11 @@
  * @property {string} url - the URL for the link.
  * @property {string} text - the text for the link.
  * @property {string} description - a description for the link.
+ * @property {Object.<string, string>} extraFields - any extra fields extracted from the page source.
  * @property {Object} uri - the URL's components
- * @property {string} url.hostname - the hostname part of the URL.
- * @property {string} url.path - the path part of the UL, `/` for an empty path.
- * @property {boolean} url.hasPath - whether or not the URL has a path, note that `/` is considered no path.
+ * @property {string} uri.hostname - the hostname part of the URL.
+ * @property {string} uri.path - the path part of the UL, `/` for an empty path.
+ * @property {boolean} uri.hasPath - whether or not the URL has a path, note that `/` is considered no path.
  * @see {@link https://medialize.github.io/URI.js/docs.html#static-parse}
  */
 
@@ -44,9 +52,10 @@
  * @property {string[]} topLevelHeadings - the text from the page's `h1` tags.
  * @property {string[]} secondaryHeadings - text from the page's `h2` tags.
  * @property {string} mainHeading - the text from the most semantically important heading that exists in the page.
+ * @property {Object.<string, string>} extraFields - any extra fields extracted from the page source.
  * @property {Object} uri - the URL's components
- * @property {string} url.hostname - the hostname part of the URL.
- * @property {string} url.path - the path part of the UL, `/` for an empty path.
- * @property {boolean} url.hasPath - whether or not the URL has a path, note that `/` is considered no path.
+ * @property {string} uri.hostname - the hostname part of the URL.
+ * @property {string} uri.path - the path part of the UL, `/` for an empty path.
+ * @property {boolean} uri.hasPath - whether or not the URL has a path, note that `/` is considered no path.
  * @see {@link https://medialize.github.io/URI.js/docs.html#static-parse}
  */

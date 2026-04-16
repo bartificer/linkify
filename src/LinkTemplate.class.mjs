@@ -18,6 +18,7 @@ export class LinkTemplate{
     /**
      * @param {string} templateString - A Moustache template string.
      * @param {templateFieldFilterTuple[]} [filters=[]] - an optional set of filter functions to apply to some or all template fields.
+     * @param {templateFieldExtractorFunction} [fieldExtractor] - an optional function to extract additional fields from a web page DOM object, making the extracted fields available for use in the template under the `extraFields` key.
      * @example <caption>Example of defining a template with filters</caption>
      * let template = new LinkTemplate(
      *     '<a href="{{{url}}}">{{{text}}}</a>',
@@ -27,7 +28,7 @@ export class LinkTemplate{
      *     ]
      * );
      */
-    constructor(templateString, filters){
+    constructor(templateString, filters, fieldExtractor){
         // TO DO - add validation
         
         /**
@@ -63,6 +64,13 @@ export class LinkTemplate{
                 }
             }
         }
+
+        /**
+         * An optional function to extract additional fields from a web page DOM object, making the extracted fields available for use in the template under the `extraFields` key.
+         * @private
+         * @type {templateFieldExtractorFunction}
+         */
+        this._fieldExtractor = fieldExtractor;
     }
     
     /**
@@ -128,5 +136,32 @@ export class LinkTemplate{
             }
         }
         return ans;
+    }
+
+    /**
+     * The optional extra fields extractor function for this template. If present, this function will be called with the DOM data for a web page when the page data object is being extracted. These fields will be passed through to the link data object, and be avaialable for use within the template as `extraFields.fieldName`.
+     * 
+     * For this process to work, the field extractor function **must** return an object containing key-value pairs, where the keys are the field names to be used in the template, and the values are strings.
+     * @type {?templateFieldExtractorFunction}
+     * @throws {TypeError} if the value set is not a function or null.
+     */
+    get fieldExtractor(){
+        return this._fieldExtractor;
+    }
+    set fieldExtractor(fieldExtractor){
+        if(typeof fieldExtractor === 'function' || fieldExtractor === null){
+            this._fieldExtractor = fieldExtractor;
+        } else {
+            throw new TypeError('fieldExtractor must be a function or null');
+        }
+    }
+
+    /**
+     * Whether or not this template supports extra fields.
+     * @readonly
+     * @type {boolean}
+     */
+    get hasExtraFields(){
+        return typeof this._fieldExtractor === 'function';
     }
 };

@@ -53,7 +53,14 @@ export class PageData {
             h1: [],
             h2: []
         };
-        
+
+        /**
+         * An object to hold any extra fields extracted from the page by a field extractor function, indexed by field name.
+         * @type {Object.<string, string>}
+         * @private
+         */
+        this._extraFields = {};
+
         // store the URL using the public setter to ensure it's stored as a URI object
         this.url = url;
     }
@@ -216,6 +223,40 @@ export class PageData {
     }
 
     /**
+     * The extra fields extracted from the page by a field extractor function, indexed by field name. If no field extractor was used, this will be an empty object.
+     * 
+     * Note that reading this property produces a shallow clone of the internal extra fields object, and that the values set for extra fields are coerced to strings with `String(value)`.
+     * @type {Object.<string, string>}
+     * @default {}
+     * @throws {TypeError} if an attempt is made to set this property to a non-object value.
+     */
+    get extraFields(){
+        return { ...this._extraFields }; // shallow clone is OK since values are coerced to strings by the setter
+    }
+    set extraFields(extraFields){
+        if(typeof extraFields === 'object' && extraFields !== null){
+            for (let [key, value] of Object.entries(extraFields)) {
+                this._extraFields[String(key)] = String(value);
+            }
+        } else {
+            throw new TypeError('extraFields must be a dictionary object with string keys and string values');
+        }
+    }
+
+    /**
+     * Add an extra field to the page data object.
+     * 
+     * Note that values are coerced to strings with `String(value)`.
+     * @param {string} fieldName - The name of the field to add.
+     * @param {string} value - The value of the field to add. This will be coerced to a string with `String(value)`.
+     * @returns {module:page-data.PageData} A reference to self to facilitate function chaning.
+     */
+    addExtraField(fieldName, value){
+        this._extraFields[String(fieldName)] = String(value);
+        return this;
+    }
+
+    /**
      * Get the page data as a plain object.
      * @returns {plainPageInformationObject}
      */
@@ -226,6 +267,7 @@ export class PageData {
             topLevelHeadings: this.topLevelHeadings,
             secondaryHeadings: this.secondaryHeadings,
             mainHeading: this.mainHeading,
+            extraFields: this.extraFields,
             uri: URI.parse(this._uri.toString())
         };
         ans.uri.hasPath = ans.uri.path !== '/';
