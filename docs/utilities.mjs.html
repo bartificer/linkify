@@ -130,25 +130,25 @@ export function escapeRegex(str) {
  * Batch-fix words with special capitalisations in a string. E.g. force `fbi` to `FBI`, `ios` to `iOS`, etc..
  * 
  * @param {string} str - the string to apply the capitalisation corrections to.
- * @param {string[]} [words] - the list of words with special capitalisations. Defaults to the default list {@link module:defaults.speciallyCapitalisedWords}.
+ * @param {Iterable&lt;string>} [customCapWords] - the list of words with special capitalisations. Defaults to the default list {@link module:defaults.speciallyCapitalisedWords}.
  * @returns {string} the original string with all occurrences of the words in the list capitalised as per the word list. All other capitatlisations will be left un-changed.
  * @see {@link module:defaults.speciallyCapitalisedWords} for the default list of custom capitalisations.
  */
-export function batchFixCustomWordCases(str, words){
+export function batchFixCustomWordCases(str, customCapWords = new Set()){
     // coerce the first argument to a string
     let ans = String(str);
 
-    // resolve the word list
+    // resolve the custom capitalisation word list
     if(arguments.length &lt; 2){
         // if none was passed, use the default list
-        words = defaults.speciallyCapitalisedWords;
+        customCapWords = new Set(defaults.speciallyCapitalisedWords);
     } else {
         // TO DO — add validation
     }
 
     // build a mapping from the lower-case version of each word to custom version
     const lowerToCustomMap = {};
-    words.map(word => lowerToCustomMap[word.toLowerCase()] = word);
+    customCapWords.forEach(word => lowerToCustomMap[word.toLowerCase()] = word);
 
     // assemble an RE from all the words
     const sortedWords = Object.keys(lowerToCustomMap).sort((a, b) => b.length - a.length); // sort for efficiency
@@ -170,27 +170,22 @@ export function batchFixCustomWordCases(str, words){
  * All words this mododule defies as being so-called *small words* (e.g., "the", "a" &amp; "an") are preserved in lower case, as well as the additional words defined in {@link module:defaults.smallWords}.
  * 
  * @param {string} str - the string to convert to title case.
- * @param {string[]} [words] - a list of words with custom capitalisations to correct after title-casing. Defaults to {@link module:defaults.speciallyCapitalisedWords}.
+ * @param {Iterable&lt;string>} [customCapWords] - a list of words with custom capitalisations to correct after title-casing. Defaults to {@link module:defaults.speciallyCapitalisedWords}.
+ * @param {Iterable&lt;string>} [smallWords] - a list of small words to preserve in lower case during title-casing. Defaults to {@link module:defaults.smallWords}.
  * @returns {string} the original string converted to title case, with the custom capitalisations applied.
  * @see {@link module:defaults.speciallyCapitalisedWords} for the default list of custom capitalisations.
  * @see {@link module:title-case} for the Title Case module who's `titleCase()` function is used to convert to title case, and which has its own default list of small words that are preserved in lower case.
  * @see {@link module:defaults.smallWords} for the additional list of small words that are preserved in lower case.
  */
-export function toTitleCase(str, words){
+export function toTitleCase(str, customCapWords = new Set(), smallWords = new Set()){
     // coerce the first argument to a string
     let ans = String(str);
 
-    // add the additional small words
-    for (const smallWord of defaults.smallWords){
-        console.log(`adding smallWord: ${smallWord}`);
-        titleCase.SMALL_WORDS.add(smallWord);
-    }
-
     // convert to title case
-    ans = titleCase.titleCase(ans);
+    ans = titleCase.titleCase(ans, { smallWords });
 
     // fix any words with unusual customisations
-    ans = batchFixCustomWordCases(ans, words);
+    ans = batchFixCustomWordCases(ans, customCapWords);
 
     // return the result
     return ans;
@@ -200,18 +195,14 @@ export function toTitleCase(str, words){
  * Extract the slug from a URL and convert it to a title-case string.
  * 
  * @param {string} url - the URL to extract the slug from. The slug is taken to be the last segment of the path, with any file extension removed, and with the query string and fragment ignored.
- * @param {string[]} [words] - a list of words with custom capitalisations to correct after title-casing. Defaults to {@link module:defaults.speciallyCapitalisedWords}.
+ * @param {Iterable&lt;string>} [customCapWords] - a list of words with custom capitalisations to correct after title-casing. Defaults to {@link module:defaults.speciallyCapitalisedWords}.
+ * @param {Iterable&lt;string>} [smallWords] - a list of small words to preserve in lower case during title-casing. Defaults to {@link module:defaults.smallWords}.
  * @returns {string} the slug extracted from the URL, converted to title case, with the custom capitalisations applied.
  * @see {@link module:defaults.speciallyCapitalisedWords} for the default list of custom capitalisations.
  * @see {@link toTitleCase} for the function used for the title-casing.
  */
-export function extractSlug(url, words){
+export function extractSlug(url, customCapWords = new Set(), smallWords = new Set()){
     // TO DO - add validation
-
-    // resolve the list of words with custom capitalisations
-    if(arguments.length &lt; 2){
-        words = [];
-    }
 
     // example URLs to try support:
     // ----------------------------
@@ -241,11 +232,7 @@ export function extractSlug(url, words){
     });
 
     // convert the title to title case
-    titleCase.SMALL_WORDS.add('is');
-    title = titleCase.titleCase(title);
-
-    // fix any words with unusual customisations
-    title = toTitleCase(title, words);
+    title = toTitleCase(title, customCapWords, smallWords);
 
     return title;
 };</code></pre>
@@ -262,7 +249,7 @@ export function extractSlug(url, words){
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Wed Apr 15 2026 17:49:51 GMT+0100 (Irish Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Thu Apr 16 2026 12:44:11 GMT+0100 (Irish Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>

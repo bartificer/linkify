@@ -18,6 +18,8 @@ This is not a module for simply converting a URL to a generic link. What makes i
 2. Links can be rendered in any language using customisible templates.
 3. Web page processing functions and output templates are associated with domain names in a DNS-aware way
 
+_**Note:** in 2025 it started to become more common for websites to block scripted downloads (thanks AI!), so in 2026 fall-back functionality was added to fall back to reversing the URL slug when fetching the page fails._
+
 Data transformers and templates are resolved using the DNS hierarchy. For example, if you register a data transformer for the domain `bartificer.ie`, and then you process a link on the `www.bartificer.ie` domain, the module will first check if there is a transformer registered for `www.bartificer.ie`, if not it will find the  one registered for `bartificer.ie` and use that. This means that the data transformer and template registered against the DNS root domain `.` acts as defaults for all domains that don't have their own custom settings.
 
 To use this module you will need to write your own NodeJS script that:
@@ -81,6 +83,8 @@ flowchart TD
     TPLMAP[(Domain → Default Template Mappings)]
     TPLS[(Registered Tempaltes)]
     TRANSMAP[(Domain → Transformer Mappings)]
+    CUSTCAPLIST[(Custom Capitalisations)]
+    SMWORDLIST[(Small Words)]
 
     FETCH{Try Fetch Page}
     HAVETPLNAME{Template Name Specified?}
@@ -106,6 +110,8 @@ flowchart TD
     TPLNAME --> HAVETPLNAME
     FETCH -->|Success| PARSE
     FETCH -->|Fail| REVSLUG
+    CUSTCAPLIST --> REVSLUG
+    SMWORDLIST --> REVSLUG
     PARSE --> PDATA
     REVSLUG --> PDATA
     HAVETPLNAME -->|Yes| TPLNAMESTR
@@ -151,7 +157,12 @@ Before rendering links, you should do the following:
    ```javascript
    linkify.RegisterTransformer('some.domain', (pData) => { new LinkData(pData.url, pData.h1s[1]) });
    ```
-5. Very rarely, a different tempalte is required for a given domain, in that case, assign the desirec tempalte at the domain level. For example:
+5. Fine-tune the reversing of URL slugs by adding additional words with custom capitalisations and/or small words that remain lower-case when converted to title case. For example:
+   ```javascript
+   linkify.smallWords.add('regardless');
+   linkify.speciallyCapitalisedWords.add('UNICEF');
+   ```
+6. Very rarely, a different template is required for a given domain, in that case, assign the desirec tempalte at the domain level. For example:
    ```javascript
    // create a special template for your home domain
    linkify.registerTemplate('md-home', '🏠 [{{{title}}}]({{{url}}})');

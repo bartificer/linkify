@@ -9,9 +9,11 @@
  * 
  * The defaults are collected here for clarity, helping module users both understand the defaults, and, make informed decisions about which defaults to augment or override completely.
  * @module defaults
+ * @requires link-data
  * @requires link-template
  * @requires utilities
  */
+import { LinkData } from './LinkData.class.mjs';
 import { LinkTemplate } from './LinkTemplate.class.mjs';
 import * as utilities from "./utilities.mjs";
 

@@ -100,7 +100,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Linkifier.class.mjs.html">Linkifier.class.mjs</a>, <a href="Linkifier.class.mjs.html#line30">line 30</a>
+        <a href="Linkifier.class.mjs.html">Linkifier.class.mjs</a>, <a href="Linkifier.class.mjs.html#line32">line 32</a>
     </li></ul></dd>
     
 
@@ -207,7 +207,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Linkifier.class.mjs.html">Linkifier.class.mjs</a>, <a href="Linkifier.class.mjs.html#line202">line 202</a>
+        <a href="Linkifier.class.mjs.html">Linkifier.class.mjs</a>, <a href="Linkifier.class.mjs.html#line228">line 228</a>
     </li></ul></dd>
     
 
@@ -285,7 +285,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Linkifier.class.mjs.html">Linkifier.class.mjs</a>, <a href="Linkifier.class.mjs.html#line186">line 186</a>
+        <a href="Linkifier.class.mjs.html">Linkifier.class.mjs</a>, <a href="Linkifier.class.mjs.html#line212">line 212</a>
     </li></ul></dd>
     
 
@@ -348,7 +348,7 @@
 
         
             
-<h4 class="name" id="speciallyCapitalisedWords"><span class="type-signature"></span>speciallyCapitalisedWords<span class="type-signature"> :Array.&lt;string></span></h4>
+<h4 class="name" id="smallWords"><span class="type-signature type-signature-readonly">(readonly) </span>smallWords<span class="type-signature"> :Set.&lt;string></span></h4>
 
 
 
@@ -357,13 +357,14 @@
 <dl class="details">
     
     <dt class="tag-description">Description:</dt>
-    <dd class="tag-description"><ul class="dummy"><li><p>The list of known words with special capitalisations. The words should be capitalised in the descired manner.</p></li></ul></dd>
+    <dd class="tag-description"><ul class="dummy"><li><p>The set of known small words for title case conversions.</p>
+<p>This list is initialised with the list of small words from the title-case module augmented with the additionall small words defined in the defaults module.</p></li></ul></dd>
     
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Linkifier.class.mjs.html">Linkifier.class.mjs</a>, <a href="Linkifier.class.mjs.html#line110">line 110</a>
+        <a href="Linkifier.class.mjs.html">Linkifier.class.mjs</a>, <a href="Linkifier.class.mjs.html#line143">line 143</a>
     </li></ul></dd>
     
 
@@ -394,6 +395,15 @@
     
 
     
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="module-defaults.html#.smallWords">module:defaults.smallWords</a> for the additional small words added from the defaults module.</li>
+        
+            <li><a href="module-title-case.html">module:title-case</a> for details of the title-case dependency.</li>
+        </ul>
+    </dd>
+    
 
     
 </dl>
@@ -403,7 +413,8 @@
 
 
 <div class="description usertext">
-    <p>The list of known words with special capitalisations. The words should be capitalised in the descired manner.</p>
+    <p>The set of known small words for title case conversions.</p>
+<p>This list is initialised with the list of small words from the title-case module augmented with the additionall small words defined in the defaults module.</p>
 </div>
 
 
@@ -412,7 +423,94 @@
     <ul>
         <li>
             
-<span class="param-type">Array.&lt;string></span>
+<span class="param-type">Set.&lt;string></span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="speciallyCapitalisedWords"><span class="type-signature type-signature-readonly">(readonly) </span>speciallyCapitalisedWords<span class="type-signature"> :Set.&lt;string></span></h4>
+
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>The set of known of known words with special capitalisations.</p>
+<p>This list is initialised with the list of specially capitalised words from the defaults module.</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Linkifier.class.mjs.html">Linkifier.class.mjs</a>, <a href="Linkifier.class.mjs.html#line130">line 130</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="module-defaults.html#.speciallyCapitalisedWords">module:defaults.speciallyCapitalisedWords</a> for the initial list of specially capitalised words.</li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>The set of known of known words with special capitalisations.</p>
+<p>This list is initialised with the list of specially capitalised words from the defaults module.</p>
+</div>
+
+
+
+    <h5 class="h5-types">Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Set.&lt;string></span>
 
 
 
@@ -441,7 +539,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Linkifier.class.mjs.html">Linkifier.class.mjs</a>, <a href="Linkifier.class.mjs.html#line177">line 177</a>
+        <a href="Linkifier.class.mjs.html">Linkifier.class.mjs</a>, <a href="Linkifier.class.mjs.html#line203">line 203</a>
     </li></ul></dd>
     
 
@@ -519,7 +617,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Linkifier.class.mjs.html">Linkifier.class.mjs</a>, <a href="Linkifier.class.mjs.html#line102">line 102</a>
+        <a href="Linkifier.class.mjs.html">Linkifier.class.mjs</a>, <a href="Linkifier.class.mjs.html#line118">line 118</a>
     </li></ul></dd>
     
 
@@ -590,7 +688,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Linkifier.class.mjs.html">Linkifier.class.mjs</a>, <a href="Linkifier.class.mjs.html#line94">line 94</a>
+        <a href="Linkifier.class.mjs.html">Linkifier.class.mjs</a>, <a href="Linkifier.class.mjs.html#line110">line 110</a>
     </li></ul></dd>
     
 
@@ -681,7 +779,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Linkifier.class.mjs.html">Linkifier.class.mjs</a>, <a href="Linkifier.class.mjs.html#line301">line 301</a>
+        <a href="Linkifier.class.mjs.html">Linkifier.class.mjs</a>, <a href="Linkifier.class.mjs.html#line327">line 327</a>
     </li></ul></dd>
     
 
@@ -837,7 +935,7 @@ default will be used (<code>html</code>).</p></li></ul></dd>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Linkifier.class.mjs.html">Linkifier.class.mjs</a>, <a href="Linkifier.class.mjs.html#line343">line 343</a>
+        <a href="Linkifier.class.mjs.html">Linkifier.class.mjs</a>, <a href="Linkifier.class.mjs.html#line369">line 369</a>
     </li></ul></dd>
     
 
@@ -1047,7 +1145,7 @@ default will be used (<code>html</code>).</p></li></ul></dd>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Linkifier.class.mjs.html">Linkifier.class.mjs</a>, <a href="Linkifier.class.mjs.html#line226">line 226</a>
+        <a href="Linkifier.class.mjs.html">Linkifier.class.mjs</a>, <a href="Linkifier.class.mjs.html#line252">line 252</a>
     </li></ul></dd>
     
 
@@ -1237,7 +1335,7 @@ return the default transformer.</p></li></ul></dd>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Linkifier.class.mjs.html">Linkifier.class.mjs</a>, <a href="Linkifier.class.mjs.html#line265">line 265</a>
+        <a href="Linkifier.class.mjs.html">Linkifier.class.mjs</a>, <a href="Linkifier.class.mjs.html#line291">line 291</a>
     </li></ul></dd>
     
 
@@ -1397,7 +1495,7 @@ return the default transformer.</p></li></ul></dd>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Linkifier.class.mjs.html">Linkifier.class.mjs</a>, <a href="Linkifier.class.mjs.html#line151">line 151</a>
+        <a href="Linkifier.class.mjs.html">Linkifier.class.mjs</a>, <a href="Linkifier.class.mjs.html#line177">line 177</a>
     </li></ul></dd>
     
 
@@ -1552,7 +1650,7 @@ override the overall default for this domain and all its subdomains.</p></li></u
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Linkifier.class.mjs.html">Linkifier.class.mjs</a>, <a href="Linkifier.class.mjs.html#line242">line 242</a>
+        <a href="Linkifier.class.mjs.html">Linkifier.class.mjs</a>, <a href="Linkifier.class.mjs.html#line268">line 268</a>
     </li></ul></dd>
     
 
@@ -1711,7 +1809,7 @@ override the overall default for this domain and all its subdomains.</p></li></u
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Linkifier.class.mjs.html">Linkifier.class.mjs</a>, <a href="Linkifier.class.mjs.html#line212">line 212</a>
+        <a href="Linkifier.class.mjs.html">Linkifier.class.mjs</a>, <a href="Linkifier.class.mjs.html#line238">line 238</a>
     </li></ul></dd>
     
 
@@ -1870,7 +1968,7 @@ override the overall default for this domain and all its subdomains.</p></li></u
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Linkifier.class.mjs.html">Linkifier.class.mjs</a>, <a href="Linkifier.class.mjs.html#line128">line 128</a>
+        <a href="Linkifier.class.mjs.html">Linkifier.class.mjs</a>, <a href="Linkifier.class.mjs.html#line154">line 154</a>
     </li></ul></dd>
     
 
@@ -2029,7 +2127,7 @@ used.</p></td>
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Wed Apr 15 2026 17:49:51 GMT+0100 (Irish Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Thu Apr 16 2026 12:44:11 GMT+0100 (Irish Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>
