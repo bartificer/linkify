@@ -75,32 +75,41 @@
 
     <section class="readme usertext">
         <article><h1 id="linkify-from-bartificer-creations"><code>linkify</code> from Bartificer Creations</h1>
-<p>An MIT-licensed ES6 Javascript module for generating links in any format from a URL.</p>
-<p>This code was written by <a href="https://www.lets-talk.ie/contributor/bart">Bart Busschots</a> to speed up the creation of shownotes for the <a href="https://www.lets-talk.ie/lta">Let's Talk Apple</a> and the <a href="https://www.podfeet.com/blog/category/security-bits/">Security Bits</a> segments on the <a href="https://www.podfeet.com/blog/category/nosillacast/">NosillaCast</a>. It is released open-source as a courtesy to other podcasters and bloggers who regularly need to covert URLs into nicely formatted links.</p>
-<p>Pull requests and issues are welcomed, but on the understanding that this is a volunteer-maintained package, and all responses will be at the maintainer's discression as and when they have time. Realistically, you won't hear back from days or weeks, and if life is very hectic, perhaps even months.</p>
-<p>Given this reality, <strong>do not use this repository for anything mission-critical!</strong>.</p>
+<p>An MIT-licensed ES6 Javascript module for generating enriched links in any format from a URL via a promise-based API.</p>
+<p>This code was written by <a href="https://www.lets-talk.ie/contributor/bart">Bart Busschots</a> to speed up the creation of show notes for the <a href="https://www.lets-talk.ie/lta">Let's Talk Apple</a> podcast and the <a href="https://www.podfeet.com/blog/category/security-bits/">Security Bits</a> segments on the <a href="https://www.podfeet.com/blog/category/nosillacast/">NosillaCast</a>. This module is published under an open-source license as a courtesy to other podcasters and bloggers who regularly need to covert URLs into nicely formatted links.</p>
+<p>Pull requests and issues are welcomed, but on the understanding that this is a volunteer-maintained package, and all responses will be at the maintainer's discretion as and when time allows. Realistically, don't expect to hear back for at least a few days, more likely a few weeks, and possibly even a few months.</p>
+<p>Given this reality, <strong>do not use this repository for anything mission-critical!</strong></p>
 <h1 id="intended-purpose--key-features">Intended Purpose &amp; Key Features</h1>
-<p>This module's reason for existing is to take a URL, fetch and parse the web page's HTML to extract the page and section titles, pass the extracted data through a transformer function appropriate for the domain to extract the page's title, then render that to a link in any language using a desired template.</p>
-<p>This is not a module for simply converting a URL to a generic link. What makes it different is:</p>
+<p>This module's <em>raison d'être</em> is converting URLs to links with the target page's main content title as the link text. To achieve this the module fetches the page's content, parses it with <a href="https://cheerio.js.org">Cheerio</a>, extracts the page title and all top and second-level headings, applies per-domain logic to extract the best title from that data, then uses that to render a link in any format using a <a href="https://github.com/janl/mustache.js">Mustache</a> template.</p>
+<p>This is not a module for simply converting a URL to a generic link. </p>
+<p>The key features:</p>
 <ol>
-<li>Link titles are automatically exctracted from the actual web page using customiusable <em>data transformers</em></li>
-<li>Links can be rendered in any language using customisible templates.</li>
-<li>Web page processing functions and output templates are associated with domain names in a DNS-aware way</li>
+<li>Meaningful link titles can be programatically extracted from the actual web pages the URLs point to, and that logic can be customised per domain using <em>data transformers</em>.</li>
+<li>Since it has become more common for  sites to block scripted downloads (thanks AI!), the module will fall back to reversing URL slugs to derive meaningful titles without access to the page content. This reversing is enhanced with a title-case conversation, and that conversion can be configured to adjust the so-called <em>small words</em> (those that don't get a leading capital), and to define special words that have custom capitalisations like acronyms and product names, e.g. <code>NASA</code> and <code>iPhone</code>.</li>
+<li>Once the data has been extracted, it can be rendered in any format using customisable templates, and these templates can even be assigned on a per-domain basis if needed.</li>
+<li>All functionality that's attached to domain names is interpreted in a DNS-aware way, so a configuration for a parent domain is inherited by sub-domains, unless also defined at the sub-domain level. And global defaults are assigned by associating them with the root domain (<code>.</code>).</li>
 </ol>
-<p><em><strong>Note:</strong> in 2025 it started to become more common for websites to block scripted downloads (thanks AI!), so in 2026 fall-back functionality was added to fall back to reversing the URL slug when fetching the page fails.</em></p>
-<p>Data transformers and templates are resolved using the DNS hierarchy. For example, if you register a data transformer for the domain <code>bartificer.ie</code>, and then you process a link on the <code>www.bartificer.ie</code> domain, the module will first check if there is a transformer registered for <code>www.bartificer.ie</code>, if not it will find the  one registered for <code>bartificer.ie</code> and use that. This means that the data transformer and template registered against the DNS root domain <code>.</code> acts as defaults for all domains that don't have their own custom settings.</p>
-<p>To use this module you will need to write your own NodeJS script that:</p>
+<p>To make use of this model you need to write your own NodeJS script that:</p>
 <ol>
-<li>Imports this module</li>
-<li>Registers your required templates and data transformers</li>
-<li>Invokes the module's link generation function</li>
+<li><p>Imports this module.</p>
+</li>
+<li><p>Defines your customisations:</p>
+<ol>
+<li>Link rendering templates, perhaps assigned to specific domains.</li>
+<li>Data transformers, almost certainly assigned to specific domains.</li>
+<li>Title Case conversion tweaks — almost certainly a few domain topic-specific acronyms and specially capitalised words, and depending on your preferred style, perhaps some changes to the list of small words too.</li>
 </ol>
-<p>If this is more than you need, this module is not for you!</p>
+</li>
+<li><p>Invokes the module's link generation function (<code>linkify.generateLink(url)</code>).</p>
+</li>
+</ol>
+<p>If this is more than you need, or more than you feel comfortable doing, this module is not for you!</p>
 <h1 id="instalation--minimal-nodejs-example">Instalation &amp; Minimal NodeJS Example</h1>
 <p>Before you begin, make sure you have <a href="https://nodejs.org/en/download">the latest LTS version of NodeJS</a> installed!</p>
 <p>Create an empty folder and open a shell in that folder.</p>
-<p>First, install the module into your folder with the command:</p>
-<pre class="prettyprint source lang-sh"><code>npm install '@bartificer/linkifier';</code></pre><p>Test the module is working with a basic script that uses all the defaults and makes no customisations. Create a file named <code>test.mjs</code> with the following content:</p>
+<p>To get started, install the module into your folder with the command:</p>
+<pre class="prettyprint source lang-sh"><code>npm install '@bartificer/linkifier';</code></pre><p>Before writing your own scripts, test the module is working with a basic script that uses all the defaults and makes no customisations.</p>
+<p>Create a file named <code>test.mjs</code> with the following content:</p>
 <pre class="prettyprint source lang-javascript"><code>import { linkify } from '@bartificer/linkify';
 
 (async () => {
@@ -108,12 +117,19 @@
 })();</code></pre><p>Execute this script with the command:</p>
 <pre class="prettyprint source lang-sh"><code>node ./examples/clipboardURLToMarkdown.mjs</code></pre><p>This should print an HTML link to this module's Git repository.</p>
 <h1 id="customising-link-generation">Customising Link Generation</h1>
-<p>The module is very much intended to be customised, and while the module has been designed to make your customisation code concise and as self-documenting as possible, it's vital to understand the module's process for generating links.</p>
+<p>The modules key feature is customisability, and while the API has been designed to be both concise and self-documenting, unless you understand the module's process, and the points in that process where customisations get applied, confusion and frustration are inevitable!</p>
 <h2 id="the-link-generation-process">The Link Generation Process</h2>
 <p>The module's <code>generateLink(url)</code> function is the primary entry point, and the only required argument is a URL.</p>
-<p>This URL will be converted to a <code>PageData</code> object which capture's the various titles and headings found on the page.</p>
-<p>Based on the URL's domain, a <em>data transformer</em> will be resolved, and that function will convert the <code>PageData</code> object to a <code>LinkData</code> object containing just the fields needed to render a link.</p>
-<p>Based on the URL's domain, a <code>LinkTemplate</code> will be resolved, and that template will be combined with the <code>LinkData</code> object to render the link.</p>
+<p>The first step in the process is to attempt to fetch the page content and extract the relevant information from it. If that fails, the module will attempt to still resolve a title by reversing the URL slug and converting it to title case. Regardless of how the information was gathered, it will be collected into a <code>PageData</code> object.</p>
+<p>The second step is to convert the <code>PageData</code> object to a <code>LinkData</code> object, a representing the generic properties of a link — its URL, the link text, and optionally, a link description. This conversion is performed by a <em>Data Transformer Function</em>. The module ships with a somewhat intelligent generic data transformer that works for many websites, but you will inevitable need to define your own transformers and assign them to specific sub-domains. The module uses the domain part of the URL to determine which transformer to run.</p>
+<p>The final step in the process is to render the link by passing the <code>LinkData</code> object to a <code>LinkTemplate</code> object. Link templates always contain a Mustache template string defining the output link's structure, but that can also contain <em>Field Filter Functions</em> which sanitise the contents of the different fields in some way. Any function that takes a single string as input and produces a new string as an output can be used as a filter function. The module ships with a few commonly needed filter functions:</p>
+<ol>
+<li><code>linkify.util.regulariseWhitespace(text)</code> to replace all white space, even new lines and tabs, with single regular spaces.</li>
+<li><code>linkify.util.stripQueryString(url)</code> to remove the query string entirely</li>
+<li><code>linkify.util.stripUTMParameters(url)</code> to remove tracking parameters from the query string.</li>
+</ol>
+<p>Like data transformers, the domain part of the URL can be used to determine the template to use, though in most cases, you'll want to use your default template, which you should assign to the root DNS name, i.e. <code>.</code>.</p>
+<p>This entire process, including the customisations to the reversing of URL slugs, is illustrated in the <a href="https://mermaid.ai/open-source/">Mermaid</a> diagram below:</p>
 <pre class="prettyprint source lang-mermaid"><code>flowchart TD
     classDef inputNode fill:#cfc,color:#090,stroke:#000,stroke-width:2px;
     URL([fa:fa-circle-down URL]):::inputNode
@@ -170,37 +186,53 @@
     LDATA --> RENDER
     TPLOBJ --> RENDER
     RENDER --> LINK</code></pre><h2 id="customisation-points">Customisation Points</h2>
-<p>To customise the module effectively you'll need the API documentation — <a href="https://bartificer.github.io/linkify/">bartificer.github.io/linkify</a>.</p>
-<p>Before rendering links, you should do the following:</p>
+<p>In the diagram above the customisation points are the data stores, rendered with the standard cylindrical database icon. To successfully customise the module it's vital to familiarise yourself with the module's API. The source code has been extensively documented with <a href="https://jsdoc.app">JSDoc annotations</a>, allowing the following documentation to be generated — <a href="https://bartificer.github.io/linkify/">bartificer.github.io/linkify</a>.</p>
+<p>To get you started, here's a quick summary of some recommended steps for building an effective link generation script:</p>
 <ol>
 <li>Use an expanded import with at least the following:<pre class="prettyprint source lang-javascript"><code>import {linkify, LinkData, LinkTemplate} from '@bartificer/linkify';</code></pre></li>
-<li>If none of the out-of-the-box templates are appropriate (<code>linkify.templateNames</code> is the array of registered template names), register a custom template of you own and make it the defaukt. For example:<pre class="prettyprint source lang-javascript"><code>// register a template for Markdown links with an emoji pre-fixed
+<li>If none of the out-of-the-box templates are appropriate (<code>linkify.templateNames</code> is the array of registered template names), register a custom template of you own and make it the default. For example:<pre class="prettyprint source lang-javascript"><code>// register a template for Markdown links with an emoji pre-fixed
 linkify.registerTemplate('md-emoji', '🔗 [{{{title}}}]({{{url}}})');
 
 // make the new template the default for all domains
 linkfiy.registerDefaultTemplateMapping('.', 'md-emoji');</code></pre></li>
-<li>If the default data transformer's logic does not fit with your needs, register a new default. For example:<pre class="prettyprint source lang-javascript"><code>linkify.registerTransformer('.', (pData) => { new LinkData(pData.url, pData.title.replace(/ · GitHub$/, ' on GitHub')) });</code></pre></li>
+<li>If the default data transformer's logic doesn't fit your needs, register a new default. For example:<pre class="prettyprint source lang-javascript"><code>linkify.registerTransformer('.', (pData) => { // registering to the root domain .
+  // sanitise the URL
+  const url = linkify.util.stripUTMParameters(pData.url);
+  
+  // use the main heading (first h1, if any, or first h2) as the intial text and description
+  // collapse the white space first
+  let text = linkify.util.regulariseWhitespace(pData.mainHeading);
+  const description = text;
+  
+  // truncate the text if needed
+  if(text.length > 20){
+    text = text.substring(0, 19) + '…';
+  }
+  
+  // build a link data object and return it
+  return new LinkData(url, text, description);
+});</code></pre></li>
 <li>Register all needed domain-specific custom transformers. For Example:<pre class="prettyprint source lang-javascript"><code>linkify.RegisterTransformer('some.domain', (pData) => { new LinkData(pData.url, pData.h1s[1]) });</code></pre></li>
 <li>Fine-tune the reversing of URL slugs by adding additional words with custom capitalisations and/or small words that remain lower-case when converted to title case. For example:<pre class="prettyprint source lang-javascript"><code>linkify.smallWords.add('regardless');
 linkify.speciallyCapitalisedWords.add('UNICEF');</code></pre></li>
-<li>Very rarely, a different template is required for a given domain, in that case, assign the desirec tempalte at the domain level. For example:<pre class="prettyprint source lang-javascript"><code>// create a special template for your home domain
+<li>Sometimes, a different template is required for a specific domain, in that case, assign the desired template at the domain level. For example:<pre class="prettyprint source lang-javascript"><code>// create a special template for your home domain
 linkify.registerTemplate('md-home', '🏠 [{{{title}}}]({{{url}}})');
 
 // set that template as the default for just your domain (and its subdomains)
 linkfiy.registerDefaultTemplateMapping('your.home.domain', 'md-home');</code></pre></li>
 </ol>
 <h2 id="advanced-usage--tempalte-with-extra-field-extractor">Advanced Usage — Tempalte with Extra Field Extractor</h2>
-<p>Very very rarely a template needs to acces information that is not extracted from the page source by default. This is possible with the use of an extra field extractor function. From the point of view of a module user, the functionality is entirely exposed via the link template constrctor.</p>
+<p>Very rarely, a template needs access to information that's not extracted from the page source by default. This is possible with the use of an <em>Extra Field Extractor</em> function. Under the hood, the process is spread out over a number of classes, but from to keep things simple for users, the public interface to this functionality is entirely contained with the <code>LinkTemplate</code> class's constructor.</p>
 <p>To create a template that uses extra fields you must:</p>
 <ol>
 <li>Pass a custom field extractor function as the optional third argument to the <code>new LinkTemplate()</code> constructor.<ul>
-<li>This function will be passed just one argument, a <a href="https://cheerio.js.org/docs/api/classes/cheerio/">Cheerio object</a> representing the webpage's parsed DOM.</li>
+<li>This function will be passed just one argument, a <a href="https://cheerio.js.org/docs/api/classes/cheerio/">Cheerio object</a> representing the web page's parsed DOM.</li>
 <li>This function <strong>must</strong> return a plain object mapping field names to string values.</li>
 </ul>
 </li>
-<li>In the template string, reference the fields extracted by the extractor function as keys on the object <code>extraFields</code>. For example, if your extractor function returned fields named <code>permalink</code> and <code>volume</code>, theose two fields would be referenced in the template as <code>extraFields.permalink</code> &amp; <code>extraFields.volume</code>.</li>
+<li>In the template string, reference the fields extracted by the extractor function as keys on the object <code>extraFields</code>. For example, if your extractor function returned fields named <code>permalink</code> and <code>volume</code>, those two fields should be accessed as <code>extraFields.permalink</code> &amp; <code>extraFields.volume</code> in the template string.</li>
 </ol>
-<p>As a practical example, here is a custom template to render XKCD comics as Markdown links followed markdown images, with the comic number, comic title, comic permalink, and comic image URL extracte as extra fields and referenced in the template string:</p>
+<p>As a practical example, here's a custom template to render XKCD comics as Markdown links followed by markdown images, with the comic number, comic title, comic permalink, and comic image URL extracted from the DOM as extra fields and referenced in the template string:</p>
 <pre class="prettyprint source lang-javascript"><code>// register a special Markdown template for XKCD cartoons and make it the default for XKCD's domain
 linkify.registerTemplate('md-xkcd', new LinkTemplate(
     '[XKCD {{{extraFields.comicNumber}}}: {{{extraFields.title}}}]({{{extraFields.permalink}}})\n![ADD A DESCRIPTION FOR THE VISUALLY IMPAIRED HERE]({{{extraFields.imageLink}}} &quot;{{{extraFields.hoverText}}}&quot;)',
@@ -221,7 +253,7 @@ linkify.registerTemplate('md-xkcd', new LinkTemplate(
     }
 ));
 linkify.registerDefaultTemplateMapping('xkcd.com', 'md-xkcd');</code></pre><h1 id="real-world-examples">Real-World Examples</h1>
-<p>Two real-world scripts Bart users to build shownotes are included in <a href="https://github.com/bartificer/linkify/tree/master/example">the <code>/example</code> folder in the GitHub repostitory</a>:</p>
+<p>Two real-world scripts Bart uses to build shownotes are included in[the <a href="https://github.com/bartificer/linkify/tree/master/example"><code>/example</code> folder in the GitHub repostitory</a>:</p>
 <ol>
 <li><code>clipboardURLToMarkdown.mjs</code> — the script Bart uses to convert links to Markdown for use in show notes. This script contains a real-world example of a custom template, and, of a large collection of custom transformers registered against specific domain names for dealing with their various quirks.</li>
 <li><code>debugClipboardURL.mjs</code> — the script Bart uses to help develop custom transformers for any sites that need them.</li>
@@ -1038,7 +1070,7 @@ linkify.registerDefaultTemplateMapping('xkcd.com', 'md-xkcd');</code></pre><h1 i
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Thu Apr 16 2026 18:02:46 GMT+0100 (Irish Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Fri Apr 17 2026 13:22:11 GMT+0100 (Irish Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>
