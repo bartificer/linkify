@@ -2,6 +2,7 @@
 
 // import Commander.js
 import { program } from 'commander';
+import { linkify } from '@bartificer/linkify' // resolves because it matches the package name in ../package.json
 
 // set up the CLI's basics
 program
@@ -10,8 +11,8 @@ program
 
 // add a command to generate a link
 const generate = program.command('generate');
-generate.action(() => {
-    console.log('Hello World!');
+generate.action(async () => {
+    console.log(await linkify.generateLink('https://www.lets-talk.ie/'));
 });
 
 // execute the CLI
