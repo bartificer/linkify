@@ -1,0 +1,93 @@
+---
+// lib/config-loader.js (or inline in your main file)
+import { homedir } from 'os';
+import { join } from 'path';
+import { access } from 'fs/promises';
+
+function expandTilde(path) {
+  if (path.startsWith('~/') || path === '~') {
+    return join(homedir(), path.slice(1));
+  }
+  return path;
+}
+
+export async function loadConfig(configPath) {
+  const resolvedPath = expandTilde(configPath);
+  
+  try {
+    await access(resolvedPath);
+    // Dynamic import is the only way to conditionally load ES modules
+    const module = await import(resolvedPath);
+    return module.default || module;
+  } catch (error) {
+    // If file doesn't exist or import fails, return null
+    // We handle "file not found" gracefully, but maybe warn on syntax errors
+    if (error.code === 'ENOENT') {
+      return null;
+    }
+    throw new Error(`Failed to load config from ${resolvedPath}: ${error.message}`);
+  }
+}
+---
+
+---
+// bin/cli.js
+import { program } from 'commander';
+import { loadConfig } from './lib/config-loader.js';
+
+program
+  .name('linkify')
+  .version('1.0.0')
+  .option('-c, --config <path>', 'Path to config file (default: ~/.linkify-config.mjs)');
+
+// --- Command that DOES NOT need config (e.g., help, version, init) ---
+program
+  .command('init')
+  .description('Initialize a new project (no config needed)')
+  .action(() => {
+    console.log('Initializing... (Config skipped)');
+    // Logic here
+  });
+
+// --- Command that NEEDS config ---
+program
+  .command('process')
+  .description('Process files (requires config)')
+  // Add the hook ONLY to this command
+  .hook('preAction', async (thisCommand, actionCommand) => {
+    // 1. Determine the path
+    // Priority: CLI flag > Default path
+    const rawPath = thisCommand.opts().config;
+    const configPath = rawPath || '~/.linkify-config.mjs';
+    
+    // 2. Load it asynchronously
+    try {
+      const config = await loadConfig(configPath);
+      
+      // 3. Attach it to the command instance so the action can access it
+      thisCommand.config = config;
+      
+      if (!config) {
+        console.warn(`No config found at ${configPath}. Using defaults.`);
+      }
+    } catch (error) {
+      console.error(error.message);
+      process.exit(1);
+    }
+  })
+  .action(async (options, cmd) => {
+    // Access the config attached in the hook
+    const config = cmd.config; 
+    
+    if (config) {
+      console.log('Processing with config:', config);
+      // Use config values
+    } else {
+      console.log('Running with defaults.');
+    }
+    
+    // ... rest of your logic
+  });
+
+program.parse();
+---
