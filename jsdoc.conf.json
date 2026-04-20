@@ -10,7 +10,10 @@
         "verbose": true
     },
     "source": {
-        "include": ["./src/"],
+        "include": [
+            "./src/",
+            "./bin/"
+        ],
         "includePattern": ".+\\.(js|mjs|jsdoc)$"
     }, 
     "plugins": [

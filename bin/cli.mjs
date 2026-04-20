@@ -1,5 +1,24 @@
 #!/usr/bin/env node
 
+/**
+ * @file The code for the command-line interface.
+ * @author Bart Busschots <opensource@bartificer.ie>
+ * @license MIT
+ */
+
+/**
+ * A commandline inteface (CLI) published as `linkify`.
+ * 
+ * The CLI can be customised with a module that exports a configuration object as it's default export.
+ * @module cli
+ * @requires node:os
+ * @requires node:path
+ * @requires node:fs/promise
+ * @requires module:commander
+ * @requires linkify
+ * @see {@link cliConfigObject} for details the configuration object that can be used to customise the CLI.
+ */
+
 //
 // === Imports ===
 //
@@ -19,7 +38,11 @@ import { linkify } from '@bartificer/linkify'
 
 // --- Conditional Dynamic Imports ---
 
-// capture the config file name to make it easier to change my mind one
+/**
+ * The file name to to try read the config from in the user's home directory.
+ * @private
+ * @type {string}
+ */
 const CONFIG_FILE_NAME = `.linkify-config.mjs`;
 
 /**
@@ -27,6 +50,7 @@ const CONFIG_FILE_NAME = `.linkify-config.mjs`;
  * @param {string} [configPath] — an optional path to load the configuration from.
  * @returns {Object} If no config is found, an empty object is returned.
  * @throws {Error} An Error is thrown if an explicit path is passed and read access is denied, or the file fails to import.
+ * @private
  */
 async function loadConfig(configPath = ''){
     // determine the file path to try load from
@@ -69,16 +93,26 @@ async function loadConfig(configPath = ''){
 // === Build the CLI ===
 //
 
-// the loaded config
+/**
+ * The loaded config.
+ * @private
+ * @type {cliConfigObject}
+ */
 let config = {};
 
-// set up the CLI's basics
+/**
+ * The commander object representing the CLI itself.
+ * @type {module:commander.Command}
+ */
 const cli = new Command()
     .name('linkify')
     .version('0.0.1')
     .option('-c, --config <path>', `Path to config file (default: ~/${CONFIG_FILE_NAME})`);
 
-// add a command to generate a link
+/**
+ * The commander object representing the link generation sub-command.
+ * @type {module:commander.Command}
+ */
 const generate = cli.command('generate');
 generate.hook('preAction', async (cmd) => {
     // capture the passed config path, if any

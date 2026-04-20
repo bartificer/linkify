@@ -59,3 +59,10 @@
  * @property {boolean} uri.hasPath - whether or not the URL has a path, note that `/` is considered no path.
  * @see {@link https://medialize.github.io/URI.js/docs.html#static-parse}
  */
+
+/**
+ * A linkify command-line interface configuration object.
+ * 
+ * A custom configuration module must export an object of this type as it's default export.
+ * @typedef {Object} cliConfigObject
+ */

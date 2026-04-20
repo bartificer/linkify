@@ -1,19 +1,38 @@
 /**
- * The NPM module used to fetch URLs over HTTP(S).
- * @external module:node-fetch
- * @see {@link https://www.npmjs.com/package/node-fetch}
- */
-
-/**
  * The module used to parse HTML documents in a jQuery-like way in the NodeJS.
  * @external module:cheerio
  * @see {@link https://cheerio.js.org/docs/intro/}
  */
 
 /**
+ * The module powering the command-line interaface `linkify`.
+ * @external module:commander
+ * @see {@link https://github.com/tj/commander.js}
+ */
+
+/**
+ * The Commander.js class representing both a CLI aplication as a whole, and a sub-command within a CLI.
+ * @external module:commander.Command
+ * @see {@link https://github.com/tj/commander.js#declaring-program-variable}
+ * @see {@link https://github.com/tj/commander.js#commands}
+ */
+
+/**
  * The templating system used to describe link templates and generaete links.
  * @external module:mustache
  * @see {@link https://github.com/janl/mustache.js}
+ */
+
+/**
+ * The NPM module used to fetch URLs over HTTP(S).
+ * @external module:node-fetch
+ * @see {@link https://www.npmjs.com/package/node-fetch}
+ */
+ 
+/**
+ * The module used for intelligent conversions to newspaper-style title-case.
+ * @external module:title-case
+ * @see {@link https://www.npmjs.com/package/title-case}
  */
 
 /**
@@ -26,10 +45,4 @@
  * The module used to reverse URL slugs back to approximate page titles.
  * @external module:url-slug
  * @see {@link https://www.npmjs.com/package/url-slug}
- */
-
-/**
- * The module used for intelligent conversions to newspaper-style title-case.
- * @external module:title-case
- * @see {@link https://www.npmjs.com/package/title-case}
  */
