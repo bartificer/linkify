@@ -270,15 +270,21 @@ showConfig.action(async () => {
         }
     }
 
-    // the theme mappings
+    // the template mappings
     console.log(bold().green('\nDOMAIN → DEFAULT THEME MAPPINGS'));
     console.log(bold().green('-------------------------------'));
-    console.log('TO DO');
+    const tplMappings = CONFIG.linkifier.domainToDefaultTemplateNameMappings;
+    for(const domain of Object.keys(tplMappings).sort()){
+        console.log(`${domain == '.' ? bold().blue('DEFAULT') : blue(domain)} → ${tplMappings[domain]}`);
+    }
 
     // the data transformer mappings
     console.log(bold().green('\nDOMAIN → DATATRANSFORMER MAPPINGS'));
     console.log(bold().green('---------------------------------'));
-    console.log('TO DO');
+    const transformerMappings = CONFIG.linkifier.domainToTransformerMappings;
+    for(const domain of Object.keys(transformerMappings).sort()){
+        console.log(`${domain == '.' ? bold().blue('DEFAULT') : blue(domain)} → ${transformerMappings[domain].toString()}`);
+    }
 
     // the current small words list
     console.log(bold().green('\nSMALL WORDS'));

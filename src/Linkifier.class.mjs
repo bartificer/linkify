@@ -155,6 +155,15 @@ export class Linkifier {
     }
 
     /**
+     * The registered mappings from domain names to data transformers.
+     * @readonly
+     * @type {Object<string, dataTransformer>}
+     */
+    get domainToTransformerMappings(){
+        return {...this._pageDataToLinkDataTransmformers};
+    }
+
+    /**
      * Register a data transformer function to a domain name.
      *
      * @param {string} domain - The fully qualified domain for which this transformer should be
@@ -237,6 +246,15 @@ export class Linkifier {
      */
     get defaultTemplate(){
         return this._linkTemplates[this._pageDataToLinkTemplateName['.']];
+    }
+
+    /**
+     * The mappings of domain names to default template names.
+     * @readonly
+     * @type {Object<string, string>}
+     */
+    get domainToDefaultTemplateNameMappings(){
+        return {...this._pageDataToLinkTemplateName};
     }
 
     /**
