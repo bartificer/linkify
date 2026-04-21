@@ -110,18 +110,21 @@ export function batchFixCustomWordCases(str, customCapWords = new Set()){
  * 
  * @param {string} str - the string to convert to title case.
  * @param {Iterable<string>} [customCapWords] - a list of words with custom capitalisations to correct after title-casing. Defaults to {@link module:defaults.speciallyCapitalisedWords}.
- * @param {Iterable<string>} [smallWords] - a list of small words to preserve in lower case during title-casing. Defaults to {@link module:defaults.smallWords}.
+ * @param {Iterable<string>} [smallWords] - a list of small words to preserve in lower case during title-casing. Defaults to the set used by {@link module:title-case}.
  * @returns {string} the original string converted to title case, with the custom capitalisations applied.
  * @see {@link module:defaults.speciallyCapitalisedWords} for the default list of custom capitalisations.
  * @see {@link module:title-case} for the Title Case module who's `titleCase()` function is used to convert to title case, and which has its own default list of small words that are preserved in lower case.
- * @see {@link module:defaults.smallWords} for the additional list of small words that are preserved in lower case.
  */
 export function toTitleCase(str, customCapWords = new Set(), smallWords = new Set()){
     // coerce the first argument to a string
     let ans = String(str);
 
     // convert to title case
-    ans = titleCase.titleCase(ans, { smallWords });
+    if(smallWords.size > 0){
+        ans = titleCase.titleCase(ans, { smallWords });
+    } else {
+        ans = titleCase.titleCase(ans);
+    }
 
     // fix any words with unusual customisations
     ans = batchFixCustomWordCases(ans, customCapWords);
@@ -135,7 +138,7 @@ export function toTitleCase(str, customCapWords = new Set(), smallWords = new Se
  * 
  * @param {string} url - the URL to extract the slug from. The slug is taken to be the last segment of the path, with any file extension removed, and with the query string and fragment ignored.
  * @param {Iterable<string>} [customCapWords] - a list of words with custom capitalisations to correct after title-casing. Defaults to {@link module:defaults.speciallyCapitalisedWords}.
- * @param {Iterable<string>} [smallWords] - a list of small words to preserve in lower case during title-casing. Defaults to {@link module:defaults.smallWords}.
+ * @param {Iterable<string>} [smallWords] - a list of small words to preserve in lower case during title-casing to override the default behaviour in the title-casing utility function.
  * @returns {string} the slug extracted from the URL, converted to title case, with the custom capitalisations applied.
  * @see {@link module:defaults.speciallyCapitalisedWords} for the default list of custom capitalisations.
  * @see {@link toTitleCase} for the function used for the title-casing.

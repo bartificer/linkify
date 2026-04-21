@@ -12,10 +12,13 @@
  * @requires link-data
  * @requires link-template
  * @requires utilities
+ * @requires module:title-case
  */
 import { LinkData } from './LinkData.class.mjs';
 import { LinkTemplate } from './LinkTemplate.class.mjs';
 import * as utilities from "./utilities.mjs";
+
+import * as titleCase from 'title-case';
 
 /**
  * The default link transformer. The Linkifier constructor assigns this data transformer to the root DNS name `.`, ensuring it acts as the fallback when no other domains are matched.
@@ -69,13 +72,22 @@ export const linkTemplates = {
 };
 
 /**
- * When conbverting strings to title case, some joiner words should be preserved in all lower case. The Title Case module handles most appropriately, but not all.
+ * When converting strings to title case, some joiner words should be preserved in all lower case. The Title Case module handles most appropriately, but not all.
+ * These are the words the Title Case module treats as small words.
+ * @type {string[]}
+ * @see {@link module:utilities.toTitleCase} for the function that uses this list to treat these words as small words by default.
+ * @see {@link module:title-case} for the Title Case module who's default small word list is augmented by this list.
+ */
+export const importedSmallWords = titleCase.SMALL_WORDS;
+
+/**
+ * When converting strings to title case, some joiner words should be preserved in all lower case. The Title Case module handles most appropriately, but not all.
  * These are the additional words that also treated as so-called *small words* by the functions in the utility module.
  * @type {string[]}
  * @see {@link module:utilities.toTitleCase} for the function that uses this list to treat these words as small words by default.
  * @see {@link module:title-case} for the Title Case module who's default small word list is augmented by this list.
  */
-export const smallWords = [ 'is', 'its' ];
+export const extraSmallWords = [ 'is', 'its' ];
 
 /**
  * When converting strings to title case, some words need to have their capitalisations corrected. These are the custom capitalisations that will be used by default.

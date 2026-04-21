@@ -83,8 +83,8 @@ export class Linkifier {
          * @see {@link module:defaults.smallWords} for the additional small words added from the defaults module.
          * @see {@link module:title-case} for details of the title-case dependency.
          */
-        this._smallWords = new Set(titleCase.SMALL_WORDS);
-        defaults.smallWords.map(word => this._smallWords.add(word));
+        this._smallWords = new Set(defaults.importedSmallWords.SMALL_WORDS);
+        defaults.extraSmallWords.map(word => this._smallWords.add(word));
 
         /**
          * A collection of utility functions.

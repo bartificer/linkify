@@ -35,10 +35,11 @@ import { Command } from 'commander';
 
 // import the needed text formatting from kleur
 import kleur from 'kleur';
-const { bold, italic, green, grey } = kleur;
+const { bold, italic, blue, green, grey } = kleur;
 
 // import the required linkifier classes — resolves because the name here matches the package name in ../package.json
 import { Linkifier } from '@bartificer/linkify'
+//import { Linkifier } from '../src/Linkifier.class.mjs' // for debugging
 
 // --- Conditional Dynamic Imports ---
 
@@ -171,18 +172,66 @@ const loadConfigHook = async (cmd) => {
  */
 const showDefaults = cli.command('show-defaults').alias('defaults');
 showDefaults.action(async () => {
+    // the default templates
     console.log(bold().green('TEMPLATES'));
     console.log(bold().green('---------'));
     for(const [name, tpl] of Object.entries(Linkifier.defaults.linkTemplates)){
-        console.log(`\n${green(name)}`);
-        console.log(`  Mustache string: ${grey(tpl.templateString)}`);
-        if(tpl.hasFilters()){
-            console.log('  Filters: TO DO');
+        console.log(`\n${bold().green(name)}`);
+
+        // the template string
+        console.log(`Mustache string:\n${grey(tpl.templateString)}`);
+
+        // the filters
+        if(tpl.hasFilters){
+            console.log(`Filters: ${grey(tpl.numFilters)}`);
+            for(const [fieldName, filter] of tpl.filterTuples){
+                console.log(`${blue(fieldName)}: ${grey(filter.toString())}`);
+            }
         } else {
-            console.log(`${bold('filters:')} ${italic('none')}`);
+            console.log(`Filters: ${italic().grey('none')}`);
+        }
+
+        // the extra field extractor
+        if(tpl.hasExtraFields){
+            console.log(`Extra Field Extractor: ${grey(tpl.fieldExtractor.toString())}`);
+        } else {
+            console.log(`Extra Fields: ${italic().grey('not supported')}`);
         }
     }
-    console.log('TO DO — DEBUG');
+
+    // the default data transformer
+    console.log(bold().green('\nDATA TRANSFORMER'));
+    console.log(bold().green('----------------'));
+    console.log(grey(Linkifier.defaults.dataTransformer.toString()));
+
+    // the default small words list
+    console.log(bold().green('\nSMALL WORDS'));
+    console.log(bold().green('-----------'));
+    console.log(italic().grey('Used for the title-case conversion when reversing URL slugs'));
+    console.log(italic().grey(`The default short word list from the title-case NPM module with ${green('additions')}`));
+    let smallWords = new Set([...Linkifier.defaults.importedSmallWords, ...Linkifier.defaults.extraSmallWords]);
+    let smallWordsList = "";
+    const extraSmallWords = new Set(Linkifier.defaults.extraSmallWords);
+    [...smallWords].sort().forEach((smallWord, i, list) => {
+        if(i > 0){
+            smallWordsList += i === list.length -1 ? ' & ' : ', ';
+        }
+        smallWordsList += `'${extraSmallWords.has(smallWord) ? green(smallWord) : smallWord}'`;
+    });
+    console.log(smallWordsList);
+
+    // the default specially capitalised words list
+    console.log(bold().green('\nSPECIALLY CAPITALISED WORDS'));
+    console.log(bold().green('---------------------------'));
+    console.log(italic().grey('Used for the title-case conversion when reversing URL slugs'));
+    let specialWordsList = "";
+    Linkifier.defaults.speciallyCapitalisedWords.sort().forEach((word, i, list) => {
+        if(i > 0){
+            specialWordsList += i === list.length -1 ? ' & ' : ', ';
+        }
+        specialWordsList += `'${word}'`;
+    });
+    console.log(specialWordsList);
 });
 
 /**

@@ -85,14 +85,55 @@ export class LinkTemplate{
     }
 
     /**
-     * Whether or not the template has any filters assigned.
-     * @returns {boolean}
+     * Whether or not the template applies any field filters.
+     * @type {boolean}
      */
-    hasFilters(){
+    get hasFilters(){
         for(const fieldName of Object.keys(this._filters)){
             if(this._filters[fieldName].length) return true;
         }
         return false;
+    }
+
+    /**
+     * The number of field filters the template applies.
+     * @readonly
+     * @type {number}
+     */
+    get numFilters(){
+        let ans = 0;
+        for(const filterList of Object.values(this._filters)){
+            ans += filterList.length;
+        }
+        return ans;
+    }
+
+    /**
+     * All field filters, indexed by the fileld they apply to.
+     * @readonly
+     * @type {Object<string, templateFieldFilterFunction[]>}
+     */
+    get filters(){
+        const ans = {};
+        for(const fieldName of Object.keys(this._filters).sort()){
+            ans[fieldName] = [...this._filters[fieldName]];
+        }
+        return ans;
+    }
+
+    /**
+     * All field filters the template applies as tuples, the first value being the field the filter applies to, the second the filter itself. 
+     * @readonly
+     * @type {templateFieldFilterTuple[]}
+     */
+    get filterTuples(){
+        const ans = [];
+        for(const fieldName of Object.keys(this._filters).sort()){
+            for(const filter of this._filters[fieldName]){
+                ans.push([fieldName, filter]);
+            }
+        }
+        return ans;
     }
     
     /**
