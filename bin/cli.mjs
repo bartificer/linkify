@@ -242,7 +242,69 @@ showDefaults.action(async () => {
 const showConfig = cli.command('show-config').alias('config');
 showConfig.hook('preAction', loadConfigHook); // load the config for this command
 showConfig.action(async () => {
+    // the loaded templates
+    console.log(bold().green('AVAILABLE TEMPLATES'));
+    console.log(bold().green('-----------------'));
+    for(const name of CONFIG.linkifier.templateNames.sort()){
+        const tpl = CONFIG.linkifier.getTemplate(name);
+        console.log(`\n${bold().green(name)}`);
+
+        // the template string
+        console.log(`Mustache string:\n${grey(tpl.templateString)}`);
+
+        // the filters
+        if(tpl.hasFilters){
+            console.log(`Filters: ${grey(tpl.numFilters)}`);
+            for(const [fieldName, filter] of tpl.filterTuples){
+                console.log(`${blue(fieldName)}: ${grey(filter.toString())}`);
+            }
+        } else {
+            console.log(`Filters: ${italic().grey('none')}`);
+        }
+
+        // the extra field extractor
+        if(tpl.hasExtraFields){
+            console.log(`Extra Field Extractor: ${grey(tpl.fieldExtractor.toString())}`);
+        } else {
+            console.log(`Extra Fields: ${italic().grey('not supported')}`);
+        }
+    }
+
+    // the theme mappings
+    console.log(bold().green('\nDOMAIN → DEFAULT THEME MAPPINGS'));
+    console.log(bold().green('-------------------------------'));
     console.log('TO DO');
+
+    // the data transformer mappings
+    console.log(bold().green('\nDOMAIN → DATATRANSFORMER MAPPINGS'));
+    console.log(bold().green('---------------------------------'));
+    console.log('TO DO');
+
+    // the current small words list
+    console.log(bold().green('\nSMALL WORDS'));
+    console.log(bold().green('-----------'));
+    console.log(italic().grey('Used for the title-case conversion when reversing URL slugs'));
+    let smallWordsList = "";
+    [...CONFIG.linkifier.smallWords].sort().forEach((smallWord, i, list) => {
+        if(i > 0){
+            smallWordsList += i === list.length -1 ? ' & ' : ', ';
+        }
+        smallWordsList += `'${smallWord}'`;
+    });
+    console.log(smallWordsList);
+
+    // the current specially capitalised words list
+    console.log(bold().green('\nSPECIALLY CAPITALISED WORDS'));
+    console.log(bold().green('---------------------------'));
+    console.log(italic().grey('Used for the title-case conversion when reversing URL slugs'));
+    let specialWordsList = "";
+    [...CONFIG.linkifier.speciallyCapitalisedWords].sort().forEach((word, i, list) => {
+        if(i > 0){
+            specialWordsList += i === list.length -1 ? ' & ' : ', ';
+        }
+        specialWordsList += `'${word}'`;
+    });
+    console.log(specialWordsList);
 });
 
 /**
