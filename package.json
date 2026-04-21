@@ -21,7 +21,8 @@
   },
   "scripts": {
     "build": "webpack",
-    "docs": "rm -rf ./docs/* && npx jsdoc -c ./jsdoc.conf.json",
+    "docs": "docDir='./docs'; [[ -e \"$docDir\" ]] && rm -rf \"$docDir/\"*; npx jsdoc -c ./jsdoc.conf.json",
+    "docs-dev": "docDir='./docs-dev'; [[ -e \"$docDir\" ]] && rm -rf \"$docDir/\"*; npx jsdoc -c ./jsdoc.conf.json --private --destination \"$docDir/\"",
     "release": "npm run build && npm run docs && npm login && npm publish"
   },
   "repository": {
@@ -38,6 +39,7 @@
     "cheerio": "^1.0.0",
     "clipboardy": "^5.3.1",
     "commander": "^14.0.3",
+    "kleur": "^4.1.5",
     "mustache": "^4.2.0",
     "node-fetch": "^3.3.2",
     "title-case": "^4.3.2",

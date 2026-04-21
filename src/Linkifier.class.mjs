@@ -103,6 +103,7 @@ export class Linkifier {
     }
 
     /**
+     * A collection of utility functions, both used within the module's own code, and available for use when customising the module.
      * @type {Object.<string, Function>}
      * @readonly
      * @see {@link module:utilities} for the utility functions available in this collection.
@@ -117,6 +118,16 @@ export class Linkifier {
      */
     get util(){
         return this._utilities;
+    }
+
+    /**
+     * The default values used for renderig links.
+     * @type {Object}
+     * @readonly
+     * @see {@link module:defaults} for the list of defaults defined.
+     */
+    static get defaults() {
+        return defaults;
     }
 
     /**

@@ -15,6 +15,7 @@
  * @requires node:path
  * @requires node:fs/promise
  * @requires module:commander
+ * @requires module:kleur
  * @requires module:linkifier.Linkifier
  */
 
@@ -32,7 +33,11 @@ import fs from 'node:fs/promises';
 // import Commander.js (CLI framework)
 import { Command } from 'commander';
 
-// import the Linkifier class — resolves because the name here matches the package name in ../package.json
+// import the needed text formatting from kleur
+import kleur from 'kleur';
+const { bold, italic, green, grey } = kleur;
+
+// import the required linkifier classes — resolves because the name here matches the package name in ../package.json
 import { Linkifier } from '@bartificer/linkify'
 
 // --- Conditional Dynamic Imports ---
@@ -45,13 +50,18 @@ import { Linkifier } from '@bartificer/linkify'
 const CONFIG_FILE_NAME = `.linkify-config.mjs`;
 
 /**
- * A function to try import a customised Linkfifier object and/or CLI options from a configuration module. The module should
- * export a single object by default. The exported object should define one or both of the keys `linkifier` or `options`.
- * `linkifier` should be an instance of the `Linkifier` class, and `options` an object.
+ * The loaded config.
+ * @private
+ * @type {cliConfigurationObject}
+ */
+let CONFIG = null;
+
+/**
+ * A function to try import a customised Linkfifier object and/or CLI options from a configuration module.
  * 
- * If no path is passed, will try import from a file named `.linkify-config.mjs` in the user's home directory.
+ * If the path is empty, tries to import from a file named `.linkify-config.mjs` in the user's home directory.
  * 
- * If a path is passed, it will be coerced to a string with `String()`.
+ * Paths are coerced to strings with `String()` and resolved relative to the user's shell's current working directory.
  * @param {string} [configPath] — an optional path to import the configuration from.
  * @returns {cliConfigurationObject} if no path is passed, and there is no module in the default location, an empty object will be returned.
  * @throws {TypeError} A TypeError is thrown if the loaded module contains a key named `linfifier` that is not an instance of the `Linkifier` class, or, a key named `options` that is not an object.
@@ -63,8 +73,12 @@ async function importConfig(configPath = ''){
     configPath = String(configPath); // coerce the path to a string
     const fallingBackToDefault = configPath === '';
     if(fallingBackToDefault){
+        // build the default path
         configPath = path.join(os.homedir(), CONFIG_FILE_NAME);
         console.debug(`no config path specified, falling back to standard: ${configPath}`);
+    } else {
+        // resolve the passed path so it is relative to the user's current working directory in the shell
+        configPath = path.resolve(configPath);
     }
 
     // make sure the path exists
@@ -92,6 +106,7 @@ async function importConfig(configPath = ''){
         rawConfig = (await import(configPath)).default;
         console.debug('OK — config imported');
     } catch (err) {
+        console.debug(err);
         throw new Error('Failed to import configuration module', { cause: err });
     }
 
@@ -122,13 +137,6 @@ async function importConfig(configPath = ''){
 //
 
 /**
- * The loaded config.
- * @private
- * @type {cliConfigurationObject}
- */
-let CONFIG = null;
-
-/**
  * The commander object representing the CLI itself.
  * @type {module:commander.Command}
  */
@@ -138,11 +146,12 @@ const cli = new Command()
     .option('-c, --config <path>', `Path to config file (default: ~/${CONFIG_FILE_NAME})`);
 
 /**
- * The commander object representing the link generation sub-command.
- * @type {module:commander.Command}
+ * A re-usable hook for loading the config into the `CONFIG` variable.
+ * @private
+ * @function
+ * @param {module:commander.Command} cmd - the command loading the config.
  */
-const generate = cli.command('generate');
-generate.hook('preAction', async (cmd) => {
+const loadConfigHook = async (cmd) => {
     // capture the passed config path, if any
     const configPath = cli.opts().config || '';
 
@@ -153,7 +162,47 @@ generate.hook('preAction', async (cmd) => {
       console.error(`FATAL: ${err.message}`);
       process.exit(1);
     }
+};
+
+/**
+ * The commander object representing the sub-command for showing the defaults.
+ * @private
+ * @type {module:commander.Command}
+ */
+const showDefaults = cli.command('show-defaults').alias('defaults');
+showDefaults.action(async () => {
+    console.log(bold().green('TEMPLATES'));
+    console.log(bold().green('---------'));
+    for(const [name, tpl] of Object.entries(Linkifier.defaults.linkTemplates)){
+        console.log(`\n${green(name)}`);
+        console.log(`  Mustache string: ${grey(tpl.templateString)}`);
+        if(tpl.hasFilters()){
+            console.log('  Filters: TO DO');
+        } else {
+            console.log(`${bold('filters:')} ${italic('none')}`);
+        }
+    }
+    console.log('TO DO — DEBUG');
 });
+
+/**
+ * The commander object representing the sub-command for showing the loaded config.
+ * @private
+ * @type {module:commander.Command}
+ */
+const showConfig = cli.command('show-config').alias('config');
+showConfig.hook('preAction', loadConfigHook); // load the config for this command
+showConfig.action(async () => {
+    console.log('TO DO');
+});
+
+/**
+ * The commander object representing the link generation sub-command.
+ * @private
+ * @type {module:commander.Command}
+ */
+const generate = cli.command('generate');
+generate.hook('preAction', loadConfigHook); // load the config for this command
 generate.action(async () => {
     console.log(await CONFIG.linkifier.generateLink('https://www.lets-talk.ie/'));
 });

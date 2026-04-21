@@ -83,6 +83,17 @@ export class LinkTemplate{
     set templateString(templateString){
         this._templateString = String(templateString);
     }
+
+    /**
+     * Whether or not the template has any filters assigned.
+     * @returns {boolean}
+     */
+    hasFilters(){
+        for(const fieldName of Object.keys(this._filters)){
+            if(this._filters[fieldName].length) return true;
+        }
+        return false;
+    }
     
     /**
      * Add a filter to be applied to one or all fields.

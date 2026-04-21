@@ -18,6 +18,12 @@
  */
 
 /**
+ * The module used to provide formatted text in the CLI.
+ * @external module:kleur
+ * @see {@link https://github.com/lukeed/kleur#readme}
+ */
+
+/**
  * The templating system used to describe link templates and generaete links.
  * @external module:mustache
  * @see {@link https://github.com/janl/mustache.js}
