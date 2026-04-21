@@ -61,8 +61,9 @@
  */
 
 /**
- * A linkify command-line interface configuration object.
- * 
- * A custom configuration module must export an object of this type as it's default export.
- * @typedef {Object} cliConfigObject
+ * A plain object containing configuration information for the commandline interface (CLI).
+ * @typedef {Object} cliConfigurationObject
+ * @property {module:linkifier.Linkifier} [linkifier] a configured linkifier for use by the CLI.
+ * @property {Object} [options] values for the options accepted by the CLI.
+ * @see {@link module:cli}
  */
