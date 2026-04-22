@@ -5,6 +5,12 @@
  */
 
 /**
+ * The module used to interact with the clipboard.
+ * @external module:clipboardy
+ * @see {@link https://github.com/sindresorhus/clipboardy}
+ */
+
+/**
  * The module powering the command-line interaface `linkify`.
  * @external module:commander
  * @see {@link https://github.com/tj/commander.js}

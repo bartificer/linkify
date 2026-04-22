@@ -14,6 +14,7 @@
  * @requires node:os
  * @requires node:path
  * @requires node:fs/promise
+ * @requires module:clipboardy
  * @requires module:commander
  * @requires module:kleur
  * @requires module:linkifier.Linkifier
@@ -35,7 +36,10 @@ import { Command } from 'commander';
 
 // import the needed text formatting from kleur
 import kleur from 'kleur';
-const { bold, italic, blue, green, grey } = kleur;
+const { bold, italic, blue, green, grey, red } = kleur;
+
+// import the clipboard support
+import clipboard from 'clipboardy';
 
 // import the required linkifier classes — resolves because the name here matches the package name in ../package.json
 import { Linkifier } from '@bartificer/linkify'
@@ -76,7 +80,7 @@ async function importConfig(configPath = ''){
     if(fallingBackToDefault){
         // build the default path
         configPath = path.join(os.homedir(), CONFIG_FILE_NAME);
-        console.debug(`no config path specified, falling back to standard: ${configPath}`);
+        debug(`no config path specified, falling back to standard: ${configPath}`);
     } else {
         // resolve the passed path so it is relative to the user's current working directory in the shell
         configPath = path.resolve(configPath);
@@ -84,12 +88,12 @@ async function importConfig(configPath = ''){
 
     // make sure the path exists
     try{
-        console.debug(`checking read access to configuartion module path: ${configPath}`);
+        debug(`checking read access to configuartion module path: ${configPath}`);
         await fs.access(configPath, fs.constants.R_OK);
     } catch (err){
         // only we're only trying as a fallback, don't throw an error, just return an empty object
         if(fallingBackToDefault){
-            console.debug('failed read configuration module, returning default Linkifier and empty option list');
+            debug('failed read configuration module, returning default Linkifier and empty option list');
             return {
                 linkifier: new Linkifier(),
                 options: {}
@@ -103,11 +107,11 @@ async function importConfig(configPath = ''){
     // try load the config
     let rawConfig = null;
     try {
-        console.debug(`Attempting to import configuration module from: ${configPath}`);
+        debug(`attempting to import configuration module from: ${configPath}`);
         rawConfig = (await import(configPath)).default;
-        console.debug('OK — config imported');
+        debug(`${green('OK')} — config imported`);
     } catch (err) {
-        console.debug(err);
+        debug(`${red('FAILED')} with error: ${err.message}`);
         throw new Error('Failed to import configuration module', { cause: err });
     }
 
@@ -134,6 +138,44 @@ async function importConfig(configPath = ''){
 }
 
 //
+// === CLI Helper Functions
+//
+
+/**
+ * Write debug messages.
+ * @param {string|*} msg - the primary message, passed to `console.debug` as the first argument.
+ * @param {...*} extraArgs - additional arguments are passed through to `console.debug`.
+ */
+function debug(msg, ...extraArgs){
+    // unless debug mode is enabled, just return
+    if(!(cli && cli.opts().debug)) return;
+
+    // if the first argument is a string, format it
+    if(typeof msg == 'string'){
+        msg = grey(`${bold('DEBUG:')} ${msg}`);
+    }
+
+    // pass the arguments through to console.debug
+    console.debug(msg, ...extraArgs);
+}
+
+/**
+ * Exit with fatal error.
+ * @param {string|*} msg - the primary message, passed to `console.error` as the first argument.
+ * @param {...*} extraArgs - additional arguments are passed through to `console.error`.
+ */
+function fatal(msg, ...extraArgs){
+    // if the first argument is a string, format it
+    if(typeof msg == 'string'){
+        msg = red(`${bold('FATAL:')} ${msg}`);
+    }
+
+    // pass the arguments through to console.error, then kill the process
+    console.error(msg, ...extraArgs);
+    process.exit(1);
+}
+
+//
 // === Build the CLI ===
 //
 
@@ -144,7 +186,9 @@ async function importConfig(configPath = ''){
 const cli = new Command()
     .name('linkify')
     .version('0.0.1')
-    .option('-c, --config <path>', `Path to config file (default: ~/${CONFIG_FILE_NAME})`);
+    .description('Convert URLs to rich links in any format based on the page contents.')
+    .option('-C, --config <path>', `path to config file (default: ~/${CONFIG_FILE_NAME})`)
+    .option('-d, --debug', 'enable debug mode');
 
 /**
  * A re-usable hook for loading the config into the `CONFIG` variable.
@@ -160,8 +204,7 @@ const loadConfigHook = async (cmd) => {
     try {
         CONFIG = await importConfig(configPath);
     } catch (err) {
-      console.error(`FATAL: ${err.message}`);
-      process.exit(1);
+        fatal(err.message);
     }
 };
 
@@ -170,7 +213,9 @@ const loadConfigHook = async (cmd) => {
  * @private
  * @type {module:commander.Command}
  */
-const showDefaults = cli.command('show-defaults').alias('defaults');
+const showDefaults = cli.command('show-defaults')
+    .alias('defaults')
+    .summary('show configuration defaults');
 showDefaults.action(async () => {
     // the default templates
     console.log(bold().green('TEMPLATES'));
@@ -239,7 +284,9 @@ showDefaults.action(async () => {
  * @private
  * @type {module:commander.Command}
  */
-const showConfig = cli.command('show-config').alias('config');
+const showConfig = cli.command('show-config')
+    .alias('config')
+    .summary('show active configuration');
 showConfig.hook('preAction', loadConfigHook); // load the config for this command
 showConfig.action(async () => {
     // the loaded templates
@@ -318,16 +365,56 @@ showConfig.action(async () => {
  * @private
  * @type {module:commander.Command}
  */
-const generate = cli.command('generate');
+const generate = cli.command('generate-link')
+    .alias('generate')
+    .summary('generate a link from a URL')
+    .option('--from-clipboard', 'read the URL from the clipboard')
+    .option('--to-clipboard', 'write the link to the clipboard')
+    .option('-c, --clipboard', 'read the URL from the clipboard and write the link to the clipboard')
+    .argument('[url]', 'the URL to generate a link for, can also be read from the clipboard with the appropriate flags, or piped to to the command');
 generate.hook('preAction', loadConfigHook); // load the config for this command
-generate.action(async () => {
-    console.log(await CONFIG.linkifier.generateLink('https://www.lets-talk.ie/'));
+generate.action(async (u, opts) => {
+    // resolve the URL to convert in the following order
+    // 1. Read from the clipboard if an appropriate option was passed
+    // 2. read from the argument, if passed
+    // 3. try read from the input pipe
+    // 4. throw an error
+    let url = '';
+    if(opts.clipboard || opts.fromClipboard){
+        url = await clipboard.read();
+    } else if(u) {
+        url = u;
+    } else if(!process.stdin.isTTY) { // only read from pipes, not from keyboards!
+        //url = await fs.readFile(process.stdin, { encoding: 'utf8' });
+
+        const pipeReadHelper = function(){
+            return new Promise((resolve, reject) => {
+                let data = '';
+                process.stdin.setEncoding('utf8');
+                process.stdin.on('data', (chunk) => (data += chunk));
+                process.stdin.on('end', () => resolve(data));
+                process.stdin.on('error', reject);
+            });
+        }; 
+        url = await pipeReadHelper();
+    } else {
+        throw new Error('no URL passed');
+    }
+
+    // generate the link
+    const link = await CONFIG.linkifier.generateLink(url);
+
+    // output the link
+    if(opts.clipboard || opts.toClipboard){
+        await clipboard.write(link);
+    } else {
+        console.log(link);
+    }
 });
 
 // execute the CLI
 try {
     cli.parse(process.argv);
 } catch (err) {
-    console.error(`FATAL: ${err.message}`);
-    process.exit(1);
+    fatal(err.message);
 }
