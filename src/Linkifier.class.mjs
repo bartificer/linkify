@@ -249,6 +249,16 @@ export class Linkifier {
     }
 
     /**
+     * Check whether or not a template is registered with the given name
+     * @param {string} tplName - the template name to check.
+     * @returns {boolean}
+     */
+    hasTemplate(tplName){
+        tplName = String(tplName);
+        return this._linkTemplates.hasOwnProperty(tplName);
+    }
+
+    /**
      * The mappings of domain names to default template names.
      * @readonly
      * @type {Object<string, string>}
