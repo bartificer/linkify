@@ -21,6 +21,14 @@ import * as utilities from "./utilities.mjs";
 import * as titleCase from 'title-case';
 
 /**
+ * The file name to to try read the config from in the user's home directory.
+ * @type {string}
+ * @default ".linkify-config.mjs"
+ * @see {@link module:linkifier.Linkifier.importConfig} for details of how this default file name is used.
+ */
+export const configFilename = `.linkify-config.mjs`;
+
+/**
  * The default link transformer. The Linkifier constructor assigns this data transformer to the root DNS name `.`, ensuring it acts as the fallback when no other domains are matched.
  * 
  * If the page has exactly one top-level heading, this heading is used as a the link text, otherwise the page title is used.

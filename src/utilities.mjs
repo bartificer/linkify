@@ -10,6 +10,7 @@
  * This module is exposed to end-users as {@link module:linkifier.Linkifier#utilities} and {@link module:linkifier.Linkifier#util}.
  * @module utilities
  * @requires defaults
+ * @requires module:kleur
  * @requires module:urijs
  * @requires module:url-slug
  * @requires module:title-case
@@ -17,9 +18,87 @@
  * @see {@link module:linkifier.Linkifier#util} for the short-cut to this module exposed on the Linkifier class.
  */
 import * as defaults from './defaults.mjs';
+import kleur from 'kleur';
+const { bold, italic, blue, green, grey, red, yellow } = kleur;
+import * as titleCase from 'title-case';
 import URI from 'urijs';
 import * as urlSlug from 'url-slug';
-import * as titleCase from 'title-case';
+
+/**
+ * Write a debug message to STDOUT.
+ * @param {string|*} msg - the primary message, passed to `console.debug` as the first argument.
+ * @param {...*} extraArgs - additional arguments are passed through to `console.debug`.
+ */
+export function debug(msg, ...extraArgs){
+    // if the first argument is a string, format it
+    if(typeof msg == 'string'){
+        msg = grey(`${bold('DEBUG:')} ${msg}`);
+    }
+
+    // pass the arguments through to console.debug
+    console.debug(msg, ...extraArgs);
+}
+
+/**
+ * Write an informational message to STDOUT.
+ * @param {string|*} msg - the primary message, passed to `console.log` as the first argument.
+ * @param {...*} extraArgs - additional arguments are passed through to `console.log`.
+ */
+export function info(msg, ...extraArgs){
+    // if the first argument is a string, format it
+    if(typeof msg == 'string'){
+        msg = `${blue().bold('INFO:')} ${msg}`;
+    }
+
+    // pass the arguments through to console.debug
+    console.log(msg, ...extraArgs);
+}
+
+/**
+ * Write a warning message to STDERR.
+ * @param {string|*} msg - the primary message, passed to `console.error` as the first argument.
+ * @param {...*} extraArgs - additional arguments are passed through to `console.error`.
+ */
+export function warn(msg, ...extraArgs){
+    // if the first argument is a string, format it
+    if(typeof msg == 'string'){
+        msg = `${yellow().bold('WARNING:')} ${msg}`;
+    }
+
+    // pass the arguments through to console.error
+    console.error(msg, ...extraArgs);
+}
+
+/**
+ * Write an error message to STDERR.
+ * @param {string|*} msg - the primary message, passed to `console.error` as the first argument.
+ * @param {...*} extraArgs - additional arguments are passed through to `console.error`.
+ */
+export function error(msg, ...extraArgs){
+    // if the first argument is a string, format it
+    if(typeof msg == 'string'){
+        msg = red(`${bold('ERROR:')} ${msg}`);
+    }
+
+    // pass the arguments through to console.error
+    console.error(msg, ...extraArgs);
+}
+
+/**
+ * Terminate with fatal error to STDERR.
+ * @param {string|*} msg - the primary message, passed to `console.error` as the first argument.
+ * @param {...*} extraArgs - additional arguments are passed through to `console.error`.
+ */
+export function fatal(msg, ...extraArgs){
+    // if the first argument is a string, format it
+    if(typeof msg == 'string'){
+        msg = red(`${bold('FATAL:')} ${msg}`);
+    }
+
+    // pass the arguments through to console.error, then kill the process
+    console.error(msg, ...extraArgs);
+    process.exit(1);
+}
 
 /**
  * Check if a value can be used as a URL.
