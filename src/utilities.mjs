@@ -25,11 +25,45 @@ import URI from 'urijs';
 import * as urlSlug from 'url-slug';
 
 /**
- * Write a debug message to STDOUT.
+ * Whether or not to print debug messages.
+ * @readonly
+ * @type {boolean}
+ * @default false
+ */
+export let doDebug = false;
+
+/**
+ * Set whether or not debug messages will be printed.
+ * @param {boolean} debugStatus - `true` to enable the printing of debug messages, `false` to disable it.
+ */
+export function setDebugStatus(debugStatus){
+    doDebug = Boolean(debugStatus);
+    if(doDebug) debug('debug messages enabled');
+}
+
+/**
+ * Enable the printing of debug messages.
+ */
+export function enableDebugMessages(){
+    setDebugStatus(true);
+}
+
+/**
+ * Disable the printing of debug messages.
+ */
+export function disableDebugMessages(){
+    setDebugStatus(false);
+}
+
+/**
+ * Write a debug message to STDOUT if `doDebug` is not `false`.
  * @param {string|*} msg - the primary message, passed to `console.debug` as the first argument.
  * @param {...*} extraArgs - additional arguments are passed through to `console.debug`.
  */
 export function debug(msg, ...extraArgs){
+    // if debugging is disabled, just return
+    if (!doDebug) return;
+
     // if the first argument is a string, format it
     if(typeof msg == 'string'){
         msg = grey(`${bold('DEBUG:')} ${msg}`);

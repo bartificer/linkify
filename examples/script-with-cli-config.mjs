@@ -14,6 +14,9 @@ import { Linkifier } from '@bartificer/linkify';
 // get the config path, if any
 const configPath = process.argv[2] ? String(process.argv[2]) : '';
 
+// enable debug messages to help illuminate the module's processes
+Linkifier.utilities.enableDebugMessages();
+
 // because the Linkify API is promise-based, wrap the script logic in a self-executing anonymous async function
 (async () => {
     // to get a pre-configured instance of the Linkifier class from a
