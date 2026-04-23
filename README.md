@@ -1,37 +1,29 @@
 # `linkify` from Bartificer Creations
 
-An MIT-licensed ES6 Javascript module for generating enriched links in any format from a URL via a promise-based API.
+An MIT-licensed command line app and ES6 Javascript module for generating links in any format from a URL. Users can define their own templates and processing logic in Javascript and templates can utilise information from actual web pages.
 
-This code was written by [Bart Busschots](https://www.lets-talk.ie/contributor/bart) to speed up the creation of show notes for the [Let's Talk Apple](https://www.lets-talk.ie/lta) podcast and the [Security Bits](https://www.podfeet.com/blog/category/security-bits/) segments on the [NosillaCast](https://www.podfeet.com/blog/category/nosillacast/). This module is published under an open-source license as a courtesy to other podcasters and bloggers who regularly need to covert URLs into nicely formatted links.
+[Bart Busschots](https://www.lets-talk.ie/contributor/bart) created this tool to speed up the creation of show notes for the [Let's Talk Apple](https://www.lets-talk.ie/lta) podcast and the [Security Bits](https://www.podfeet.com/blog/category/security-bits/) segments on the [NosillaCast](https://www.podfeet.com/blog/category/nosillacast/). This module is published under an open-source license as a courtesy to other podcasters and bloggers who regularly need to covert URLs into nicely formatted links.
 
-Pull requests and issues are welcomed, but on the understanding that this is a volunteer-maintained package, and all responses will be at the maintainer's discretion as and when time allows. Realistically, don't expect to hear back for at least a few days, more likely a few weeks, and possibly even a few months.
+Pull requests and issues are welcomed, but on the understanding that this tool is volunteer-maintained. All responses will be at the Bart's discretion as and when time allows. Realistically, don't expect to hear back for at least a few days, more likely a few weeks, and possibly even a few months.
 
-Given this reality, **do not use this repository for anything mission-critical!**
+Given this reality, **use this tool at your own risk!**
 
 # Intended Purpose & Key Features
 
 This module's *raison d'être* is converting URLs to links with the target page's main content title as the link text. To achieve this the module fetches the page's content, parses it with [Cheerio](https://cheerio.js.org), extracts the page title and all top and second-level headings, applies per-domain logic to extract the best title from that data, then uses that to render a link in any format using a [Mustache](https://github.com/janl/mustache.js) template.
 
-This is not a module for simply converting a URL to a generic link. 
+This is not a tool for simply converting a URL to a generic link. Unless you need to enrich your links with information from the web pages the links point to, it's probably overkill for you! 
 
 The key features:
 
-1. Meaningful link titles can be programatically extracted from the actual web pages the URLs point to, and that logic can be customised per domain using *data transformers*.
-2. Since it has become more common for  sites to block scripted downloads (thanks AI!), the module will fall back to reversing URL slugs to derive meaningful titles without access to the page content. This reversing is enhanced with a title-case conversation, and that conversion can be configured to adjust the so-called *small words* (those that don't get a leading capital), and to define special words that have custom capitalisations like acronyms and product names, e.g. `NASA` and `iPhone`.
-3. Once the data has been extracted, it can be rendered in any format using customisable templates, and these templates can even be assigned on a per-domain basis if needed.
-4. All functionality that's attached to domain names is interpreted in a DNS-aware way, so a configuration for a parent domain is inherited by sub-domains, unless also defined at the sub-domain level. And global defaults are assigned by associating them with the root domain (`.`).
+1. Meaningful link titles can be programatically extracted from the web pages the URLs point to, and the extraction logic can be customised per domain using *data transformers* (JavaScript functions).
+2. Since it has become more common for sites to block scripted downloads (thanks AI!), the tool  falls back to reversing URL slugs to derive meaningful titles when URLs can't be fetched. This reversing is enhanced with a title-case conversation, and that conversion can be configured to adjust the so-called *small words* (those that don't get a leading capital), and to define special words that have custom capitalisations like acronyms and product names, e.g. `NASA` and `iPhone`.
+3. Once the data has been extracted, it can be rendered in any format using customisable templates, and these templates can also be assigned on a per-domain basis if needed.
+4. All functionality that's attached to domain names is interpreted in a DNS-aware way, so a configuration for a parent domain is inherited by its sub-domains, unless also defined at the sub-domain level. Global defaults can be defined by associating tranformers and templates the root domain (`.`).
 
-To make use of this model you need to write your own NodeJS script that:
+To make use of this tool's primary features you need to write your own JavaScript code to define data transformers and templates, and assign them tomdomain names.
 
-1. Imports this module.
-2. Defines your customisations:
-   1. Link rendering templates, perhaps assigned to specific domains.
-   2. Data transformers, almost certainly assigned to specific domains.
-   3. Title Case conversion tweaks — almost certainly a few domain topic-specific acronyms and specially capitalised words, and depending on your preferred style, perhaps some changes to the list of small words too.
-
-3. Invokes the module's link generation function (`linkify.generateLink(url)`).
-
-If this is more than you need, or more than you feel comfortable doing, this module is not for you!
+The CLI may be useful in it's default state, but it was very much intended to be customised.
 
 # Instalation & Minimal NodeJS Example
 
