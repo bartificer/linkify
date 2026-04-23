@@ -414,17 +414,17 @@ export class Linkifier {
     }
 
     /**
-     * Get the data transformer function for a given domain.
+     * Get the template name for a given domain.
      *
      * Note that domains are searched from the subdomain up. For example, if passed
      * the domain `www.bartificer.ie` the function will first look for a
-     * transformer for the domain `www.bartificer.ie`, if there's no transformer
-     * registered for that domain it will look for a transformer for the domain
-     * `bartificer.ie`, if there's no transformer for that domain either it will
-     * return the default transformer.
+     * template for the domain `www.bartificer.ie`, if there's no template
+     * registered for that domain it will look for a template for the domain
+     * `bartificer.ie`, if there's no template for that domain either it will
+     * return the default template.
      *
-     * @param {string} domain - The fully qualified domain name to get the data transformer for.
-     * @returns {dataTransformer}
+     * @param {string} domain - The fully qualified domain name to get the template for.
+     * @returns {string}
      */
     getTemplateNameForDomain(domain){
         // TO DO - add validation
@@ -453,6 +453,23 @@ export class Linkifier {
         }
         //console.log('returning default template name');
         return this._pageDataToLinkTemplateName['.'];
+    }
+
+    /**
+     * Get the template for a given domain.
+     *
+     * Note that domains are searched from the subdomain up. For example, if passed
+     * the domain `www.bartificer.ie` the function will first look for a
+     * template for the domain `www.bartificer.ie`, if there's no template
+     * registered for that domain it will look for a template for the domain
+     * `bartificer.ie`, if there's no template for that domain either it will
+     * return the default template.
+     *
+     * @param {string} domain - The fully qualified domain name to get the template for.
+     * @returns {string}
+     */
+    getTemplateForDomain(domain){
+        return this.getTemplate(this.getTemplateNameForDomain(domain));
     }
 
     /**

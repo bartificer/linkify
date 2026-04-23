@@ -11,9 +11,9 @@
  * @module utilities
  * @requires defaults
  * @requires module:kleur
+ * @requires module:title-case
  * @requires module:urijs
  * @requires module:url-slug
- * @requires module:title-case
  * @see {@link module:linkifier.Linkifier#utilities} for the short-cut to this module exposed on the Linkifier class.
  * @see {@link module:linkifier.Linkifier#util} for the short-cut to this module exposed on the Linkifier class.
  */
