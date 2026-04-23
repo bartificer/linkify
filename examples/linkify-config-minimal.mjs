@@ -1,3 +1,8 @@
+// Example Linkifier Customisation Module - Minimal
+// ================================================
+// A customisation module defining defining both link generation customisations
+// and default CLI options.
+
 // Import the Needed Linkify Classes
 // ---------------------------------
 // 1. Linkifier - required for all link generation configuation customisations

@@ -1,6 +1,9 @@
-// Note: this is a snapshot of the actual custom configuration Bart Busschots
-// uses when writting show notes for the Let's Talk Apple podcast and the
-// Security Bits segment on the NosillaCast Podcast as of April 2026.
+// Example Linkifier Customisation Module - Real-World
+// ================================================
+// This customisation module defines both link generation customisations and
+// default CLI options. It is a snapshot of the actual customisations Bart
+// Busschots uses when writting show notes for the Let's Talk Apple podcast and
+// the Security Bits segment on the NosillaCast Podcast taken in April 2026.
 
 // Import the Needed Linkify Classes
 // ---------------------------------
