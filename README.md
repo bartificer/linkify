@@ -55,7 +55,7 @@ If you're only going to use the tool's Javascript modules within a specific proj
 npm install --save '@bartificer/linkify'
 ```
 
-# Command Link Tool Overview
+# Command Line Interface (CLI) Overview
 
 The CLI (command line interface) is shipped as a javascript file within the NPN bundle, so the simplest way to run it is to use NodeJS's binary locating and executing tool [NPX](https://docs.npmjs.com/cli/v8/commands/npx) (included with NodeJS):
 
@@ -160,8 +160,6 @@ const config = { linkifier, options };
 export {config as default};
 ```
 
-
-
 The command line tool automatically checks for and attempts to import `~/.linkify-config.mjs`, and any customisation module can be specified with the `--config` option.
 
 If you're using the tool within a Javascript project, you can also import the default customisation module, or, a specific customisation module, with the static asynchronous function `Linkifier.importConfig()`, a typical scrip would take the following form:
@@ -194,8 +192,6 @@ import { linkify } from '@bartificer/linkify'; // add classes depending on custo
 })();
 ```
 
-
-
 # Customising Link Generation
 
 Whether you're adding your link customisations to a customisation module, or, directly into a script, the process is the same.
@@ -216,21 +212,37 @@ It's also a good idea to familiarise yourself with the content of the `utilities
 
 ## The Link Generation Process
 
-The module's `generateLink(url)` function is the primary entry point, and the only required argument is a URL.
+Link generation is triggered by calling the `generateLink(url)` function on an instance of the `Linkifier` class.
 
-The first step in the process is to attempt to fetch the page content and extract the relevant information from it. If that fails, the module will attempt to still resolve a title by reversing the URL slug and converting it to title case. Regardless of how the information was gathered, it will be collected into a `PageData` object.
+The first step in the process is to attempt to fetch the content of the page the URL points to. The relevant information is then extracted from the page's content and saved as an instance of the `PageData` class.
 
-The second step is to convert the `PageData` object to a `LinkData` object, a representing the generic properties of a link — its URL, the link text, and optionally, a link description. This conversion is performed by a *Data Transformer Function*. The module ships with a somewhat intelligent generic data transformer that works for many websites, but you will inevitable need to define your own transformers and assign them to specific sub-domains. The module uses the domain part of the URL to determine which transformer to run.
+These days it's not uncommon for web servers to block scripted page downloads, so when the the fetch fails the module automatically falls back to reversing the URL slug into a human-friendly page title. The resulting titles is also captured in a `PageData` object, just one containing much less information.
 
-The final step in the process is to render the link by passing the `LinkData` object to a `LinkTemplate` object. Link templates always contain a Mustache template string defining the output link's structure, but that can also contain *Field Filter Functions* which sanitise the contents of the different fields in some way. Any function that takes a single string as input and produces a new string as an output can be used as a filter function. The module ships with a few commonly needed filter functions:
+The second step is to extract the most useful information from the `PageData` object and use that to build a new object that represents the generic properties of any link — its URL, the link text, and optionally, a link description. This link information is captured in instances of the `LinkData` class.
 
-1. `linkify.util.regulariseWhitespace(text)` to replace all white space, even new lines and tabs, with single regular spaces.
-2. `linkify.util.stripQueryString(url)` to remove the query string entirely
-3. `linkify.util.stripUTMParameters(url)` to remove tracking parameters from the query string.
+The conversion is performed by a *Data Transformer*, a Javascript function that takes a `PageData` object as an argument, and returns a `LinkData` object. 
 
-Like data transformers, the domain part of the URL can be used to determine the template to use, though in most cases, you'll want to use your default template, which you should assign to the root DNS name, i.e. `.`.
+This is the where the nuances and peculiarities of individual websites needs to be handled. Some sites put their article titles in the first `<h1>` tag on the page, others in the first `<h2>` and some in odd places like the second or third `<h1>`! The key point is that no matter how weird they get, pages on the same site tend to be consistent, so we need to be able to customise the data transformation process on a per-site basis!
+	
+This is why the module assigns transformers to domain names. Because some organisations use multiple sub-domains, these assignments are DNS-aware, that is to say, a transformer assigned to `lets-talk.ie` is also used for `www.lets-talk.ie`. This sub-domain fallback is conditional, if there is a different transformer assigned to a specific subdomain then that transformer takes precedence! For example, if I added an assignment for `media.lets-talk.ie` that would be used for that subdomain, but the transformer for `let's-talk.ie` would still be used for `www.lets-talk.ie`. This DNS-aware fallback makes it easy to assign an overall default transformer, you assign it to the root DNS name, simply `.`!
 
-This entire process, including the customisations to the reversing of URL slugs, is illustrated in the [Mermaid](https://mermaid.ai/open-source/) diagram below:
+Un-customised instances of the `Linkifier` class have a somewhat intelligent generic transformer assigned to `.` (`Linkifier.defaults.dataTransformer()`).
+
+The final step in the process is to convert the link data to a link using a template. Templates are instances of the `LinkTemplate` class. The heart of a link template is a template string in Mustache format. TO DO — link! The template string can reference any field provided by the `LinkData` class.
+
+Because template may want to apply transformations to the information, like converting link titles to all lower case, *field filters* can be added to templates. These filters will be applied before the fields are passed to Mustache, and they are simply JavaScript functions that take strings as their first argument and return strings.
+
+Writting your own filter functions is easy, but there are some potentially useful functions in the `utility` module that can be used as field filter:
+
+1. `regulariseWhitespace(text)` to replace all white space, even new lines and tabs, with single regular spaces.
+2. `stripQueryString(url)` to remove the query string entirely
+3. `stripUTMParameters(url)` to remove tracking parameters from the query string.
+
+Note that for advanced use-cases it's also possible to add logic for extracting extra fields from web pages to templates, see below for details.
+
+Specific template names can be passed to the `.generateLink()` function, but if none is passed the tool falls back to resolving the template to use based on the domain name. Default instances of the `Linkify` class have the `html` template assigned to the root DNS name (`.`), so that template acts as a universal default.
+
+This entire process, including customisations to the reversing of URL slugs, is illustrated in the [Mermaid](https://mermaid.ai/open-source/) diagram below:
 
 ```mermaid
 flowchart TD
