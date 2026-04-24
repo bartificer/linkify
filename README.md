@@ -23,43 +23,196 @@ The key features:
 
 To make use of this tool's primary features you need to write your own JavaScript code to define data transformers and templates, and assign them tomdomain names.
 
-The CLI may be useful in it's default state, but it was very much intended to be customised.
+The CLI may be useful in its default state, but it was very much **intended to be customised**, and to do that, you need to be able to write at least some basic Javascript.
 
-# Instalation & Minimal NodeJS Example
+# Requirements & Assumptions
 
-Before you begin, make sure you have [the latest LTS version of NodeJS](https://nodejs.org/en/download) installed!
+1. This codebase depends on the [NodeJS Javascript runtime,](https://nodejs.org/en/about) you need to be running [the latest LTS](https://nodejs.org/en/download) (Long Term Support) version to use it.
+2. This codebase is only [distributed](https://www.npmjs.com/package/@bartificer/linkify) via the [Node Package Manager](https://www.npmjs.com/) (NPM), you can download the source [from GitHub](https://github.com/bartificer/linkify) and re-bundle it yourself, but if you do, you're going to need to fork the code to remove all the Node dependencies from it!
+3. This tool is **intended to be customised**, and to do that, you **need basic Javascript skills**, and an ability to read [API documentation](https://bartificer.github.io/linkify/). You may find some value in using the tool purely in its default state, but you'll regularly need to fix the link text to deal with website peculiarities!
 
-Create an empty folder and open a shell in that folder.
+# Installation
 
-To get started, install the module into your folder with the command:
+This tool is installed via the Node Package Manager (NPM), **before you start, be sure you're running the [latest LTS](https://nodejs.org/en/download) version of NodeJS!**
+
+If you're going to use the command line interface, you need other install the package globally:
 
 ```sh
-npm install '@bartificer/linkifier';
+# global install for CLI
+sudo npm install --global '@bartificer/linkify'
 ```
 
-Before writing your own scripts, test the module is working with a basic script that uses all the defaults and makes no customisations.
+Once the installation completes you can test the it succeeded with the command:
 
-Create a file named `test.mjs` with the following content:
+```sh
+npx linkify --version
+```
+
+If you're only going to use the tool's Javascript modules within a specific project, you should install it locally into your project (rather than globally):
+
+```sh
+# local install within a NodeJS project
+npm install --save '@bartificer/linkify'
+```
+
+# Command Link Tool Overview
+
+The CLI (command line interface) is shipped as a javascript file within the NPN bundle, so the simplest way to run it is to use NodeJS's binary locating and executing tool [NPX](https://docs.npmjs.com/cli/v8/commands/npx) (included with NodeJS):
+
+```sh
+npx linkify …
+```
+
+The tool implements the sub-command philosophy used by many open source tools like `git`, therefore, all `linkify` commands will take the following form:
+
+```
+npx linkify COMMAND [OPTIONS] [ARGUMENTS]
+```
+
+The tool offers built-in help, the top-level of which is available via the sub-command `help`:
+
+```sh
+npx linkify help
+```
+
+This lists the command's global options, and available sub-commands.
+
+To get help on a sub-command, pass that command as an argument to the `help` sub-command, for example, to get help on link generation, use the command:
+
+```sh
+npx linkify help generate
+```
+
+Here are some of the most useful commands:
+
+```sh
+# show the default configuration
+npx linkify defaults
+
+# generate a link from a url passed as an argument
+npx linkify generate 'https://lets-talk.ie/'
+
+# generate a link by piping a URL to linkify
+echo 'https://lets-talk.ie/' | npx linkify generate
+
+# generate a link by reading a URL from the clipboard (copy a link first!)
+npx linkify generate --from-clipboard
+
+# generate a link from an argument and send it to the clipboard
+npx linkify generate 'https://lets-talk.ie/' --to-clipboard
+
+# generate a link from the clipboard and write it back to the clipboard (copy a link first!)
+npx linkify generate --clipboard
+
+# show the active configuration
+# help debug your customisations!
+npx linkify config
+
+# show the information extracted from the website at a URL
+# help write data transformers & templates!
+npx linkify page-data 'https://lets-talk.ie/'
+```
+
+To better understand how the module works, or, to help debug your customisations, the `--debug` flag enables the printing of debug messages.
+
+# Customising the Tool
+
+There are two types of customisation possible:
+
+1. Define default values for the cli's `generate` action
+2. Customise the link generation process
+
+## Customisation Modules
+
+Both forms of customisation are accomplished by writing a configuration module in Javascript. Customisation modules are ES6 Javascript modules that export a single object with two keys, `options` & `linkifier` as the named export `default`.
+
+Specifically, the value of the `options` key should be a plain object where the keys are the names of valid cli options, and the values are strings for options that expect a value, and booleans for options that don't. The only small caveat is that hyphenations options need to be camelCased. Here's the options object Bart uses in his default customisation module:
 
 ```javascript
-import { linkify } from '@bartificer/linkify';
+const options = {
+    clipboard: true, // equivalent to --clipboard flag
+    echoClipboard: true, // equivalent to --echo-clipboard flag (all two-word flags are camelCased)
+    template: 'markdown-domain' // equivalent to --template=markdown-domain 
+};
+```
 
-(async () => {
-    console.log(await linkify.generateLink('https://github.com/bartificer'));
+The value of the `linkifier` key must be an instance of the class `Linkifier` with your desired link generation customisations applied.
+
+You don't have to specify both `options` and `linkifier`, if you only need on type of customisation, it's fine to omit the key you don't need.
+
+Customisation modules should have the following overall structure:
+
+```javascript
+import { Linkifier } from '@bartificer/linkify'; // add classes depending on customisation needs
+
+// create and customise a linkifier object
+const linkifier = new Linkifier(); // a default linkifier object
+
+// ADD YOUR CUSTOMISATIONS HERE (to linkifier)
+
+// define your desired default cli options
+const options = {
+    // ADD YOUR OPTIONS HERE 
+};
+
+// export your customisations
+const config = { linkifier, options };
+export {config as default};
+```
+
+
+
+The command line tool automatically checks for and attempts to import `~/.linkify-config.mjs`, and any customisation module can be specified with the `--config` option.
+
+If you're using the tool within a Javascript project, you can also import the default customisation module, or, a specific customisation module, with the static asynchronous function `Linkifier.importConfig()`, a typical scrip would take the following form:
+
+```javascript
+#!/usr/bin/env node
+
+import { Linkifier } from '@bartificer/linkify'; // add classes depending on customisation needs
+
+(async () => { // promise-based, simplest to use async IIFE
+    const configObject = await Linkifier.importConfig(); // can pass path as arg
+    const linkifier = configObject.linkifier; // instance of Linkifier class
+
+    // CALL ANY INSTANCE FUNCTIONS ON linkifier HERE
 })();
 ```
 
-Execute this script with the command:
+If you're using the tool within a code base you may not want to load your customisations from an external module, but define them within the script itself, this is a simple pattern for doing that:
 
-```sh
-node ./examples/clipboardURLToMarkdown.mjs
+```javascript
+#!/usr/bin/env node
+
+// import a ready-to-use default Linkify instance with the named import linkify
+import { linkify } from '@bartificer/linkify'; // add classes depending on customisation needs
+
+// ADD YOUR CUSTOMISATIONS TO linkify HERE
+
+(async () => { // promise-based, simplest to use async IIFE
+    // CALL ANY INSTANCE FUNCTIONS ON linkify HERE
+})();
 ```
 
-This should print an HTML link to this module's Git repository.
+
 
 # Customising Link Generation
 
-The modules key feature is customisability, and while the API has been designed to be both concise and self-documenting, unless you understand the module's process, and the points in that process where customisations get applied, confusion and frustration are inevitable!
+Whether you're adding your link customisations to a customisation module, or, directly into a script, the process is the same.
+
+To succeed you'll need to familiarise yourself with two things:
+
+1. The link generation process the tool uses (described below)
+2. The module's API documentation — [https://bartificer.github.io/linkify/](https://bartificer.github.io/linkify/)
+
+The following classes are the most important to familiarise yourself with:
+
+1. `Linkify` — the module's functionality is primarily exposed via instance methods on this class
+2. `PagaeData` — the data transformers you write will receive instances of this class as their input
+3. `LinkData` — the data transformers you write need to return instances of this class
+4. `LinkTemplate` — you define your templates by creating instances of this class
+
+It's also a good idea to familiarise yourself with the content of the `utilities` module. It's not directly exported, but all the functions it provides are made available as both instance and static members of the `Linkifier` class — statically as `Linkifier.utilities`, and as `.util` & `.utilities` on any instance of the `Linkifier` class.
 
 ## The Link Generation Process
 
@@ -139,6 +292,8 @@ flowchart TD
 ```
 
 ## Customisation Points
+
+TO REVIEW
 
 In the diagram above the customisation points are the data stores, rendered with the standard cylindrical database icon. To successfully customise the module it's vital to familiarise yourself with the module's API. The source code has been extensively documented with [JSDoc annotations](https://jsdoc.app), allowing the following documentation to be generated — [bartificer.github.io/linkify](https://bartificer.github.io/linkify/).
 
@@ -231,6 +386,8 @@ linkify.registerDefaultTemplateMapping('xkcd.com', 'md-xkcd');
 ```
 
 # Real-World Examples
+
+TO UPDATE
 
 Two real-world scripts Bart uses to build shownotes are included in[the [`/example` folder in the GitHub repostitory](https://github.com/bartificer/linkify/tree/master/example):
 
