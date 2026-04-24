@@ -63,7 +63,7 @@
 /**
  * A plain object containing configuration information for customising Linkifier objects and commandline interface (CLI) options.
  * @typedef {Object} configurationObject
- * @property {module:linkifier.Linkifier} [linkifier] a configured linkifier.
+ * @property {module:linkifier-class.Linkifier} [linkifier] a configured linkifier.
  * @property {Object} [options] values for the options accepted by the CLI's `generate` command.
  * @see {@link module:cli}
  */

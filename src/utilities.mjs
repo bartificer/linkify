@@ -7,15 +7,15 @@
 /**
  * Utility functions, intended both for use within the core link generation code, and, by users defining their own custom templates, transformer functions, and filter functions.
  * 
- * This module is exposed to end-users as {@link module:linkifier.Linkifier#utilities} and {@link module:linkifier.Linkifier#util}.
+ * This module is exposed to end-users as {@link module:linkifier-class.Linkifier#utilities} and {@link module:linkifier-class.Linkifier#util}.
  * @module utilities
  * @requires defaults
  * @requires module:kleur
  * @requires module:title-case
  * @requires module:urijs
  * @requires module:url-slug
- * @see {@link module:linkifier.Linkifier#utilities} for the short-cut to this module exposed on the Linkifier class.
- * @see {@link module:linkifier.Linkifier#util} for the short-cut to this module exposed on the Linkifier class.
+ * @see {@link module:linkifier-class.Linkifier#utilities} for the short-cut to this module exposed on the Linkifier class.
+ * @see {@link module:linkifier-class.Linkifier#util} for the short-cut to this module exposed on the Linkifier class.
  */
 import * as defaults from './defaults.mjs';
 import kleur from 'kleur';

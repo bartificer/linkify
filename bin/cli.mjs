@@ -17,7 +17,7 @@
  * @requires module:kleur
  * @requires module:urijs
  * @requires module:utilities
- * @requires module:linkifier.Linkifier
+ * @requires module:linkifier-class.Linkifier
  */
 
 //

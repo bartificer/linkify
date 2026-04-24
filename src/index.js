@@ -7,14 +7,14 @@
 /**
  * The main module exposed in the npm package `@bartificer/linkify`. This module exposes the public interface, but does not implement any functionality.
  * 
- * To understand the link generation functionality, the appropraite entry point into the code is the {@link module:linkifier.Linkifier} class.
+ * To understand the link generation functionality, the appropraite entry point into the code is the {@link module:linkifier-class.Linkifier} class.
  * @summary The main module exposed in the npm package `@bartificer/linkify`.
  * @module linkify
  * @requires linkifier
  * @requires link-data
  * @requires link-template
  * @requires page-data
- * @see {@link module:linkifier.Linkifier} for the entry point into the link generation functionality.
+ * @see {@link module:linkifier-class.Linkifier} for the entry point into the link generation functionality.
  * @example <caption>Basic Usage</caption>
  * import { linkify } from '@bartificer/linkify';
  * 
@@ -41,14 +41,14 @@ export const VERSION = process.env.VERSION; // Webpack replaces this line with t
 
 /** 
  * An instantiated Linkifier object ready for use with the default settings as generated with the defauly constructor.
- * @type {module:linkifier.Linkifier}
+ * @type {module:linkifier-class.Linkifier}
  */
 export const linkify = new Linkifier();
 
 export {
     /**
      * The Linkifier class that provides the core link generation functionality.
-     * @type {module:linkifier.Linkifier}
+     * @type {module:linkifier-class.Linkifier}
      */
     Linkifier,
 
@@ -76,7 +76,7 @@ export {
  * @name default
  * @static
  * @constant
- * @type {module:linkifier.Linkifier}
+ * @type {module:linkifier-class.Linkifier}
  * @see {@link module:linkify.linkify}
  */
 export { linkify as default };

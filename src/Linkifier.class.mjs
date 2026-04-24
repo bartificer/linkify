@@ -6,7 +6,7 @@
 
 /**
  * Linkifier's core link rendering functionality.
- * @module linkifier
+ * @module linkifier-class
  * @requires link-data
  * @requires link-template
  * @requires page-data
@@ -223,7 +223,7 @@ export class Linkifier {
 
     /**
      * Shorthand property for `.utilities`.
-     * @see {@link module:linkifier.Linkifier#utilities}
+     * @see {@link module:linkifier-class.Linkifier#utilities}
      */
     get util(){
         return this._utilities;

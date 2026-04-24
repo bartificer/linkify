@@ -24,7 +24,7 @@ import * as titleCase from 'title-case';
  * The file name to to try read the config from in the user's home directory.
  * @type {string}
  * @default ".linkify-config.mjs"
- * @see {@link module:linkifier.Linkifier.importConfig} for details of how this default file name is used.
+ * @see {@link module:linkifier-class.Linkifier.importConfig} for details of how this default file name is used.
  */
 export const configFilename = `.linkify-config.mjs`;
 
