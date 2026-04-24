@@ -32,7 +32,7 @@ export class LinkData {
      * @param {string} [description] - A description for the link, defaults to the link text. The value passed is coerced to a string with `String()`.
      * @param {Object.<string, string>} [extraFields={}] - An optional set of extra fields to be made available for use in templates under the `extraFields` key. All values are coerced to strings with `String()`.
      * @throws {TypeError} A TypeError is thrown if an invalid URL is passed.
-     * @throws {ValidationError} A ValidationError is thrown if the extraFields parameter is not an object.
+     * @throws {TypeError} A TypeError is thrown if the extraFields parameter is not an object.
      */
     constructor(url, text = '', description = '', extraFields = {}){
         // TO DO - add validation
@@ -66,7 +66,7 @@ export class LinkData {
          * @type {Object.<string, string>}
          * @private
          */
-        this._extraFields = extraFields; // throws a ValidationError if extraFields is not an object, let it pass through
+        this._extraFields = extraFields; // throws a TypeError if extraFields is not an object, let it pass through
 
         // store the URL
         this.url = url; // throws a TypeError if the URL is invalid - let it pass through

@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>linkifier - @bartificer/linkify Documentation</title>
+    <title>src/typedefs.jsdoc - @bartificer/linkify Documentation</title>
     
     <meta name="description" content="Documentation for the @bartificer/linkify package" />
     
@@ -49,171 +49,87 @@
 
 <div id="main">
     
-    <h1 class="page-title">linkifier</h1>
+    <h1 class="page-title">src/typedefs.jsdoc</h1>
     
 
     
 
 
 
-
-<section>
-
-<header>
     
-        
-            
-        
-    
-</header>
-
-<article>
-    
-        <div class="container-overview">
-        
-            
-                <div class="description usertext"><p>Linkifier's core link rendering functionality.</p></div>
-            
-
-            
-                
-
-
-
-
-<dl class="details">
-    
-    <dt class="tag-description">Description:</dt>
-    <dd class="tag-description"><ul class="dummy"><li><p>Linkifier's core link rendering functionality.</p></li></ul></dd>
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="src_Linkifier.class.mjs.html">src/Linkifier.class.mjs</a>, <a href="src_Linkifier.class.mjs.html#line7">line 7</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            
-        
-        </div>
-    
-
-    
-
-    
-        <h3 class="subsection-title">Requires</h3>
-
-        <ul>
-            <li><a href="module-link-data.html">module:link-data</a></li>
-        
-            <li><a href="module-link-template.html">module:link-template</a></li>
-        
-            <li><a href="module-page-data.html">module:page-data</a></li>
-        
-            <li>module:node:fs/promises</li>
-        
-            <li>module:node:path</li>
-        
-            <li>module:node:os</li>
-        
-            <li><a href="module-cheerio.html">module:cheerio</a></li>
-        
-            <li><a href="module-kleur.html">module:kleur</a></li>
-        
-            <li><a href="module-node-fetch.html">module:node-fetch</a></li>
-        
-            <li><a href="module-mustache.html">module:mustache</a></li>
-        
-            <li><a href="module-title-case.html">module:title-case</a></li>
-        </ul>
-    
-
-    
-        <h3 class="subsection-title">Classes</h3>
-
-        <dl>
-            <dt><a href="module-linkifier.Linkifier.html">Linkifier</a></dt>
-            <dd></dd>
-        </dl>
-    
-    
-    
-
-     
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Functions for converting information extracted from a web page into the information used to render links.
+ * @callback dataTransformer
+ * @param {module:page-data.PageData} pData - The web page data to be transrormed to link data.
+ * @returns {module:link-data.LinkData} The link information derived from the page data.
+ */
+
+/**
+ * Functions for filtering template field values before their use to render links. Arbitrarily many of these functions can be added to a template in order to filter individual fields, or all fields.
+ * @callback templateFieldFilterFunction
+ * @param {string} originalString - the original value for the field to be filtered.
+ * @returns {string} the filtered version of the original string.
+ */
+
+/**
+ * A function that can optionally be added to a template to facilitate the extraction of exta data fields from web pages that can then be utilised by the template to render the link.
+ * @callback extraFieldExtractorFunction
+ * @param {module:cheerio} pageDOM - the parsed webpage content
+ * @returns {Object.&lt;string, string>}
+ */
+
+/**
+ * A tupple (array of length exactly two) for assigning a field filter to a template.
+ * @typedef {Array} templateFieldFilterTuple
+ * @property {"all"|"url"|"text"|"description"} 0 - the property the filter should be applied to.
+ * @property {templateFieldFilterFunction} 1 - the filter function to apply.
+ */
+
+/**
+ * A plain object represeting the information about about link that can get utilised in a template.
+ *
+ * Note that the `uri` could contain more fields - it's initialised with output from the `URI.parse()` function from the `URI` module.
+ * @typedef {Object} plainLinkInformationObject
+ * @property {string} url - the URL for the link.
+ * @property {string} text - the text for the link.
+ * @property {string} description - a description for the link.
+ * @property {Object.&lt;string, string>} extraFields - any extra fields extracted from the page source.
+ * @property {Object} uri - the URL's components
+ * @property {string} uri.hostname - the hostname part of the URL.
+ * @property {string} uri.path - the path part of the UL, `/` for an empty path.
+ * @property {boolean} uri.hasPath - whether or not the URL has a path, note that `/` is considered no path.
+ * @see {@link https://medialize.github.io/URI.js/docs.html#static-parse}
+ */
+
+/**
+ * A plain object representing the infomration extracted from a web page.
+ * 
+ * Note that the `uri` could contain more fields - it's initialised with output from the `URI.parse()` function from the `URI` module.
+ * @typedef {Object} plainPageInformationObject
+ * @property {string} url - the page's URL.
+ * @property {string} title - the page's title.
+ * @property {string[]} topLevelHeadings - the text from the page's `h1` tags.
+ * @property {string[]} secondaryHeadings - text from the page's `h2` tags.
+ * @property {string} mainHeading - the text from the most semantically important heading that exists in the page.
+ * @property {Object.&lt;string, string>} extraFields - any extra fields extracted from the page source.
+ * @property {Object} uri - the URL's components
+ * @property {string} uri.hostname - the hostname part of the URL.
+ * @property {string} uri.path - the path part of the UL, `/` for an empty path.
+ * @property {boolean} uri.hasPath - whether or not the URL has a path, note that `/` is considered no path.
+ * @see {@link https://medialize.github.io/URI.js/docs.html#static-parse}
+ */
+
+/**
+ * A plain object containing configuration information for customising Linkifier objects and commandline interface (CLI) options.
+ * @typedef {Object} configurationObject
+ * @property {module:linkifier.Linkifier} [linkifier] a configured linkifier.
+ * @property {Object} [options] values for the options accepted by the CLI's `generate` command.
+ * @see {@link module:cli}
+ */</code></pre>
+        </article>
+    </section>
 
 
 

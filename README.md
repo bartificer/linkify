@@ -228,17 +228,37 @@ This is why the module assigns transformers to domain names. Because some organi
 
 Un-customised instances of the `Linkifier` class have a somewhat intelligent generic transformer assigned to `.` (`Linkifier.defaults.dataTransformer()`).
 
-The final step in the process is to convert the link data to a link using a template. Templates are instances of the `LinkTemplate` class. The heart of a link template is a template string in Mustache format. TO DO — link! The template string can reference any field provided by the `LinkData` class.
+The final step in the process is to convert the link data to a link using a template. Templates are instances of the `LinkTemplate` class. The heart of a link template is a template string in [Mustache](https://github.com/janl/mustache.js/) format. The template string can reference any field provided by the `LinkData` class, e.g.:
 
-Because template may want to apply transformations to the information, like converting link titles to all lower case, *field filters* can be added to templates. These filters will be applied before the fields are passed to Mustache, and they are simply JavaScript functions that take strings as their first argument and return strings.
+```json
+{
+  "url":	"https://www.lets-talk.ie/",
+  "text": "Let's Talk Podcasts",
+  "description": "The home of the Let's Talk Podcasts",
+	"extraFields": {},
+	"uri": {
+    "hostname":	"www.lets-talk.ie",
+    "path": "/",
+    "hasPath": false
+  }
+}
+```
 
-Writting your own filter functions is easy, but there are some potentially useful functions in the `utility` module that can be used as field filter:
+The default HTML template uses the following template string:
+
+```
+<a href="{{{url}}}" title="{{description}}">{{text}}</a>
+```
+
+Because templates may want to apply transformations to the values in some fields, like converting link text to all lower case, you can add *field filters* to templates. These filters get applied before the template is rendered. Field filtered are simply JavaScript functions that take strings as their first argument and return strings.
+
+Writting your own filter functions is easy, but there are some potentially useful functions in the `utility` module that work as field filter:
 
 1. `regulariseWhitespace(text)` to replace all white space, even new lines and tabs, with single regular spaces.
 2. `stripQueryString(url)` to remove the query string entirely
 3. `stripUTMParameters(url)` to remove tracking parameters from the query string.
 
-Note that for advanced use-cases it's also possible to add logic for extracting extra fields from web pages to templates, see below for details.
+_**Note** that for advanced use-cases it's also possible to add logic for extracting extra fields from web pages to templates, see below for details._
 
 Specific template names can be passed to the `.generateLink()` function, but if none is passed the tool falls back to resolving the template to use based on the domain name. Default instances of the `Linkify` class have the `html` template assigned to the root DNS name (`.`), so that template acts as a universal default.
 
@@ -305,78 +325,159 @@ flowchart TD
 
 ## Customisation Points
 
-TO REVIEW
+To summarise the previous section, you can customise the link generation process in the following ways:
 
-In the diagram above the customisation points are the data stores, rendered with the standard cylindrical database icon. To successfully customise the module it's vital to familiarise yourself with the module's API. The source code has been extensively documented with [JSDoc annotations](https://jsdoc.app), allowing the following documentation to be generated — [bartificer.github.io/linkify](https://bartificer.github.io/linkify/).
+1. Tweak the process for reversing URL slugs when page fetches fails by:
+   1. Updating the list of words that do not get leading caps, the *small words*
+   2. Updating the list of words that need special capitalisations  applied, e.g. *NASA* & *iPhone*.
+2. Define custom data transformers, and assign them to specific domains
+3. Define custom templates and optionally assign them to specific domains
 
-To get you started, here's a quick summary of some recommended steps for building an effective link generation script:
+To have an effect, all customisations to the link generation logic need to be applied to an instance of the  `Linkifier` class using the appropriate instance method. Some customisations require the creation of instance of other Linkifier classes. Specifically, data transformers require instances of the `LinkData` class, and templates of the `LinkTemplate` class.
 
-1. Use an expanded import with at least the following:
-   ```javascript
-   import {linkify, LinkData, LinkTemplate} from '@bartificer/linkify';
-   ```
-2. If none of the out-of-the-box templates are appropriate (`linkify.templateNames` is the array of registered template names), register a custom template of you own and make it the default. For example:
-   ```javascript
-   // register a template for Markdown links with an emoji pre-fixed
-   linkify.registerTemplate('md-emoji', '🔗 [{{{title}}}]({{{url}}})');
-   
-   // make the new template the default for all domains
-   linkfiy.registerDefaultTemplateMapping('.', 'md-emoji');
-   ```
-3. If the default data transformer's logic doesn't fit your needs, register a new default. For example:
-   ```javascript
-   linkify.registerTransformer('.', (pData) => { // registering to the root domain .
-     // sanitise the URL
-     const url = linkify.util.stripUTMParameters(pData.url);
-     
-     // use the main heading (first h1, if any, or first h2) as the intial text and description
-     // collapse the white space first
-     let text = linkify.util.regulariseWhitespace(pData.mainHeading);
-     const description = text;
-     
-     // truncate the text if needed
-     if(text.length > 20){
-       text = text.substring(0, 19) + '…';
-     }
-     
-     // build a link data object and return it
-     return new LinkData(url, text, description);
-   });
-   ```
-4. Register all needed domain-specific custom transformers. For Example:
-   ```javascript
-   linkify.RegisterTransformer('some.domain', (pData) => { new LinkData(pData.url, pData.h1s[1]) });
-   ```
-5. Fine-tune the reversing of URL slugs by adding additional words with custom capitalisations and/or small words that remain lower-case when converted to title case. For example:
-   ```javascript
-   linkify.smallWords.add('regardless');
-   linkify.speciallyCapitalisedWords.add('UNICEF');
-   ```
-6. Sometimes, a different template is required for a specific domain, in that case, assign the desired template at the domain level. For example:
-   ```javascript
-   // create a special template for your home domain
-   linkify.registerTemplate('md-home', '🏠 [{{{title}}}]({{{url}}})');
-   
-   // set that template as the default for just your domain (and its subdomains)
-   linkfiy.registerDefaultTemplateMapping('your.home.domain', 'md-home');
-   ```
+## Applying Link Generation Customisations
 
-## Advanced Usage — Tempalte with Extra Field Extractor
+The process for customising the link generation process is the same regardless of whether you're writing a customisation module for use with the CLI, or adding customisations in a stand-alone script.
 
-Very rarely, a template needs access to information that's not extracted from the page source by default. This is possible with the use of an *Extra Field Extractor* function. Under the hood, the process is spread out over a number of classes, but from to keep things simple for users, the public interface to this functionality is entirely contained with the `LinkTemplate` class's constructor.
+To get started you need to import three things from the `@bartificer/linkify` NPM module:
+
+1. **Either**, a default instance of the `Linkifier` class, **or**, the `Linkifier` class itself:
+   1. The named export `linkify` is instance of the `Linkifier` class that's ready to use
+   2. The named export `Linkifier` is the class itself
+2. The named export `LinkData` is that class
+3. The named export `LinkTemplate` is that class
+
+Putting it all together, that means we need:
+
+```javascript
+// the pre-made Linkifier instance option
+import {linkify, LinkData, LinkTemplate} from '@bartificer/linkify';
+// or, if you prefer to name the instance linkifier
+import { linkify as linkifier, LinkData, LinkTemplate } from '@bartificer/linkify';
+
+// the more explicit direct Linkifier class option
+import {Linkifier, LinkData, LinkTemplate} from '@bartificer/linkify';
+```
+
+The second, more explicit option is more flexible, so all the examples in this section will assume the following lines of code:
+
+```javascript
+// Assumed setup for all examples!
+
+// import the three customisation classes
+import {Linkifier, LinkData, LinkTemplate} from '@bartificer/linkify';
+
+// create an instance of the Linkifier class named linkifier
+const linkifier = new Linkifier();
+```
+
+### 1 — Customising the Slug Reversing Process
+
+Fresh `Linkifier` instances use the small words list from `Linkifier.defaults.smallWords`. Once created, each instance maintains its own list as the [Javascript Set](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set) `.smallWords`.
+
+Because it's a set you can easily remove words you disagree with, add new words of your own, or even start fresh with a whole new list:
+
+```javascript
+// customise the small words list
+linkifier.smallWords.add('visa-à-vis');
+linkifier.smallWords.delete('only');
+
+// or start over with a fresh list
+linkifier.smallWords.clear();
+['in', 'and', 'to', 'of'].forEach((w) => { linkifier.smallWords.add(w) });
+```
+
+Similarly, fresh `Linkifier` instances have a set of specially capitalised words, `.speciallyCapitalisedWords` which is initialised from `Linkifier.defaults.speciallyCapitalisedWords`. This can be customised in the same way:
+
+```javascript
+// customise the list of specially capitalised words
+linkifier.speciallyCapitalisedWords.delete('MacBook');
+linkifier.speciallyCapitalisedWords.add('SurfaceBook');
+```
+
+### 2 — Custom Data Transformers
+
+Data transformers are simple Javascript functions that take instances of the `PageData` class as input, and return instances of the `LinkData` class. The `LinkData` constructor expects the following arguments:
+
+1. The URL the link should point to — **required!**
+2. The text for the link, **optional**, defaults to the URL
+3. A link description, **optional**, defaults to the link text
+
+Transformers have no names, and get directly assigned to domain names using the `.registerTransformer()` function. This function requires two arguments:
+
+1. A domain name
+2. A reference to a Javascript function
+
+Because link transformers are often very simple, it's often convenient to define them right within the argument list using Javascript's *fat arrow* syntax.
+
+```javascript
+// Add a custom data transformer for the Programming by Stealth podcast series
+// this transformer:
+// 1. passes the URL through un-changed
+// 2. uses the second h1 tag as the link text (array index of second heading is 1)
+linkifier.registerTransformer('pbs.bartificer.net', (pData) => {
+  return new LinkData(pData.url, pData.h1s[1]);
+});
+```
+
+### 3 — Custom Templates
+
+Custom templates are instances of the `LinkTemplate` class. Because templates are referenced by name, they need to registered with the `Linkifier` instances under a particular name using the `.registerTemplate()` function.
+
+The only argument the constructor needs is a template string in [Mustache format](https://github.com/janl/mustache.js/).
+
+For example, you can register a new template named `markdown-emoji` that generates a link in [Markdown](https://www.markdownlang.com) format that adds a link emoji to the end of the link text like so:
+
+```javascript
+// register a template for Markdown links with link emoji
+linkifier.registerTemplate(
+  'markdown-emoji', // template name
+  new LinkTemplate('[{{{text}}}🔗]({{{url}}})') // new template object
+);
+```
+
+You may also want to create a template specific to one site, say your organisation's domain, to do that, you can create the template, then assign it to your organisation's domain as the default with the `.registerDefaultTemplateMapping()` function:
+
+```javascript
+// register a special template for Let's Talk Podcasts' home domains, *.lets-talk.ie
+// The template will be in markdown and add a house emoji
+// 1 - register a new template
+linkifier.registerTemplate(
+  'markdown-home',
+	new LinkTemplate('🏡[{{{text}}}]({{{url}}})')
+);
+// 2 - assign it to the lets-talk.ie domain and all sub-domains
+linkifier.registerDefaultTemplateMapping('lets-talk.ie', 'markdown-home');
+```
+
+Finally, some websites like to add tracking information to the query string, that can be removed by registering the utility function `stripUTMParameters()` as a filter on the `url` field. Let's expand our original `markdown-emoji` template to do that. We can do that by using the `.getTemplate()` function on our `Linkifier` instance and then attaching a field filter with the `.addFilter()` instance function provided by the `LinkTemplate` class:
+
+```javascript
+// update the markdown-emoji template to strip tracking parameters
+linkifier.getTemplate('markdown-emoji').addFilter(
+  'url', // the field name
+  linkifier.util.stripUTMParameters // a reference to a function — no trailing parens!
+);
+```
+
+### Advanced Usage — Template with Extra Field Extractor
+
+Very rarely, a template needs access to information that's not extracted from the page content by default. This is possible with the use of an *Extra Field Extractor* function.
+
+Under the hood, the process is spread out over a number of classes, but from to keep things simple for API users, the public interface to this functionality is entirely contained within the `LinkTemplate` class's constructor.
 
 To create a template that uses extra fields you must:
 
 1. Pass a custom field extractor function as the optional third argument to the `new LinkTemplate()` constructor.
    * This function will be passed just one argument, a [Cheerio object](https://cheerio.js.org/docs/api/classes/cheerio/) representing the web page's parsed DOM.
-   * This function **must** return a plain object mapping field names to string values.
-2. In the template string, reference the fields extracted by the extractor function as keys on the object `extraFields`. For example, if your extractor function returned fields named `permalink` and `volume`, those two fields should be accessed as `extraFields.permalink` & `extraFields.volume` in the template string.
+   * This function **must** return a plain object mapping field names to simple values, specifically, values that Mustache can render.
+2. Use the extra fields in the template's template string. The fields you extracted will be available as keys on the `extraFields` object. For example, if your extractor function returned fields named `permalink` and `volume`, those two fields can then be referenced as `extraFields.permalink` & `extraFields.volume` in the template string.
 
 As a practical example, here's a custom template to render XKCD comics as Markdown links followed by markdown images, with the comic number, comic title, comic permalink, and comic image URL extracted from the DOM as extra fields and referenced in the template string:
 
 ```javascript
 // register a special Markdown template for XKCD cartoons and make it the default for XKCD's domain
-linkify.registerTemplate('md-xkcd', new LinkTemplate(
+linkifier.registerTemplate('md-xkcd', new LinkTemplate(
     '[XKCD {{{extraFields.comicNumber}}}: {{{extraFields.title}}}]({{{extraFields.permalink}}})\n![ADD A DESCRIPTION FOR THE VISUALLY IMPAIRED HERE]({{{extraFields.imageLink}}} "{{{extraFields.hoverText}}}")',
     null, // no field filters
     ($) => { // a custom field extractor function
@@ -394,14 +495,44 @@ linkify.registerTemplate('md-xkcd', new LinkTemplate(
         };
     }
 ));
-linkify.registerDefaultTemplateMapping('xkcd.com', 'md-xkcd');
+linkifier.registerDefaultTemplateMapping('xkcd.com', 'md-xkcd');
 ```
 
-# Real-World Examples
+# Examples
 
-TO UPDATE
+To help you get started using the tool the `/examples` folder [in the GitHub repostitory](https://github.com/bartificer/linkify/tree/master/examples) provides four example files:
 
-Two real-world scripts Bart uses to build shownotes are included in[the [`/example` folder in the GitHub repostitory](https://github.com/bartificer/linkify/tree/master/example):
+1. A pair of example customisation modules:
+   1. `linkify-config-minimal.mjs` — a starter customisation module.
+   2. `linkify-config-realworld.mjs` — a snapshot of the customisation module Bart uses when preparing show notes for his podcasts.
+2. A pair of example scripts:
+   1. `script-with-cli-config.mjs` — a starter script that imports the user's customisation module, allowing the same config be shared between the CLI and scripts.
+   2. `script-stand-alone.mjs` — a starter script that imports no customisations but defines them all internally.
 
-1. `clipboardURLToMarkdown.mjs` — the script Bart uses to convert links to Markdown for use in show notes. This script contains a real-world example of a custom template, and, of a large collection of custom transformers registered against specific domain names for dealing with their various quirks.
-2. `debugClipboardURL.mjs` — the script Bart uses to help develop custom transformers for any sites that need them.
+# Extending/Contributing
+
+You can fork this repository to extend the code for your own use, or, to contribute back pull-requests with bug fixes and/or enhancements.
+
+To be effective when working with the code you'll need to generate a version of the documentation that includes all the private modules, variables, functions, and classes. You can do that with the command:
+
+```sh
+npm run docs-dev
+```
+
+This will output the developer docs to `./docs-dev/index.html`.
+
+You can also build an updated local version of the pubic documentation with the command:
+
+```sh
+npm run docs
+```
+
+This will output the public docs to `./docs/index.html`.
+
+The actual source code is located in the `./src` folder, the files in the `dist` folder are bundled versions of the source code built with [Webpack](https://webpack.js.org). **Always make your edits in the `./src` folder!** To build your updated code for testing, run:
+
+```sh
+npm run build
+```
+
+Finally, care has been taken to document the code in great detail using [JSDoc](https://jsdoc.app), if you make changes, please ensure you also update the JSDoc documentation comments!

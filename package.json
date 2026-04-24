@@ -1,7 +1,7 @@
 {
   "name": "@bartificer/linkify",
   "version": "3.0.0",
-  "description": "A module for inteligently converting URLs into pretty links in any format based on the page's content.",
+  "description": "An MIT-licensed command line app and ES6 Javascript module for generating enriched links in any format from a URL.",
   "publishConfig": {
     "access": "public"
   },

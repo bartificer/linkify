@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>linkifier - @bartificer/linkify Documentation</title>
+    <title>src/index.js - @bartificer/linkify Documentation</title>
     
     <meta name="description" content="Documentation for the @bartificer/linkify package" />
     
@@ -49,171 +49,100 @@
 
 <div id="main">
     
-    <h1 class="page-title">linkifier</h1>
+    <h1 class="page-title">src/index.js</h1>
     
 
     
 
 
 
-
-<section>
-
-<header>
     
-        
-            
-        
-    
-</header>
-
-<article>
-    
-        <div class="container-overview">
-        
-            
-                <div class="description usertext"><p>Linkifier's core link rendering functionality.</p></div>
-            
-
-            
-                
-
-
-
-
-<dl class="details">
-    
-    <dt class="tag-description">Description:</dt>
-    <dd class="tag-description"><ul class="dummy"><li><p>Linkifier's core link rendering functionality.</p></li></ul></dd>
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="src_Linkifier.class.mjs.html">src/Linkifier.class.mjs</a>, <a href="src_Linkifier.class.mjs.html#line7">line 7</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            
-        
-        </div>
-    
-
-    
-
-    
-        <h3 class="subsection-title">Requires</h3>
-
-        <ul>
-            <li><a href="module-link-data.html">module:link-data</a></li>
-        
-            <li><a href="module-link-template.html">module:link-template</a></li>
-        
-            <li><a href="module-page-data.html">module:page-data</a></li>
-        
-            <li>module:node:fs/promises</li>
-        
-            <li>module:node:path</li>
-        
-            <li>module:node:os</li>
-        
-            <li><a href="module-cheerio.html">module:cheerio</a></li>
-        
-            <li><a href="module-kleur.html">module:kleur</a></li>
-        
-            <li><a href="module-node-fetch.html">module:node-fetch</a></li>
-        
-            <li><a href="module-mustache.html">module:mustache</a></li>
-        
-            <li><a href="module-title-case.html">module:title-case</a></li>
-        </ul>
-    
-
-    
-        <h3 class="subsection-title">Classes</h3>
-
-        <dl>
-            <dt><a href="module-linkifier.Linkifier.html">Linkifier</a></dt>
-            <dd></dd>
-        </dl>
-    
-    
-    
-
-     
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @file Defines the public interface for the published module.
+ * @author Bart Busschots &lt;opensource@bartificer.ie>
+ * @license MIT
+ */
+
+/**
+ * The main module exposed in the npm package `@bartificer/linkify`. This module exposes the public interface, but does not implement any functionality.
+ * 
+ * To understand the link generation functionality, the appropraite entry point into the code is the {@link module:linkifier.Linkifier} class.
+ * @summary The main module exposed in the npm package `@bartificer/linkify`.
+ * @module linkify
+ * @requires linkifier
+ * @requires link-data
+ * @requires link-template
+ * @requires page-data
+ * @see {@link module:linkifier.Linkifier} for the entry point into the link generation functionality.
+ * @example &lt;caption>Basic Usage&lt;/caption>
+ * import { linkify } from '@bartificer/linkify';
+ * 
+ * (async () => {
+ *    console.log(await linkify.generateLink('https://github.com/bartificer'));
+ *    // Output: &lt;a href="https://github.com/bartificer" title="Bartificer Creations · GitHub">Bartificer Creations · GitHub&lt;/a>
+ * })();
+ */
+import { Linkifier } from "./Linkifier.class.mjs";
+import { LinkData } from "./LinkData.class.mjs";
+import { LinkTemplate } from "./LinkTemplate.class.mjs";
+import { PageData } from "./PageData.class.mjs";
+
+//
+// === export the public API ===
+//
+
+/**
+ *  The module's current SEMVER version number.
+ *  @type {string}
+ *  @see {@link https://semver.org/}
+ */
+export const VERSION = process.env.VERSION; // Webpack replaces this line with the actual version string during build
+
+/** 
+ * An instantiated Linkifier object ready for use with the default settings as generated with the defauly constructor.
+ * @type {module:linkifier.Linkifier}
+ */
+export const linkify = new Linkifier();
+
+export {
+    /**
+     * The Linkifier class that provides the core link generation functionality.
+     * @type {module:linkifier.Linkifier}
+     */
+    Linkifier,
+
+    /**
+     * The data representation class capturing the information extracted from a web page, for example the page's title and headings.
+     * @type {module:page-data.PageData}
+     */
+    PageData,
+
+    /**
+     * The data representation class capturing the information about a link, for example its title and URL.
+     * @type {module:link-data.LinkData}
+     */
+    LinkData,
+
+    /**
+     * The class capturing the details of a template used to render links.
+     * @type {module:link-template.LinkTemplate}
+     */
+    LinkTemplate
+};
+
+/**
+ * The default export, equivalent to the `linkify` named export.
+ * @name default
+ * @static
+ * @constant
+ * @type {module:linkifier.Linkifier}
+ * @see {@link module:linkify.linkify}
+ */
+export { linkify as default };</code></pre>
+        </article>
+    </section>
 
 
 

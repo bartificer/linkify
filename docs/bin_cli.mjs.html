@@ -1,8 +1,69 @@
-#!/usr/bin/env node
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>bin/cli.mjs - @bartificer/linkify Documentation</title>
+    
+    <meta name="description" content="Documentation for the @bartificer/linkify package" />
+    
+        <meta name="keywords" content="documentation, linkify, link, template, javascript, generator, npm, module, package" />
+        <meta name="keyword" content="documentation, linkify, link, template, javascript, generator, npm, module, package" />
+    
+    
+    
+    <meta property="og:title" content="@bartificer/linkify"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:image" content=""/>
+    <meta property="og:site_name" content="@bartificer/linkify Documentation"/>
+    <meta property="og:url" content="https://bartificer.github.io/linkify/"/>
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav class="wrap">
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    
+    <h2><a href="index.html">Home</a></h2><h2><a href="https://github.com/bartificer/linkify" target="_blank" >On GitHub</a></h2><h2><a href="https://bartificer.net/" target="_blank" >Bartificer Creations</a></h2><h3>Modules</h3><ul><li><a href="module-defaults.html">defaults</a><ul class='members'><li data-type='member'><a href="module-defaults.html#.configFilename">configFilename</a></li><li data-type='member'><a href="module-defaults.html#.extraSmallWords">extraSmallWords</a></li><li data-type='member'><a href="module-defaults.html#.importedSmallWords">importedSmallWords</a></li><li data-type='member'><a href="module-defaults.html#.linkTemplates">linkTemplates</a></li><li data-type='member'><a href="module-defaults.html#.speciallyCapitalisedWords">speciallyCapitalisedWords</a></li></ul><ul class='methods'><li data-type='method'><a href="module-defaults.html#.dataTransformer">dataTransformer</a></li></ul></li><li><a href="module-link-data.html">link-data</a></li><li><a href="module-link-template.html">link-template</a></li><li><a href="module-linkifier.html">linkifier</a></li><li><a href="module-linkify.html">linkify</a><ul class='members'><li data-type='member'><a href="module-linkify.html#.LinkData">LinkData</a></li><li data-type='member'><a href="module-linkify.html#.LinkTemplate">LinkTemplate</a></li><li data-type='member'><a href="module-linkify.html#.Linkifier">Linkifier</a></li><li data-type='member'><a href="module-linkify.html#.PageData">PageData</a></li><li data-type='member'><a href="module-linkify.html#.VERSION">VERSION</a></li><li data-type='member'><a href="module-linkify.html#.default">default</a></li><li data-type='member'><a href="module-linkify.html#.linkify">linkify</a></li></ul></li><li><a href="module-page-data.html">page-data</a></li><li><a href="module-utilities.html">utilities</a><ul class='members'><li data-type='member'><a href="module-utilities.html#.doDebug">doDebug</a></li></ul><ul class='methods'><li data-type='method'><a href="module-utilities.html#.batchFixCustomWordCases">batchFixCustomWordCases</a></li><li data-type='method'><a href="module-utilities.html#.debug">debug</a></li><li data-type='method'><a href="module-utilities.html#.disableDebugMessages">disableDebugMessages</a></li><li data-type='method'><a href="module-utilities.html#.enableDebugMessages">enableDebugMessages</a></li><li data-type='method'><a href="module-utilities.html#.error">error</a></li><li data-type='method'><a href="module-utilities.html#.escapeRegex">escapeRegex</a></li><li data-type='method'><a href="module-utilities.html#.extractSlug">extractSlug</a></li><li data-type='method'><a href="module-utilities.html#.fatal">fatal</a></li><li data-type='method'><a href="module-utilities.html#.info">info</a></li><li data-type='method'><a href="module-utilities.html#.isURL">isURL</a></li><li data-type='method'><a href="module-utilities.html#.regulariseWhitespace">regulariseWhitespace</a></li><li data-type='method'><a href="module-utilities.html#.setDebugStatus">setDebugStatus</a></li><li data-type='method'><a href="module-utilities.html#.stripQueryString">stripQueryString</a></li><li data-type='method'><a href="module-utilities.html#.stripUTMParameters">stripUTMParameters</a></li><li data-type='method'><a href="module-utilities.html#.toTitleCase">toTitleCase</a></li><li data-type='method'><a href="module-utilities.html#.warn">warn</a></li></ul></li></ul><h3>Classes</h3><ul><li><a href="module-link-data.LinkData.html">LinkData</a><ul class='members'><li data-type='member'><a href="module-link-data.LinkData.html#description">description</a></li><li data-type='member'><a href="module-link-data.LinkData.html#extraFields">extraFields</a></li><li data-type='member'><a href="module-link-data.LinkData.html#text">text</a></li><li data-type='member'><a href="module-link-data.LinkData.html#uri">uri</a></li><li data-type='member'><a href="module-link-data.LinkData.html#url">url</a></li><li data-type='member'><a href="module-link-data.LinkData.html#.standardFieldNames">standardFieldNames</a></li></ul><ul class='methods'><li data-type='method'><a href="module-link-data.LinkData.html#addExtraField">addExtraField</a></li><li data-type='method'><a href="module-link-data.LinkData.html#asPlainObject">asPlainObject</a></li></ul></li><li><a href="module-link-template.LinkTemplate.html">LinkTemplate</a><ul class='methods'><li data-type='method'><a href="module-link-template.LinkTemplate.html#addFilter">addFilter</a></li><li data-type='method'><a href="module-link-template.LinkTemplate.html#filtersFor">filtersFor</a></li></ul></li><li><a href="module-linkifier.Linkifier.html">Linkifier</a><ul class='members'><li data-type='member'><a href="module-linkifier.Linkifier.html#defaultTemplate">defaultTemplate</a></li><li data-type='member'><a href="module-linkifier.Linkifier.html#defaultTemplateName">defaultTemplateName</a></li><li data-type='member'><a href="module-linkifier.Linkifier.html#domainToDefaultTemplateNameMappings">domainToDefaultTemplateNameMappings</a></li><li data-type='member'><a href="module-linkifier.Linkifier.html#domainToTransformerMappings">domainToTransformerMappings</a></li><li data-type='member'><a href="module-linkifier.Linkifier.html#smallWords">smallWords</a></li><li data-type='member'><a href="module-linkifier.Linkifier.html#speciallyCapitalisedWords">speciallyCapitalisedWords</a></li><li data-type='member'><a href="module-linkifier.Linkifier.html#templateNames">templateNames</a></li><li data-type='member'><a href="module-linkifier.Linkifier.html#util">util</a></li><li data-type='member'><a href="module-linkifier.Linkifier.html#utilities">utilities</a></li><li data-type='member'><a href="module-linkifier.Linkifier.html#.defaults">defaults</a></li><li data-type='member'><a href="module-linkifier.Linkifier.html#.utilities">utilities</a></li></ul><ul class='methods'><li data-type='method'><a href="module-linkifier.Linkifier.html#fetchPageData">fetchPageData</a></li><li data-type='method'><a href="module-linkifier.Linkifier.html#generateLink">generateLink</a></li><li data-type='method'><a href="module-linkifier.Linkifier.html#getTemplate">getTemplate</a></li><li data-type='method'><a href="module-linkifier.Linkifier.html#getTemplateForDomain">getTemplateForDomain</a></li><li data-type='method'><a href="module-linkifier.Linkifier.html#getTemplateNameForDomain">getTemplateNameForDomain</a></li><li data-type='method'><a href="module-linkifier.Linkifier.html#getTransformerForDomain">getTransformerForDomain</a></li><li data-type='method'><a href="module-linkifier.Linkifier.html#hasTemplate">hasTemplate</a></li><li data-type='method'><a href="module-linkifier.Linkifier.html#registerDefaultTemplateMapping">registerDefaultTemplateMapping</a></li><li data-type='method'><a href="module-linkifier.Linkifier.html#registerTemplate">registerTemplate</a></li><li data-type='method'><a href="module-linkifier.Linkifier.html#registerTransformer">registerTransformer</a></li><li data-type='method'><a href="module-linkifier.Linkifier.html#renderLink">renderLink</a></li><li data-type='method'><a href="module-linkifier.Linkifier.html#transformPageData">transformPageData</a></li><li data-type='method'><a href="module-linkifier.Linkifier.html#.importConfig">importConfig</a></li></ul></li><li><a href="module-page-data.PageData.html">PageData</a><ul class='methods'><li data-type='method'><a href="module-page-data.PageData.html#addExtraField">addExtraField</a></li><li data-type='method'><a href="module-page-data.PageData.html#addSecondaryHeading">addSecondaryHeading</a></li><li data-type='method'><a href="module-page-data.PageData.html#addTopLevelHeading">addTopLevelHeading</a></li><li data-type='method'><a href="module-page-data.PageData.html#asPlainObject">asPlainObject</a></li><li data-type='method'><a href="module-page-data.PageData.html#h1">h1</a></li><li data-type='method'><a href="module-page-data.PageData.html#h2">h2</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#configurationObject">configurationObject</a></li><li><a href="global.html#dataTransformer">dataTransformer</a></li><li><a href="global.html#extraFieldExtractorFunction">extraFieldExtractorFunction</a></li><li><a href="global.html#plainLinkInformationObject">plainLinkInformationObject</a></li><li><a href="global.html#plainPageInformationObject">plainPageInformationObject</a></li><li><a href="global.html#templateFieldFilterFunction">templateFieldFilterFunction</a></li><li><a href="global.html#templateFieldFilterTuple">templateFieldFilterTuple</a></li></ul><h3>Externals</h3><ul><li><a href="module-cheerio.html">cheerio</a></li><li><a href="module-clipboardy.html">clipboardy</a></li><li><a href="module-commander.html">commander</a></li><li><a href="module-commander.external_Command.html">Command</a></li><li><a href="module-kleur.html">kleur</a></li><li><a href="module-mustache.html">mustache</a></li><li><a href="module-node-fetch.html">node-fetch</a></li><li><a href="module-title-case.html">title-case</a></li><li><a href="module-urijs.html">urijs</a></li><li><a href="module-url-slug.html">url-slug</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">bin/cli.mjs</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>#!/usr/bin/env node
 
 /**
  * @file The code for the command-line interface. This file does not contribute to the module's public API.
- * @author Bart Busschots <opensource@bartificer.ie>
+ * @author Bart Busschots &lt;opensource@bartificer.ie>
  * @license MIT
  */
 
@@ -79,14 +140,14 @@ function mergeOptions(cliOpts){
     if(opts.hasOwnProperty('clipboard')){ // an explicit value was set
         if(opts.clipboard){ // a truthy value was set
             // a truthy value was set, propagate each interaction unless explicitly blocked
-            if(opts.hasOwnProperty('fromClipboard') && !opts.fromClipboard){
-                utilities.debug('options --clipboard & --no-from-clipboard both set, --no-from-clipboard not overriden');
+            if(opts.hasOwnProperty('fromClipboard') &amp;&amp; !opts.fromClipboard){
+                utilities.debug('options --clipboard &amp; --no-from-clipboard both set, --no-from-clipboard not overriden');
             } else {
                 opts.fromClipboard = true;
                 utilities.debug('option --clipboard set, and no --no-from-clipboard, therefore set --from-clipboard');
             }
-            if(opts.hasOwnProperty('toClipboard') && !opts.toClipboard){
-                utilities.debug('options --clipboard & --no-to-clipboard both set, --no-to-clipboard not overriden');
+            if(opts.hasOwnProperty('toClipboard') &amp;&amp; !opts.toClipboard){
+                utilities.debug('options --clipboard &amp; --no-to-clipboard both set, --no-to-clipboard not overriden');
             } else {
                 opts.toClipboard = true;
                 utilities.debug('option --clipboard set, and no --no-to-clipboard, therefore set --to-clipboard');
@@ -95,7 +156,7 @@ function mergeOptions(cliOpts){
             // a falsy value was set — block all clipboard interaction
             opts.fromClipboard = false;
             opts.toClipboard = false;
-            utilities.debug('option --no-clipboard set, therefore set --no-to-clipboard & --no-from-clipboard');
+            utilities.debug('option --no-clipboard set, therefore set --no-to-clipboard &amp; --no-from-clipboard');
         }
     }
 
@@ -192,7 +253,7 @@ const cli = new Command()
     .name('linkify')
     .version(VERSION)
     .description('Convert URLs to rich links in any format based on the page contents.')
-    .option('-C, --config <path>', `path to config file (default: ~/${Linkifier.defaults.configFilename})`)
+    .option('-C, --config &lt;path>', `path to config file (default: ~/${Linkifier.defaults.configFilename})`)
     .option('-d, --debug', 'enable debug mode')
     .hook('preAction', (cmd) => { if(cmd.opts().debug) utilities.enableDebugMessages() });
 
@@ -263,7 +324,7 @@ showDefaults.action(async () => {
     const extraSmallWords = new Set(Linkifier.defaults.extraSmallWords);
     [...smallWords].sort().forEach((smallWord, i, list) => {
         if(i > 0){
-            smallWordsList += i === list.length -1 ? ' & ' : ', ';
+            smallWordsList += i === list.length -1 ? ' &amp; ' : ', ';
         }
         smallWordsList += `'${extraSmallWords.has(smallWord) ? green(smallWord) : smallWord}'`;
     });
@@ -276,7 +337,7 @@ showDefaults.action(async () => {
     let specialWordsList = "";
     Linkifier.defaults.speciallyCapitalisedWords.sort().forEach((word, i, list) => {
         if(i > 0){
-            specialWordsList += i === list.length -1 ? ' & ' : ', ';
+            specialWordsList += i === list.length -1 ? ' &amp; ' : ', ';
         }
         specialWordsList += `'${word}'`;
     });
@@ -343,7 +404,7 @@ showConfig.action(async () => {
     let smallWordsList = "";
     [...CONFIG.linkifier.smallWords].sort().forEach((smallWord, i, list) => {
         if(i > 0){
-            smallWordsList += i === list.length -1 ? ' & ' : ', ';
+            smallWordsList += i === list.length -1 ? ' &amp; ' : ', ';
         }
         smallWordsList += `'${smallWord}'`;
     });
@@ -356,7 +417,7 @@ showConfig.action(async () => {
     let specialWordsList = "";
     [...CONFIG.linkifier.speciallyCapitalisedWords].sort().forEach((word, i, list) => {
         if(i > 0){
-            specialWordsList += i === list.length -1 ? ' & ' : ', ';
+            specialWordsList += i === list.length -1 ? ' &amp; ' : ', ';
         }
         specialWordsList += `'${word}'`;
     });
@@ -375,8 +436,8 @@ const pageDataPreview = cli.command('preview-page-data')
     .option('--from-clipboard', 'read the URL from the clipboard, added for consistency with generate action')
     .option('--no-from-clipboard', 'block all reading from the clipboard, added for consistency with generate action')
     .option('-e, --echo-clipboard', 'echo information about clipboard interactions to STDOUT')
-    .option('-t --template <name>', 'the name of a template that defines a extra field extractor to see extra fields')
-    .argument('<url>', 'the URL to preview the page data from, can also be read from the clipboard with the appropriate flags, or piped to to the command');
+    .option('-t --template &lt;name>', 'the name of a template that defines a extra field extractor to see extra fields')
+    .argument('&lt;url>', 'the URL to preview the page data from, can also be read from the clipboard with the appropriate flags, or piped to to the command');
 pageDataPreview.hook('preAction', loadConfigHook); // load the config for this command
 pageDataPreview.action(async (u, o) => {
     //
@@ -427,7 +488,7 @@ const generate = cli.command('generate-link')
     .option('-c, --clipboard', 'read the URL from the clipboard and write the link to the clipboard')
     .option('--no-clipboard', 'block all clipboard interaction')
     .option('-e, --echo-clipboard', 'echo information about clipboard interactions to STDOUT')
-    .option('-t --template <name>', 'the name of the template to use to render the link')
+    .option('-t --template &lt;name>', 'the name of the template to use to render the link')
     .argument('[url]', 'the URL to generate a link for, can also be read from the clipboard with the appropriate flags, or piped to to the command');
 generate.hook('preAction', loadConfigHook); // load the config for this command
 generate.action(async (u, o) => {
@@ -467,4 +528,36 @@ try {
     cli.parse(process.argv);
 } catch (err) {
     utilities.fatal(err.message);
-}
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Fri Apr 24 2026 18:15:37 GMT+0100 (Irish Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+
+    <link type="text/css" rel="stylesheet" href="./docdash-overrides.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    
+    <script src="./mermaid-init.js"></script>
+    
+</body>
+</html>

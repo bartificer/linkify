@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>linkifier - @bartificer/linkify Documentation</title>
+    <title>src/externals.jsdoc - @bartificer/linkify Documentation</title>
     
     <meta name="description" content="Documentation for the @bartificer/linkify package" />
     
@@ -49,171 +49,78 @@
 
 <div id="main">
     
-    <h1 class="page-title">linkifier</h1>
+    <h1 class="page-title">src/externals.jsdoc</h1>
     
 
     
 
 
 
-
-<section>
-
-<header>
     
-        
-            
-        
-    
-</header>
-
-<article>
-    
-        <div class="container-overview">
-        
-            
-                <div class="description usertext"><p>Linkifier's core link rendering functionality.</p></div>
-            
-
-            
-                
-
-
-
-
-<dl class="details">
-    
-    <dt class="tag-description">Description:</dt>
-    <dd class="tag-description"><ul class="dummy"><li><p>Linkifier's core link rendering functionality.</p></li></ul></dd>
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="src_Linkifier.class.mjs.html">src/Linkifier.class.mjs</a>, <a href="src_Linkifier.class.mjs.html#line7">line 7</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            
-        
-        </div>
-    
-
-    
-
-    
-        <h3 class="subsection-title">Requires</h3>
-
-        <ul>
-            <li><a href="module-link-data.html">module:link-data</a></li>
-        
-            <li><a href="module-link-template.html">module:link-template</a></li>
-        
-            <li><a href="module-page-data.html">module:page-data</a></li>
-        
-            <li>module:node:fs/promises</li>
-        
-            <li>module:node:path</li>
-        
-            <li>module:node:os</li>
-        
-            <li><a href="module-cheerio.html">module:cheerio</a></li>
-        
-            <li><a href="module-kleur.html">module:kleur</a></li>
-        
-            <li><a href="module-node-fetch.html">module:node-fetch</a></li>
-        
-            <li><a href="module-mustache.html">module:mustache</a></li>
-        
-            <li><a href="module-title-case.html">module:title-case</a></li>
-        </ul>
-    
-
-    
-        <h3 class="subsection-title">Classes</h3>
-
-        <dl>
-            <dt><a href="module-linkifier.Linkifier.html">Linkifier</a></dt>
-            <dd></dd>
-        </dl>
-    
-    
-    
-
-     
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * The module used to parse HTML documents in a jQuery-like way in the NodeJS.
+ * @external module:cheerio
+ * @see {@link https://cheerio.js.org/docs/intro/}
+ */
+
+/**
+ * The module used to interact with the clipboard.
+ * @external module:clipboardy
+ * @see {@link https://github.com/sindresorhus/clipboardy}
+ */
+
+/**
+ * The module powering the command-line interaface `linkify`.
+ * @external module:commander
+ * @see {@link https://github.com/tj/commander.js}
+ */
+
+/**
+ * The Commander.js class representing both a CLI aplication as a whole, and a sub-command within a CLI.
+ * @external module:commander.Command
+ * @see {@link https://github.com/tj/commander.js#declaring-program-variable}
+ * @see {@link https://github.com/tj/commander.js#commands}
+ */
+
+/**
+ * The module used to provide formatted text in the CLI.
+ * @external module:kleur
+ * @see {@link https://github.com/lukeed/kleur#readme}
+ */
+
+/**
+ * The templating system used to describe link templates and generaete links.
+ * @external module:mustache
+ * @see {@link https://github.com/janl/mustache.js}
+ */
+
+/**
+ * The NPM module used to fetch URLs over HTTP(S).
+ * @external module:node-fetch
+ * @see {@link https://www.npmjs.com/package/node-fetch}
+ */
+ 
+/**
+ * The module used for intelligent conversions to newspaper-style title-case.
+ * @external module:title-case
+ * @see {@link https://www.npmjs.com/package/title-case}
+ */
+
+/**
+ * The URI (URL) parser used to parse and process link targets.
+ * @external module:urijs
+ * @see {@link https://www.npmjs.com/package/urijs}
+ */
+
+/**
+ * The module used to reverse URL slugs back to approximate page titles.
+ * @external module:url-slug
+ * @see {@link https://www.npmjs.com/package/url-slug}
+ */</code></pre>
+        </article>
+    </section>
 
 
 
