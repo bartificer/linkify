@@ -126,7 +126,7 @@ There are two types of customisation possible:
 
 Both forms of customisation are accomplished by writing a configuration module in JavaScript. Customisation modules are ES6 JavaScript modules that export a single object with two keys, `options` & `linkifier` as the named export `default`.
 
-Specifically, the value of the `options` key should be a plain object where the keys are the names of valid CLI options, and the values are strings for options that expect a value, and booleans for options that don't. The only small caveat is that hyphenation options need to be camelCased. Here's the options object Bart uses in his default customisation module:
+Specifically, the value of the `options` key should be a plain object where the keys are the names of valid CLI options, and the values are strings for options that expect a value, and booleans for options that don't. The only small caveat is that hyphenated options need to be camelCased. Here's the options object Bart uses in his default customisation module:
 
 ```javascript
 const options = {
