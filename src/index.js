@@ -9,7 +9,7 @@
  * 
  * To understand the link generation functionality, the appropraite entry point into the code is the {@link module:linkifier-class.Linkifier} class.
  * @summary The main module exposed in the npm package `@bartificer/linkify`.
- * @module linkify
+ * @module linkify-main
  * @requires linkifier
  * @requires link-data
  * @requires link-template

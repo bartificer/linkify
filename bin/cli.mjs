@@ -11,7 +11,7 @@
  * 
  * The CLI can be customised with a module that exports a configured `Linkifier` object as it's default export.
  * @private
- * @module cli
+ * @module linkify-cli
  * @requires module:clipboardy
  * @requires module:commander
  * @requires module:kleur
