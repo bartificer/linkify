@@ -29,7 +29,7 @@ The CLI may be useful in its default state, but it was very much **intended to b
 
 1. This codebase depends on the [NodeJS JavaScript runtime,](https://nodejs.org/en/about) and you need to be running [the latest LTS](https://nodejs.org/en/download) (Long Term Support) version to use it.
 2. This codebase is only [distributed](https://www.npmjs.com/package/@bartificer/linkify) via the [Node Package Manager](https://www.npmjs.com/) (NPM). You can download the source [from GitHub](https://github.com/bartificer/linkify) and re-bundle it yourself, but if you do, you're going to need to fork the code to remove all the Node dependencies from it!
-3. This tool is **intended to be customised**, and to do that, you **need basic JavaScript skills and an ability to read [API documentation](https://bartificer.github.io/linkify/). You may find some value in using the tool purely in its default state, but you'll regularly need to fix the link text to deal with website peculiarities!
+3. This tool is **intended to be customised**, and to do that, you **need basic JavaScript skills** and an ability to read [API documentation](https://bartificer.github.io/linkify/). You may find some value in using the tool purely in its default state, but you'll regularly need to fix the link text to deal with website peculiarities!
 
 # Installation
 
