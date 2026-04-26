@@ -232,6 +232,8 @@ export class Linkifier {
     /**
      * The set of known of known words with special capitalisations.
      * 
+     * Note that *'words'* can contain spaces, e.g. *'the US'* can be added as a word to avoid the word *'us'* being wrongly capitalised.
+     * 
      * This list is initialised with the list of specially capitalised words from the defaults module.
      * @type {Set<string>}
      * @readonly

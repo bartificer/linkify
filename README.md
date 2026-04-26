@@ -395,6 +395,8 @@ linkifier.speciallyCapitalisedWords.delete('MacBook');
 linkifier.speciallyCapitalisedWords.add('SurfaceBook');
 ```
 
+Note that for this setting *'words'* can include spaces. For example, the default list contains `'the US'`, allowing headlines like *'Apple Roll Some Feature Out in the US'* to render correctly, as well as headlines like *'"Some of Us Just Knew He'd Do Well" Said a Relative'.
+
 ### 2 — Custom Data Transformers
 
 Data transformers are simple JavaScript functions that take instances of the `PageData` class as input, and return instances of the `LinkData` class. The `LinkData` constructor expects the following arguments:

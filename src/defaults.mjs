@@ -107,6 +107,7 @@ export const speciallyCapitalisedWords = [
     'FBI',
     'CIA',
     'USA',
+    'the US',
     'UK',
     'EU',
     'NASA',
@@ -128,6 +129,7 @@ export const speciallyCapitalisedWords = [
     'II',
     'III',
     'IV',
+    'FCC',
 
     // tech jargon
     'iOS',
@@ -155,5 +157,7 @@ export const speciallyCapitalisedWords = [
     'HDMI',
     'DisplayPort',
     'LinkedIn',
-    'ChatGPT'
+    'ChatGPT',
+    'OpenAI',
+    'GPT'
 ];
