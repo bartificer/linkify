@@ -21,6 +21,8 @@ The key features:
 3. Once the data has been extracted, it can be rendered in any format using customisable templates, and these templates can also be assigned on a per-domain basis if needed.
 4. All functionality that's attached to domain names is interpreted in a DNS-aware way, so a configuration for a parent domain is inherited by its subdomains, unless also defined at the subdomain level. Global defaults can be defined by associating transformers and templates with the root domain (`.`).
 
+The reason the module allows customisations to be attached to specific domain names is that it is common to regularly link to the same sites. Which sites get used regularly will differ from user to user, so this approach allows each user to automate the corrections of they find themselves repeating regularly.
+
 To make use of this tool's primary features, you need to write your own JavaScript code to define data transformers and templates, and assign them to domain names.
 
 The CLI may be useful in its default state, but it was very much **intended to be customised**, and to do that, you need to be able to write at least some basic JavaScript.
