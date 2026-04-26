@@ -511,7 +511,7 @@ To help you get started using the tool, the `/examples` folder [in the GitHub re
 
 # Extending/Contributing
 
-You can fork this repository to extend the code for your own use, or to contribute back pull requests with bug fixes and/or enhancements.
+You can fork this repository to extend the code for your own use, or to contribute back PRs (pull requests) with bug fixes and/or enhancements.
 
 To be effective when working with the code, you'll need to generate a version of the documentation that includes all the private modules, variables, functions, and classes. You can do that with the command:
 
