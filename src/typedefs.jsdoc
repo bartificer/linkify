@@ -20,6 +20,17 @@
  */
 
 /**
+ * A page metadata object. Each key represents one of the standard or pseudo-standard HTML metadata fields.
+ * @typedef {Object<string, string>} pageMetadataObject
+ * @property {string} author
+ * @property {string} creator
+ * @property {string} description
+ * @property {string[]} keywords
+ * @property {string} publisher
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/meta/name} for relevant documentation from the Mozilla Developer Network (MDN).
+ */
+
+/**
  * A tupple (array of length exactly two) for assigning a field filter to a template.
  * @typedef {Array} templateFieldFilterTuple
  * @property {"all"|"url"|"text"|"description"} 0 - the property the filter should be applied to.

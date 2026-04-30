@@ -39,6 +39,20 @@ export class PageData {
          * @type {string}
          */
         this._title = '';
+
+        /**
+         * The page's header metadata
+         * 
+         * @private
+         * @type {pageMetadataObject}
+         */
+        this._metadata = {
+            author: '',
+            creator: '',
+            description: '',
+            keywords: [],
+            publisher: ''
+        };
         
         /**
          * The section headings on the page as arrays of strings indexed by
@@ -111,6 +125,38 @@ export class PageData {
     }
     set title(title){
         this._title = String(title);
+    }
+
+    /**
+     * The page's metadata from the page's HTML header.
+     * 
+     * Note that reading this property produces a shallow clone of the internal metadata fields object, and that the values set for metadata fields are coerced to strings with `String(value)`.
+     * @type {pageMetadataObject}
+     * @throws {TypeError} if an attempt is made to set this property to a non-object value.
+     */
+    get metadata(){
+        return {
+            author: this._metadata.author,
+            creator: this._metadata.creator,
+            description: this._metadata.description,
+            keywords: [...this._metadata.keywords], // shallow clone is OK since the values are coerced to strings by the setter
+            publisher: this._metadata.publisher
+        }
+    }
+    set metadata(metadata){
+        if(typeof metadata === 'object' && metadata !== null){
+            this._metadata.author = metadata.author ? String(metadata.author) : '';
+            this._metadata.creator = metadata.creator ? String(metadata.creator) : '';
+            this._metadata.description = metadata.description ? String(metadata.description) : '';
+            if(metadata.keywords && Array.isArray(metadata.keywords)){
+                this._metadata.keywords = [...metadata.keywords.map((keyword) => { String(keyword) })];
+            } else {
+                this._metadata.keywords = [];
+            }
+            this._metadata.publisher = metadata.publisher ? String(metadata.publisher) : ''
+        } else {
+            throw new TypeError('metadata must be a dictionary object with string keys and string values, except for the key keywords which should be an array of strings');
+        }
     }
     
     /**
