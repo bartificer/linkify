@@ -31,7 +31,7 @@ linkifier.registerTemplate( // a minimal template, no filters or extra field ext
 // Want:
 // [Ben Thompson on Tim Cook's Legacy — daringfireball.net/…](https://daringfireball.net/linked/2026/04/22/thompson-cook)
 linkifier.registerTransformer(
-    'daringfirebill.net', // the domain name to apply the transformer to (propagates to sub-domains)
+    'daringfireball.net', // the domain name to apply the transformer to (propagates to sub-domains)
     (pData) => { // an arrow function that takes a PageData object as input, and must return a LinkData object
         return new LinkData(
             pData.url, // pass the url through un-changed
